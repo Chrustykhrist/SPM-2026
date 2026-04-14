@@ -52,10 +52,15 @@ private:
 	 *  Funktioner 
 	 */
 	void Move(const FInputActionValue& Value);
+	void StopMoving(const FInputActionValue& Value);
+	
 	void Look(const FInputActionValue& Value);
+	
 	void PlayerJump(const FInputActionValue& Value);
+	
 	void PlayerCrouch(const FInputActionValue& Value);
 	void PlayerUnCrouch(const FInputActionValue& Value);
+	
 	void Sprint(const FInputActionValue& Value);
 	void SlowDown(const FInputActionValue& Value);
 	
@@ -67,11 +72,24 @@ private:
 	
 	FTimerHandle TimerHandle;
 	
+	class UCharacterMovementComponent* MovementComponent;
+	
+	class UCapsuleComponent* CapsuleComponent;
+	
 	bool bRunning = false;
 	bool bCrouching = false;
+	bool bMoving = false;
 	
 	float WalkSpeed;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	float SprintSpeed = 800;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	float CrouchSpeed = 200;
+
+	FVector StandingVector;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	FVector CrouchingVector = FVector(0.0f, 88.0f, 0.0f);
 };

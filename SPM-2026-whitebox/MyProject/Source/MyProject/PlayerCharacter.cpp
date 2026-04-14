@@ -4,8 +4,10 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include "Math/UnrealMathUtility.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -13,7 +15,6 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -21,8 +22,13 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	UCharacterMovementComponent* MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
+	CapsuleComponent = GetCapsuleComponent();
+	
+	MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
+	
 	WalkSpeed = MovementComponent->MaxWalkSpeed;
+	
+	StandingVector = GetOwner()->GetActorLocation();
 	
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
 	{
@@ -58,11 +64,16 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	if (UEnhancedInputComponent* UEnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		UEnhancedInput->BindAction(IAMove, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		UEnhancedInput->BindAction(IAMove, ETriggerEvent::Completed, this, &APlayerCharacter::StopMoving);
+		
 		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+		
 		UEnhancedInput->BindAction(IAJump, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
+		
 		UEnhancedInput->BindAction(IACrouch, ETriggerEvent::Triggered, this, &APlayerCharacter::PlayerCrouch);
 		UEnhancedInput->BindAction(IACrouch, ETriggerEvent::Completed, this, &APlayerCharacter::PlayerUnCrouch);
+		
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Completed, this, &APlayerCharacter::SlowDown);
 	}
@@ -71,8 +82,14 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
+	bMoving = true;
 	AddMovementInput(GetActorForwardVector(), Value.Get<FVector2D>().Y);
 	AddMovementInput(GetActorRightVector(), Value.Get<FVector2D>().X);
+}
+
+void APlayerCharacter::StopMoving(const FInputActionValue& Value)
+{
+	bMoving = false;
 }
 
 void APlayerCharacter::Look(const FInputActionValue& Value)
@@ -89,33 +106,46 @@ void APlayerCharacter::PlayerJump(const FInputActionValue& Value)
 void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 {
 	bCrouching = true;
+	/*
+	//GetCapsuleComponent()->SetCapsuleHalfHeight(GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight()/2);
+	
+	float height = FMath::(CapsuleComponent->GetUnscaledCapsuleHalfHeight(), CapsuleComponent->GetUnscaledCapsuleHalfHeight()/2, UGameplayStatics::GetWorldDeltaSeconds(this), 0.5);
+	
+	CapsuleComponent->SetCapsuleHalfHeight(height);
+	
+	MovementComponent->MaxWalkSpeed = CrouchSpeed;
+	*/
 	Crouch();
 }
 
 void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 {
 	bCrouching = false;
+	/*
+	GetCapsuleComponent()->SetCapsuleHalfHeight(GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight()*2);
+	
+	MovementComponent->MaxWalkSpeed = WalkSpeed;
+	*/
 	UnCrouch();
 }
 
 void APlayerCharacter::Sprint(const FInputActionValue& Value)
 {
-	UCharacterMovementComponent* MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
 	bRunning = true;
 	
-	if (Stamina > 0 && !bCrouching) {
+	if (Stamina > 0 && !bCrouching && bMoving) {
 		MovementComponent->MaxWalkSpeed = SprintSpeed;
 		Stamina -= GetWorld()->GetDeltaSeconds();
 	} else
 	{
 		MovementComponent->MaxWalkSpeed = WalkSpeed;
+		bRunning = false;
 	}
 	
 }
 
 void APlayerCharacter::SlowDown(const FInputActionValue& Value)
 {
-	UCharacterMovementComponent* MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
 	MovementComponent->MaxWalkSpeed *= 0;
 	MovementComponent->MaxWalkSpeed = WalkSpeed;
 	bRunning = false;
