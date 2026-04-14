@@ -48,7 +48,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
-	
+	/*
+	 *  Funktioner 
+	 */
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void PlayerJump(const FInputActionValue& Value);
@@ -61,9 +63,15 @@ private:
 	float Sensitivity = 50;
 	
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
-	float AsthmaLimit = 5;
+	float Stamina = 5;
 	
 	FTimerHandle TimerHandle;
 	
 	bool bRunning = false;
+	bool bCrouching = false;
+	
+	float WalkSpeed;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	float SprintSpeed = 800;
 };

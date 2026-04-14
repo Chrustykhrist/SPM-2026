@@ -21,6 +21,9 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UCharacterMovementComponent* MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
+	WalkSpeed = MovementComponent->MaxWalkSpeed;
+	
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
 	{
 		if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
@@ -40,9 +43,9 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (!bRunning && AsthmaLimit < 5)
+	if ((!bRunning || bCrouching) && Stamina < 5)
 	{
-		AsthmaLimit += GetWorld()->GetDeltaSeconds();
+		Stamina += GetWorld()->GetDeltaSeconds();
 	}
 	
 }
@@ -85,11 +88,13 @@ void APlayerCharacter::PlayerJump(const FInputActionValue& Value)
 
 void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 {
+	bCrouching = true;
 	Crouch();
 }
 
 void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 {
+	bCrouching = false;
 	UnCrouch();
 }
 
@@ -98,12 +103,12 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 	UCharacterMovementComponent* MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
 	bRunning = true;
 	
-	if (AsthmaLimit > 0) {
-		MovementComponent->MaxWalkSpeed = 900;
-		AsthmaLimit -= GetWorld()->GetDeltaSeconds();
+	if (Stamina > 0 && !bCrouching) {
+		MovementComponent->MaxWalkSpeed = SprintSpeed;
+		Stamina -= GetWorld()->GetDeltaSeconds();
 	} else
 	{
-		MovementComponent->MaxWalkSpeed = 600;
+		MovementComponent->MaxWalkSpeed = WalkSpeed;
 	}
 	
 }
@@ -112,6 +117,6 @@ void APlayerCharacter::SlowDown(const FInputActionValue& Value)
 {
 	UCharacterMovementComponent* MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
 	MovementComponent->MaxWalkSpeed *= 0;
-	MovementComponent->MaxWalkSpeed = 600;
+	MovementComponent->MaxWalkSpeed = WalkSpeed;
 	bRunning = false;
 }
