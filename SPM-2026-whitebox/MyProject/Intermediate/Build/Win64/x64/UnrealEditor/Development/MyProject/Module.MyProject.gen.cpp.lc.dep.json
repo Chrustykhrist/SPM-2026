@@ -1,0 +1,38 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\myproject\\module.myproject.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\x64\\myprojecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.inclorderunreal5_4.h.pch",
+        "Includes": [
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\myproject\\definitions.myproject.h",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\horrorgamemode.gen.cpp",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\source\\myproject\\horrorgamemode.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\gameframework\\gamemodebase.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\engine\\serverstatreplicator.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\serverstatreplicator.generated.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gamemodebase.generated.h",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\horrorgamemode.generated.h",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\horrorplayercontroller.gen.cpp",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\source\\myproject\\horrorplayercontroller.h",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\horrorplayercontroller.generated.h",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\myproject.init.gen.cpp",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\playercharacter.gen.cpp",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\source\\myproject\\playercharacter.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\gameframework\\character.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\gameframework\\charactermovementreplication.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\source\\runtime\\net\\core\\public\\net\\core\\nettoken\\nettokenexportcontext.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\source\\runtime\\net\\iris\\public\\iris\\serialization\\irisobjectreferencepackagemap.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\iriscore\\uht\\irisobjectreferencepackagemap.generated.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\charactermovementreplication.generated.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\gameframework\\rootmotionsource.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\rootmotionsource.generated.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\character.generated.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\plugins\\enhancedinput\\source\\enhancedinput\\public\\inputactionvalue.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\plugins\\enhancedinput\\intermediate\\build\\win64\\unrealeditor\\inc\\enhancedinput\\uht\\inputactionvalue.generated.h",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\playercharacter.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

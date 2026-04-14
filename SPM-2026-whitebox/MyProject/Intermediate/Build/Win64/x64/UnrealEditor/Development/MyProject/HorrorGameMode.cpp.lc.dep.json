@@ -1,0 +1,19 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\source\\myproject\\horrorgamemode.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\x64\\myprojecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.inclorderunreal5_4.h.pch",
+        "Includes": [
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\myproject\\definitions.myproject.h",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\source\\myproject\\horrorgamemode.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\gameframework\\gamemodebase.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\engine\\serverstatreplicator.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\serverstatreplicator.generated.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gamemodebase.generated.h",
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\horrorgamemode.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\myproject\\permoduleinline.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\x64\\myprojecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.inclorderunreal5_4.h.pch",
+        "Includes": [
+            "f:\\riderprojectsunreal\\spm-2026\\spm-2026-whitebox\\myproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\myproject\\definitions.myproject.h",
+            "f:\\unrealengine\\ue_5.7\\engine\\source\\runtime\\core\\public\\hal\\permoduleinline.inl"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
