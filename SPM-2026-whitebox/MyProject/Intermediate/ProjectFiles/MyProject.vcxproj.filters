@@ -33,16 +33,28 @@
     <Filter Include="Source\MyProject">
       <UniqueIdentifier>{E24959B1-EBAF-399D-9D3A-65ADD2D94AF5}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="..\..\Source\MyProject\BlindMonster.cpp">
-      <Filter>Source\MyProject</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\MyProject\BlindMonster.h">
-      <Filter>Source\MyProject</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\Source\MyProject\BlindMonsterAIController.cpp">
       <Filter>Source\MyProject</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\MyProject\BlindMonsterAIController.h">
+      <Filter>Source\MyProject</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\MyProject\BlindMonsterCharacter.cpp">
+      <Filter>Source\MyProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\MyProject\BlindMonsterCharacter.h">
+      <Filter>Source\MyProject</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\MyProject\HorrorGameMode.cpp">
+      <Filter>Source\MyProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\MyProject\HorrorGameMode.h">
+      <Filter>Source\MyProject</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\MyProject\HorrorPlayerController.cpp">
+      <Filter>Source\MyProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\MyProject\HorrorPlayerController.h">
       <Filter>Source\MyProject</Filter>
     </ClInclude>
     <None Include="..\..\Source\MyProject\MyProject.Build.cs">

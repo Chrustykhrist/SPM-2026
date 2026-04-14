@@ -2,8 +2,10 @@
 	"RemapUnityFiles": 
 	{
 		"Module.MyProject.gen.cpp.obj": [
-			"BlindMonster.gen.cpp.obj",
 			"BlindMonsterAIController.gen.cpp.obj",
+			"BlindMonsterCharacter.gen.cpp.obj",
+			"HorrorGameMode.gen.cpp.obj",
+			"HorrorPlayerController.gen.cpp.obj",
 			"MyProject.init.gen.cpp.obj",
 			"PlayerCharacter.gen.cpp.obj"
 		]

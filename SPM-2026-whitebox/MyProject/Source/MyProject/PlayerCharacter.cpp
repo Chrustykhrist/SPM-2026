@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/PawnNoiseEmitterComponent.h"
 
 
 // Sets default values
@@ -13,6 +14,7 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 
 }
 
@@ -20,7 +22,7 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	UE_LOG(LogTemp, Warning, TEXT("BeingPlay"));
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
 	{
 		if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
@@ -57,7 +59,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAMove, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
-		UEnhancedInput->BindAction(IAJump, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
+		UEnhancedInput->BindAction(IAJump, ETriggerEvent::Triggered, this, &APlayerCharacter::PlayerJump);
 		UEnhancedInput->BindAction(IACrouch, ETriggerEvent::Triggered, this, &APlayerCharacter::PlayerCrouch);
 		UEnhancedInput->BindAction(IACrouch, ETriggerEvent::Completed, this, &APlayerCharacter::PlayerUnCrouch);
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
@@ -80,11 +82,16 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::PlayerJump(const FInputActionValue& Value)
 {
+	UE_LOG(LogTemp, Warning, TEXT("PlayerJump"));
+	MakeNoise(1.0f, this, GetActorLocation());
 	Jump();
+	
 }
 
 void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 {
+	UE_LOG(LogTemp, Warning, TEXT("PlayerCrouch"));
+	//MakeNoise(1.0f, this, GetActorLocation());
 	Crouch();
 }
 
