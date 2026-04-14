@@ -1,6 +1,162 @@
-[23504:22496:0414/121439.420:WARNING:chrome_main_delegate.cc(745)] This is Chrome version 128.0.6613.138 (not a warning)
-[23504:22496:0414/121439.688:WARNING:account_consistency_mode_manager.cc(77)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
-[23504:22496:0414/121458.885:ERROR:device_event_log_impl.cc(196)] [12:14:58.862] USB: usb_service_win.cc:105 SetupDiGetDeviceProperty({{A45C254E-DF1C-4EFD-8020-67D146A850E0}, 6}) failed: Det gick inte att hitta elementet. (0x490)
-[19092:20260:0414/121500.666:WARNING:frame_impl.cc(430)] virtual CefFrameImpl::SendProcessMessage sent to detached frame 5-D5D65CFF1D495953458C7F180DA795DA will be ignored
-[23504:5864:0414/121503.408:ERROR:cast_crl.cc(443)] CRL - Verification failed.
-[23504:22496:0414/122912.896:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
+[15720:12964:0414/143841.077:WARNING:chrome_main_delegate.cc(745)] This is Chrome version 128.0.6613.138 (not a warning)
+[15720:12964:0414/143841.367:WARNING:account_consistency_mode_manager.cc(77)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
+[21364:18096:0414/143902.632:WARNING:frame_impl.cc(430)] virtual CefFrameImpl::SendProcessMessage sent to detached frame 5-FBE1CC04F485A815986778BA5E09EBDC will be ignored
+[15720:12964:0414/143902.964:ERROR:device_event_log_impl.cc(196)] [14:39:02.626] USB: usb_service_win.cc:105 SetupDiGetDeviceProperty({{A45C254E-DF1C-4EFD-8020-67D146A850E0}, 6}) failed: Det gick inte att hitta elementet. (0x490)
+[15720:21176:0414/143904.062:ERROR:cast_crl.cc(443)] CRL - Verification failed.
+[15720:12964:0414/150141.856:VERBOSE1:device_event_log_impl.cc(198)] [15:01:41.856] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/150141.856:VERBOSE1:device_event_log_impl.cc(198)] [15:01:41.856] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/150141.856:VERBOSE1:device_event_log_impl.cc(198)] [15:01:41.856] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/150151.677:VERBOSE1:device_event_log_impl.cc(198)] [15:01:51.677] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/150151.677:VERBOSE1:device_event_log_impl.cc(198)] [15:01:51.677] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/150151.677:VERBOSE1:device_event_log_impl.cc(198)] [15:01:51.677] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/150219.212:VERBOSE1:device_event_log_impl.cc(198)] [15:02:19.212] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/150219.212:VERBOSE1:device_event_log_impl.cc(198)] [15:02:19.212] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/150219.212:VERBOSE1:device_event_log_impl.cc(198)] [15:02:19.212] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[12748:4192:0414/150403.434:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/150403.435:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/150403.435:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/150403.450:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/150403.450:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/150403.450:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[12748:4192:0414/150649.459:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/150649.467:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/150649.469:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/150649.483:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/150649.483:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/150649.483:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[15720:12964:0414/150817.780:VERBOSE1:device_event_log_impl.cc(198)] [15:08:17.781] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/150817.780:VERBOSE1:device_event_log_impl.cc(198)] [15:08:17.781] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/150817.782:VERBOSE1:device_event_log_impl.cc(198)] [15:08:17.781] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[12748:4192:0414/150939.484:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/150939.486:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/150939.498:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/150939.527:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/150939.527:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/150939.527:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/150939.527:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[12748:4192:0414/151215.593:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/151215.600:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/151215.600:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/151215.612:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/151215.613:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/151215.613:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[15720:12964:0414/151406.089:VERBOSE1:device_event_log_impl.cc(198)] [15:14:06.089] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/151406.089:VERBOSE1:device_event_log_impl.cc(198)] [15:14:06.089] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/151406.089:VERBOSE1:device_event_log_impl.cc(198)] [15:14:06.089] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/151449.937:VERBOSE1:device_event_log_impl.cc(198)] [15:14:49.936] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/151449.937:VERBOSE1:device_event_log_impl.cc(198)] [15:14:49.937] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/151449.937:VERBOSE1:device_event_log_impl.cc(198)] [15:14:49.937] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/151453.076:VERBOSE1:device_event_log_impl.cc(198)] [15:14:53.076] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/151453.076:VERBOSE1:device_event_log_impl.cc(198)] [15:14:53.076] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/151453.076:VERBOSE1:device_event_log_impl.cc(198)] [15:14:53.076] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/151507.994:VERBOSE1:device_event_log_impl.cc(198)] [15:15:07.994] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/151507.994:VERBOSE1:device_event_log_impl.cc(198)] [15:15:07.995] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/151507.994:VERBOSE1:device_event_log_impl.cc(198)] [15:15:07.995] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[12748:4192:0414/151510.041:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/151510.042:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/151510.042:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/151510.056:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/151510.056:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/151510.056:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[15720:12964:0414/151514.928:VERBOSE1:device_event_log_impl.cc(198)] [15:15:14.928] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/151514.928:VERBOSE1:device_event_log_impl.cc(198)] [15:15:14.928] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/151514.928:VERBOSE1:device_event_log_impl.cc(198)] [15:15:14.928] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[12748:4192:0414/151745.554:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/151745.561:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/151745.561:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/151745.574:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/151745.574:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/151745.574:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[15720:12964:0414/151803.988:VERBOSE1:device_event_log_impl.cc(198)] [15:18:03.987] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/151803.988:VERBOSE1:device_event_log_impl.cc(198)] [15:18:03.987] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/151803.988:VERBOSE1:device_event_log_impl.cc(198)] [15:18:03.987] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[12748:4192:0414/152043.027:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/152043.028:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152043.030:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/152043.044:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152043.044:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152043.044:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[12748:4192:0414/152342.037:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/152342.045:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152342.045:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/152342.057:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152342.057:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152342.057:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[12748:4192:0414/152619.712:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/152619.718:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152619.719:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/152619.732:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152619.732:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152619.732:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[12748:4192:0414/152911.367:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/152911.367:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152911.368:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/152911.381:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152911.381:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/152911.381:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[15720:12964:0414/152955.878:VERBOSE1:device_event_log_impl.cc(198)] [15:29:55.878] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/152955.878:VERBOSE1:device_event_log_impl.cc(198)] [15:29:55.878] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/152955.878:VERBOSE1:device_event_log_impl.cc(198)] [15:29:55.878] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153050.834:VERBOSE1:device_event_log_impl.cc(198)] [15:30:50.833] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/153050.834:VERBOSE1:device_event_log_impl.cc(198)] [15:30:50.834] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153050.834:VERBOSE1:device_event_log_impl.cc(198)] [15:30:50.834] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153105.690:VERBOSE1:device_event_log_impl.cc(198)] [15:31:05.690] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/153105.690:VERBOSE1:device_event_log_impl.cc(198)] [15:31:05.690] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153105.690:VERBOSE1:device_event_log_impl.cc(198)] [15:31:05.690] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[12748:4192:0414/153210.351:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/153210.358:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/153210.358:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/153210.373:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/153210.373:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/153210.373:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[15720:12964:0414/153259.099:VERBOSE1:device_event_log_impl.cc(198)] [15:32:59.099] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/153259.099:VERBOSE1:device_event_log_impl.cc(198)] [15:32:59.100] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153259.099:VERBOSE1:device_event_log_impl.cc(198)] [15:32:59.100] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153304.080:VERBOSE1:device_event_log_impl.cc(198)] [15:33:04.080] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/153304.080:VERBOSE1:device_event_log_impl.cc(198)] [15:33:04.080] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153304.080:VERBOSE1:device_event_log_impl.cc(198)] [15:33:04.080] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:21176:0414/153315.333:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=79})
+[15720:21176:0414/153317.344:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=80})
+[15720:21176:0414/153322.345:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=79})
+[15720:21176:0414/153326.351:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=78})
+[15720:21176:0414/153329.353:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=79})
+[15720:21176:0414/153332.350:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=78})
+[15720:21176:0414/153333.348:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=79})
+[15720:21176:0414/153334.356:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=80})
+[15720:12964:0414/153335.361:VERBOSE1:device_event_log_impl.cc(198)] [15:33:35.361] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/153335.361:VERBOSE1:device_event_log_impl.cc(198)] [15:33:35.361] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153335.361:VERBOSE1:device_event_log_impl.cc(198)] [15:33:35.361] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:21176:0414/153335.524:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=100})
+[15720:12964:0414/153355.712:VERBOSE1:device_event_log_impl.cc(198)] [15:33:55.712] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/153355.712:VERBOSE1:device_event_log_impl.cc(198)] [15:33:55.712] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153355.712:VERBOSE1:device_event_log_impl.cc(198)] [15:33:55.713] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153403.729:VERBOSE1:device_event_log_impl.cc(198)] [15:34:03.728] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/153403.729:VERBOSE1:device_event_log_impl.cc(198)] [15:34:03.728] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153403.729:VERBOSE1:device_event_log_impl.cc(198)] [15:34:03.728] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153426.604:VERBOSE1:device_event_log_impl.cc(198)] [15:34:26.604] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/153426.604:VERBOSE1:device_event_log_impl.cc(198)] [15:34:26.604] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153426.605:VERBOSE1:device_event_log_impl.cc(198)] [15:34:26.604] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153427.429:VERBOSE1:device_event_log_impl.cc(198)] [15:34:27.429] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/153427.429:VERBOSE1:device_event_log_impl.cc(198)] [15:34:27.429] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153427.429:VERBOSE1:device_event_log_impl.cc(198)] [15:34:27.429] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:21176:0414/153441.394:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=82})
+[15720:21176:0414/153445.394:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=81})
+[15720:21176:0414/153449.396:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=80})
+[15720:21176:0414/153451.399:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=79})
+[12748:4192:0414/153451.904:VERBOSE1:network_delegate.cc(36)] NetworkDelegate::NotifyBeforeURLRequest: https://optimizationguide-pa.googleapis.com/v1:GetModels?key=dummytoken
+[12748:4192:0414/153451.906:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/153451.906:VERBOSE1:tls_handshaker.cc(126)] TlsClient: SSL_do_handshake returned when entering early data. After retry, rv=-1, SSL_in_early_data=1
+[12748:4192:0414/153451.923:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/153451.923:VERBOSE1:tls_handshaker.cc(105)] TlsClient: Continuing handshake
+[12748:4192:0414/153451.923:VERBOSE1:tls_client_handshaker.cc(528)] Client: handshake finished
+[15720:21176:0414/153501.402:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=80})
+[15720:21176:0414/153507.408:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=81})
+[15720:21176:0414/153513.416:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=82})
+[15720:12964:0414/153516.181:VERBOSE1:device_event_log_impl.cc(198)] [15:35:16.181] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/153516.181:VERBOSE1:device_event_log_impl.cc(198)] [15:35:16.181] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153516.181:VERBOSE1:device_event_log_impl.cc(198)] [15:35:16.181] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:21176:0414/153516.663:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=83})
+[15720:21176:0414/153517.663:VERBOSE1:media_stream_manager.cc(1533)] MSPL::OnSpeedLimitChange({this=000053FC02356D40}, {new_limit=100})
+[15720:12964:0414/153525.513:VERBOSE1:device_event_log_impl.cc(198)] [15:35:25.514] Display: EVENT: screen_win.cc:893 Displays updated, count: 2
+[15720:12964:0414/153525.513:VERBOSE1:device_event_log_impl.cc(198)] [15:35:25.514] Display: EVENT: screen_win.cc:895 Display[3521261142] bounds=[0,0 1920x1080], workarea=[0,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
+[15720:12964:0414/153525.513:VERBOSE1:device_event_log_impl.cc(198)] [15:35:25.514] Display: EVENT: screen_win.cc:895 Display[25313195] bounds=[-1920,0 1920x1080], workarea=[-1920,0 1920x1032], scale=1, rotation=0, panel_rotation=0 external detected
