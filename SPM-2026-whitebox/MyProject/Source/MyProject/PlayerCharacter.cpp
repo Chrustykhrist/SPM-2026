@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "iostream"
 
 
 // Sets default values
@@ -15,6 +16,14 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	/*
+	Timeline = CreateDefaultSubobject<UTimelineComponent>("Timeline");
+	
+	InterpFunction.BindUFunction(this, FName("TimelineFloatReturn"));
+	TimelineFinished.BindUFunction(this, FName("OnTimelineFinished"));
+	
+	Offset = 20.0f;
+	*/
 }
 
 // Called when the game starts or when spawned
@@ -22,26 +31,30 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	CapsuleComponent = GetCapsuleComponent();
-	
-	MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
-	
-	WalkSpeed = MovementComponent->MaxWalkSpeed;
-	
-	StandingVector = GetOwner()->GetActorLocation();
-	
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
 	{
 		if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
 		{
 			UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-			if (Subsystem && InputMappingCcntext)
+			if (Subsystem && InputMappingContext)
 			{
-				Subsystem->AddMappingContext(InputMappingCcntext, 0);
+				Subsystem->AddMappingContext(InputMappingContext, 0);
 			}
 		}
 	}
 	
+	MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
+	
+	WalkSpeed = MovementComponent->MaxWalkSpeed;
+	
+	StandingHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+	CrouchingHeight = MovementComponent->GetCrouchedHalfHeight();
+	/*
+	if (FCurve && Timeline)
+	{
+		Timeline->AddInterpFloat(FCurve, InterpFunction, FName("Alpha"));
+	}
+	*/
 }
 
 // Called every frame
@@ -53,7 +66,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 	{
 		Stamina += GetWorld()->GetDeltaSeconds();
 	}
-	
 }
 
 // Called to bind functionality to input
@@ -69,7 +81,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		
-		UEnhancedInput->BindAction(IAJump, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
+		UEnhancedInput->BindAction(IAJump, ETriggerEvent::Started, this, &APlayerCharacter::Jump);
 		
 		UEnhancedInput->BindAction(IACrouch, ETriggerEvent::Triggered, this, &APlayerCharacter::PlayerCrouch);
 		UEnhancedInput->BindAction(IACrouch, ETriggerEvent::Completed, this, &APlayerCharacter::PlayerUnCrouch);
@@ -79,7 +91,26 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 
 }
+/*
+void APlayerCharacter::TimelineFloatReturn(float Value)
+{
+	float NewHeight = FMath::Lerp(StandingHeight, CrouchingHeight, Value);
+    
+	GetCapsuleComponent()->SetCapsuleHalfHeight(NewHeight);
+	
+	FVector MeshLocation = GetMesh()->GetRelativeLocation();
 
+	MeshLocation.Z = -NewHeight;
+    
+	GetMesh()->SetRelativeLocation(MeshLocation);
+}
+*/
+/*
+void APlayerCharacter::OnTimelineFinished()
+{
+	
+}
+*/
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	bMoving = true;
@@ -100,42 +131,46 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::PlayerJump(const FInputActionValue& Value)
 {
-	Jump();
+	if (!bCrouching)
+	{
+		Jump();
+	}
 }
 
 void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 {
 	bCrouching = true;
-	/*
-	//GetCapsuleComponent()->SetCapsuleHalfHeight(GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight()/2);
-	
-	float height = FMath::(CapsuleComponent->GetUnscaledCapsuleHalfHeight(), CapsuleComponent->GetUnscaledCapsuleHalfHeight()/2, UGameplayStatics::GetWorldDeltaSeconds(this), 0.5);
-	
-	CapsuleComponent->SetCapsuleHalfHeight(height);
 	
 	MovementComponent->MaxWalkSpeed = CrouchSpeed;
-	*/
-	Crouch();
+	
+	GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::Lerp(StandingHeight, CrouchingHeight, 1.0f));
+	
+	//Crouch();
 }
 
 void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 {
 	bCrouching = false;
-	/*
-	GetCapsuleComponent()->SetCapsuleHalfHeight(GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight()*2);
 	
 	MovementComponent->MaxWalkSpeed = WalkSpeed;
-	*/
-	UnCrouch();
+	
+	GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::Lerp(CrouchingHeight, StandingHeight, 1.0f));
+	
+	//UnCrouch();
 }
 
 void APlayerCharacter::Sprint(const FInputActionValue& Value)
 {
 	bRunning = true;
 	
-	if (Stamina > 0 && !bCrouching && bMoving) {
+	if (Stamina > 0 && !bCrouching && bMoving)
+	{
 		MovementComponent->MaxWalkSpeed = SprintSpeed;
 		Stamina -= GetWorld()->GetDeltaSeconds();
+	} else if (bCrouching)
+	{
+		MovementComponent->MaxWalkSpeed = CrouchSpeed;
+		bRunning = false;
 	} else
 	{
 		MovementComponent->MaxWalkSpeed = WalkSpeed;

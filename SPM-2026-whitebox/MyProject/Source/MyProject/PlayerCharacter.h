@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionvalue.h"
+#include "Components/TimelineComponent.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -20,26 +21,41 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputMappingContext* InputMappingCcntext;
+	/*
+	 *  Variables to connect input actions to the code
+	 */
 	
+	// Variable to connect all the inputs and define what key is used 
+	UPROPERTY(EditAnywhere, Category="Input")
+	class UInputMappingContext* InputMappingContext;
+	
+	// Input to control movement
 	UPROPERTY(EditAnywhere, Category="Input")
 	class UInputAction* IAMove;
 	
+	// Input to control jumping
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IAJump;
 	
+	// Input to control camera movement with controller
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IALook;
 	
+	// Input to control camera movement with mouse
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IALookMouse;
 	
+	// Input to control crouching
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IACrouch;
 	
+	// Input to control sprinting
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IASprint;
+	
+	// Curve to control speed of crouching
+	UPROPERTY(EditAnywhere, Category="Input")
+	class UCurveFloat* FCurve;
 
 public:	
 	// Called every frame
@@ -47,49 +63,121 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	/*
+	UFUNCTION()
+	void TimelineFloatReturn(float Value);
+	
+	UFUNCTION()
+	void OnTimelineFinished();
+	*/
 private:
 	/*
-	 *  Funktioner 
+	 *  Functions to handle the movement of the player 
 	 */
+	
+	// Function to move the player
 	void Move(const FInputActionValue& Value);
+	// Function to handle the player stopping
 	void StopMoving(const FInputActionValue& Value);
+	
+	/*
+	 *  Functions to hanlde the player camera Movement
+	 */
 	
 	void Look(const FInputActionValue& Value);
 	
+	/*
+	 *  Functions to handle player jumping
+	 */
+	
 	void PlayerJump(const FInputActionValue& Value);
 	
+	/*
+	 *  Functions to handle The player crouching
+	 */
+	
+	// Function to make the player crouch
 	void PlayerCrouch(const FInputActionValue& Value);
+	
+	// Function to make the player stand up from being crouched
 	void PlayerUnCrouch(const FInputActionValue& Value);
 	
+	/*
+	 *  Functions to handle player sprinting
+	 */
+	
+	// Function to make the player quicker when sprinting
 	void Sprint(const FInputActionValue& Value);
+	
+	// Function to make the player slow down after sprinting
 	void SlowDown(const FInputActionValue& Value);
 	
-	UPROPERTY(EditAnywhere, Category="Input")
-	float Sensitivity = 50;
+	/*
+	 *  Components
+	 */
 	
-	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
-	float Stamina = 5;
+	// FTimerHandle TimerHandle;
 	
-	FTimerHandle TimerHandle;
-	
+	// The movement component of the player character
+	UPROPERTY()
 	class UCharacterMovementComponent* MovementComponent;
 	
-	class UCapsuleComponent* CapsuleComponent;
+	UPROPERTY()
+	class UTimelineComponent* Timeline;
 	
+	/*
+	// Delegate function to be bound with TimelineFloatReturn(float Value)
+	FOnTimelineFloat InterpFunction{};
+	
+	// Delegate Function to be bound with OnTimelineFinished()
+	FOnTimelineEvent TimelineFinished{};
+	*/
+	
+	/*
+	 *  Booleans used to check what the player is currently doing
+	 */
+	
+	// True if the player is running, false if not
 	bool bRunning = false;
+	
+	// True if the player is crouching, false if not
 	bool bCrouching = false;
+	
+	// True if the player is walking, false if not
 	bool bMoving = false;
 	
+	/*
+	 * Variables to change different values on the character and its inputs
+	 */
+	
+	// The speed of the player when walking, is set in the unreal editor
 	float WalkSpeed;
 	
+	// speed that is set when sprinting
 	UPROPERTY(EditAnywhere, Category="Input")
 	float SprintSpeed = 800;
 	
+	// Speed that is set when crouching
 	UPROPERTY(EditAnywhere, Category="Input")
 	float CrouchSpeed = 200;
-
-	FVector StandingVector;
 	
+	// Sensitivity of the camera
 	UPROPERTY(EditAnywhere, Category="Input")
-	FVector CrouchingVector = FVector(0.0f, 88.0f, 0.0f);
+	float Sensitivity = 50;
+	
+	// How many seconds the player can run
+	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
+	float Stamina = 5;
+
+	// Height of the player when standing
+	float StandingHeight;
+	
+	// Height of the player when crouching
+	UPROPERTY(EditAnywhere, Category="Input")
+	float CrouchingHeight;
+	
+	// difference between standing and crouching
+	UPROPERTY(EditAnywhere, Category="Input")
+	float Offset;
 };
