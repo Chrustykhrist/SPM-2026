@@ -4,9 +4,12 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include "Math/UnrealMathUtility.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "iostream"
 
 
 // Sets default values
@@ -16,25 +19,45 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 
+	/*
+	Timeline = CreateDefaultSubobject<UTimelineComponent>("Timeline");
+	
+	InterpFunction.BindUFunction(this, FName("TimelineFloatReturn"));
+	TimelineFinished.BindUFunction(this, FName("OnTimelineFinished"));
+	
+	Offset = 20.0f;
+	*/
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("BeingPlay"));
+	
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
 	{
 		if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
 		{
 			UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-			if (Subsystem && InputMappingCcntext)
+			if (Subsystem && InputMappingContext)
 			{
-				Subsystem->AddMappingContext(InputMappingCcntext, 0);
+				Subsystem->AddMappingContext(InputMappingContext, 0);
 			}
 		}
 	}
 	
+	MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
+	
+	WalkSpeed = MovementComponent->MaxWalkSpeed;
+	
+	StandingHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+	CrouchingHeight = MovementComponent->GetCrouchedHalfHeight();
+	/*
+	if (FCurve && Timeline)
+	{
+		Timeline->AddInterpFloat(FCurve, InterpFunction, FName("Alpha"));
+	}
+	*/
 }
 
 // Called every frame
@@ -42,9 +65,9 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (!bRunning && AsthmaLimit < 5)
+	if ((!bRunning || bCrouching) && Stamina < 5)
 	{
-		AsthmaLimit += GetWorld()->GetDeltaSeconds();
+		Stamina += GetWorld()->GetDeltaSeconds();
 	}
 	
 }
@@ -57,21 +80,51 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	if (UEnhancedInputComponent* UEnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		UEnhancedInput->BindAction(IAMove, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		UEnhancedInput->BindAction(IAMove, ETriggerEvent::Completed, this, &APlayerCharacter::StopMoving);
+		
 		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+		
 		UEnhancedInput->BindAction(IAJump, ETriggerEvent::Triggered, this, &APlayerCharacter::PlayerJump);
+		
 		UEnhancedInput->BindAction(IACrouch, ETriggerEvent::Triggered, this, &APlayerCharacter::PlayerCrouch);
 		UEnhancedInput->BindAction(IACrouch, ETriggerEvent::Completed, this, &APlayerCharacter::PlayerUnCrouch);
+		
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Completed, this, &APlayerCharacter::SlowDown);
 	}
 
 }
+/*
+void APlayerCharacter::TimelineFloatReturn(float Value)
+{
+	float NewHeight = FMath::Lerp(StandingHeight, CrouchingHeight, Value);
+    
+	GetCapsuleComponent()->SetCapsuleHalfHeight(NewHeight);
+	
+	FVector MeshLocation = GetMesh()->GetRelativeLocation();
 
+	MeshLocation.Z = -NewHeight;
+    
+	GetMesh()->SetRelativeLocation(MeshLocation);
+}
+*/
+/*
+void APlayerCharacter::OnTimelineFinished()
+{
+	
+}
+*/
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
+	bMoving = true;
 	AddMovementInput(GetActorForwardVector(), Value.Get<FVector2D>().Y);
 	AddMovementInput(GetActorRightVector(), Value.Get<FVector2D>().X);
+}
+
+void APlayerCharacter::StopMoving(const FInputActionValue& Value)
+{
+	bMoving = false;
 }
 
 void APlayerCharacter::Look(const FInputActionValue& Value)
@@ -82,7 +135,6 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::PlayerJump(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("PlayerJump"));
 	MakeNoise(1.0f, this, GetActorLocation());
 	Jump();
 	
@@ -90,35 +142,52 @@ void APlayerCharacter::PlayerJump(const FInputActionValue& Value)
 
 void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("PlayerCrouch"));
+	bCrouching = true;
+	
+	MovementComponent->MaxWalkSpeed = CrouchSpeed;
+	
+	GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::Lerp(StandingHeight, CrouchingHeight, 1.0f));
+	
+	//Crouch();
+	
 	//MakeNoise(1.0f, this, GetActorLocation());
-	Crouch();
+
 }
 
 void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 {
-	UnCrouch();
+	bCrouching = false;
+	
+	MovementComponent->MaxWalkSpeed = WalkSpeed;
+	
+	GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::Lerp(CrouchingHeight, StandingHeight, 1.0f));
+	
+	//UnCrouch();
 }
 
 void APlayerCharacter::Sprint(const FInputActionValue& Value)
 {
-	UCharacterMovementComponent* MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
 	bRunning = true;
 	
-	if (AsthmaLimit > 0) {
-		MovementComponent->MaxWalkSpeed = 900;
-		AsthmaLimit -= GetWorld()->GetDeltaSeconds();
+	if (Stamina > 0 && !bCrouching && bMoving)
+	{
+		MovementComponent->MaxWalkSpeed = SprintSpeed;
+		Stamina -= GetWorld()->GetDeltaSeconds();
+	} else if (bCrouching)
+	{
+		MovementComponent->MaxWalkSpeed = CrouchSpeed;
+		bRunning = false;
 	} else
 	{
-		MovementComponent->MaxWalkSpeed = 600;
+		MovementComponent->MaxWalkSpeed = WalkSpeed;
+		bRunning = false;
 	}
 	
 }
 
 void APlayerCharacter::SlowDown(const FInputActionValue& Value)
 {
-	UCharacterMovementComponent* MovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
 	MovementComponent->MaxWalkSpeed *= 0;
-	MovementComponent->MaxWalkSpeed = 600;
+	MovementComponent->MaxWalkSpeed = WalkSpeed;
 	bRunning = false;
 }
