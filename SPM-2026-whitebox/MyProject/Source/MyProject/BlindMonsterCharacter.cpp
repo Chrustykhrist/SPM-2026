@@ -3,9 +3,13 @@
 
 #include "BlindMonsterCharacter.h"
 #include "BlindMonsterAIController.h"
+#include "HorrorGameMode.h"
+#include "PlayerCharacter.h"
 #include "Perception/PawnSensingComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/BoxComponent.h"
+
 #include "BehaviorTree/BehaviorTree.h"
 // Sets default values
 ABlindMonsterCharacter::ABlindMonsterCharacter()
@@ -13,6 +17,10 @@ ABlindMonsterCharacter::ABlindMonsterCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
+	DeathBoxTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathBoxTrigger"));
+	DeathBoxTrigger->SetupAttachment(RootComponent);
+	
+	DeathBoxTrigger->OnComponentBeginOverlap.AddDynamic(this, &ABlindMonsterCharacter::OnOverlapBegin);
 	AIControllerClass = ABlindMonsterAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	
@@ -52,6 +60,20 @@ void ABlindMonsterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ABlindMonsterCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+									int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor->IsA(APlayerCharacter::StaticClass()))
+	{
+		AHorrorGameMode* GameMode = Cast<AHorrorGameMode>(GetWorld()->GetAuthGameMode());
+		if (GameMode)
+		{
+			GetCharacterMovement()->DisableMovement();
+			GameMode->PlayerDied();
+		}
+	}
 }
 
 void ABlindMonsterCharacter::OnHearNoise(APawn* OtherPawn, const FVector& Location, float Volume)

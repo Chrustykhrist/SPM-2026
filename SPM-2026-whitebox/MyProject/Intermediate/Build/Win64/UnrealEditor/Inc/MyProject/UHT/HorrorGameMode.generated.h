@@ -17,6 +17,11 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Class AHorrorGameMode **********************************************************
+#define FID_RiderProjectsUnreal_SPM_2026_SPM_2026_whitebox_MyProject_Source_MyProject_HorrorGameMode_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
+	DECLARE_FUNCTION(execPlayerDied);
+
+
+#define FID_RiderProjectsUnreal_SPM_2026_SPM_2026_whitebox_MyProject_Source_MyProject_HorrorGameMode_h_15_CALLBACK_WRAPPERS
 struct Z_Construct_UClass_AHorrorGameMode_Statics;
 MYPROJECT_API UClass* Z_Construct_UClass_AHorrorGameMode_NoRegister();
 
@@ -47,6 +52,8 @@ public: \
 #define FID_RiderProjectsUnreal_SPM_2026_SPM_2026_whitebox_MyProject_Source_MyProject_HorrorGameMode_h_15_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
+	FID_RiderProjectsUnreal_SPM_2026_SPM_2026_whitebox_MyProject_Source_MyProject_HorrorGameMode_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_RiderProjectsUnreal_SPM_2026_SPM_2026_whitebox_MyProject_Source_MyProject_HorrorGameMode_h_15_CALLBACK_WRAPPERS \
 	FID_RiderProjectsUnreal_SPM_2026_SPM_2026_whitebox_MyProject_Source_MyProject_HorrorGameMode_h_15_INCLASS_NO_PURE_DECLS \
 	FID_RiderProjectsUnreal_SPM_2026_SPM_2026_whitebox_MyProject_Source_MyProject_HorrorGameMode_h_15_ENHANCED_CONSTRUCTORS \
 private: \

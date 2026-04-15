@@ -14,4 +14,23 @@ class MYPROJECT_API AHorrorGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	
+	UFUNCTION(BlueprintCallable, Category = "Game Rules")
+	void PlayerDied();
+	
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Death")
+	class USoundBase* DeathSound;
+	
+	UFUNCTION(BlueprintImplementableEvent, Category = "Game Rules")
+	void OnPlayerDeathVisuals();
+	
+	void GameOver() const;
+	
+private:
+	UPROPERTY(EditAnywhere, Category = "Game Rules", meta = (AllowPrivateAccess = true))
+	float RestartDelay = 3.f;
+	
+	FTimerHandle RestartTimerHandle;
 };
