@@ -16,19 +16,18 @@ EBTNodeResult::Type UBTTask_InvestigateArea::ExecuteTask(UBehaviorTreeComponent&
 	UNavigationSystemV1* const NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 	UBlackboardComponent* const BBComp = OwnerComp.GetBlackboardComponent();
 	
+	if (!NavSys || !BBComp) return EBTNodeResult::Failed;
+	
 	FVector const CenterLocation = BBComp->GetValueAsVector(GetSelectedBlackboardKey());
 	FNavLocation NextLocation;
 	
-	if (NavSys && NavSys->GetRandomReachablePointInRadius(CenterLocation, InvestigateRadius, NextLocation))
+	if (NavSys->GetRandomReachablePointInRadius(CenterLocation, InvestigateRadius, NextLocation))
 	{
 		BBComp->SetValueAsVector(GetSelectedBlackboardKey(), NextLocation.Location);
 		return EBTNodeResult::Succeeded;
 	}
-	if (!(NavSys->GetRandomReachablePointInRadius(CenterLocation, InvestigateRadius, NextLocation)))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("NavSysRandomPoint not found"));
-	}
 	
+	UE_LOG(LogTemp, Warning, TEXT("Kunde inte hitta någon punkt"))
 	return EBTNodeResult::Succeeded;
 	
 }
