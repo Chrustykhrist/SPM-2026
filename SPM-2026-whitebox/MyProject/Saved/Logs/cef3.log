@@ -1,5 +1,5 @@
-[4572:13552:0415/170024.226:WARNING:chrome_main_delegate.cc(745)] This is Chrome version 128.0.6613.138 (not a warning)
-[4572:13552:0415/170024.333:WARNING:account_consistency_mode_manager.cc(77)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
-[4572:13552:0415/170029.806:ERROR:device_event_log_impl.cc(196)] [17:00:29.474] USB: usb_service_win.cc:105 SetupDiGetDeviceProperty({{A45C254E-DF1C-4EFD-8020-67D146A850E0}, 6}) failed: Det gick inte att hitta elementet. (0x490)
-[2704:2600:0415/170031.812:WARNING:frame_impl.cc(430)] virtual CefFrameImpl::SendProcessMessage sent to detached frame 5-3A3D48964BDEC559C6745CB1B0C3D143 will be ignored
-[4572:21496:0415/170033.906:ERROR:cast_crl.cc(443)] CRL - Verification failed.
+[23016:13476:0415/202249.277:WARNING:chrome_main_delegate.cc(745)] This is Chrome version 128.0.6613.138 (not a warning)
+[23016:13476:0415/202249.416:WARNING:account_consistency_mode_manager.cc(77)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
+[23016:13476:0415/202255.117:ERROR:device_event_log_impl.cc(196)] [20:22:54.791] USB: usb_service_win.cc:105 SetupDiGetDeviceProperty({{A45C254E-DF1C-4EFD-8020-67D146A850E0}, 6}) failed: Det gick inte att hitta elementet. (0x490)
+[1796:15892:0415/202256.788:WARNING:frame_impl.cc(430)] virtual CefFrameImpl::SendProcessMessage sent to detached frame 5-0DDCFAFB34585CA08F76C52EB775939D will be ignored
+[23016:20824:0415/202257.884:ERROR:cast_crl.cc(443)] CRL - Verification failed.
