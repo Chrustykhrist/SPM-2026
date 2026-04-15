@@ -58,6 +58,12 @@
     <ClInclude Include="..\..\Source\MyProject\BTTask_ClearBbValue.h">
       <Filter>Source\MyProject</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\MyProject\BTTask_InvestigateArea.cpp">
+      <Filter>Source\MyProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\MyProject\BTTask_InvestigateArea.h">
+      <Filter>Source\MyProject</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\MyProject\HorrorGameMode.cpp">
       <Filter>Source\MyProject</Filter>
     </ClCompile>

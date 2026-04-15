@@ -275,6 +275,10 @@
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\MyProject\BTTask_ClearBbValue.h"/>
+    <ClCompile Include="..\..\Source\MyProject\BTTask_InvestigateArea.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\MyProject\BTTask_InvestigateArea.h"/>
     <ClCompile Include="..\..\Source\MyProject\HorrorGameMode.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
