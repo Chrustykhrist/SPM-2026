@@ -267,6 +267,10 @@
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\MyProject\BlindMonsterCharacter.h"/>
+    <ClCompile Include="..\..\Source\MyProject\BTS_SetMonsterStats.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\MyProject\BTS_SetMonsterStats.h"/>
     <ClCompile Include="..\..\Source\MyProject\BTTask_BlindMonsterPatrol.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>

@@ -46,6 +46,12 @@
     <ClInclude Include="..\..\Source\MyProject\BlindMonsterCharacter.h">
       <Filter>Source\MyProject</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\MyProject\BTS_SetMonsterStats.cpp">
+      <Filter>Source\MyProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\MyProject\BTS_SetMonsterStats.h">
+      <Filter>Source\MyProject</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\MyProject\BTTask_BlindMonsterPatrol.cpp">
       <Filter>Source\MyProject</Filter>
     </ClCompile>

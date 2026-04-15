@@ -3,6 +3,7 @@
 #include "F:/RiderProjectsUnreal/SPM-2026/SPM-2026-whitebox/MyProject/Intermediate/Build/Win64/UnrealEditor/Inc/MyProject/UHT/BlindMonsterCharacter.gen.cpp"
 #include "F:/RiderProjectsUnreal/SPM-2026/SPM-2026-whitebox/MyProject/Intermediate/Build/Win64/UnrealEditor/Inc/MyProject/UHT/BTTask_BlindMonsterPatrol.gen.cpp"
 #include "F:/RiderProjectsUnreal/SPM-2026/SPM-2026-whitebox/MyProject/Intermediate/Build/Win64/UnrealEditor/Inc/MyProject/UHT/BTTask_ClearBbValue.gen.cpp"
+#include "F:/RiderProjectsUnreal/SPM-2026/SPM-2026-whitebox/MyProject/Intermediate/Build/Win64/UnrealEditor/Inc/MyProject/UHT/BTTask_InvestigateArea.gen.cpp"
 #include "F:/RiderProjectsUnreal/SPM-2026/SPM-2026-whitebox/MyProject/Intermediate/Build/Win64/UnrealEditor/Inc/MyProject/UHT/HorrorGameMode.gen.cpp"
 #include "F:/RiderProjectsUnreal/SPM-2026/SPM-2026-whitebox/MyProject/Intermediate/Build/Win64/UnrealEditor/Inc/MyProject/UHT/HorrorPlayerController.gen.cpp"
 #include "F:/RiderProjectsUnreal/SPM-2026/SPM-2026-whitebox/MyProject/Intermediate/Build/Win64/UnrealEditor/Inc/MyProject/UHT/MyProject.init.gen.cpp"
