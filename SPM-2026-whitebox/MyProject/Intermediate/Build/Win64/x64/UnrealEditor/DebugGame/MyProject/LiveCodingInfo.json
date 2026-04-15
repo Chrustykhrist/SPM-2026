@@ -1,0 +1,15 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.MyProject.gen.cpp.obj": [
+			"BlindMonsterAIController.gen.cpp.obj",
+			"BlindMonsterCharacter.gen.cpp.obj",
+			"BTTask_BlindMonsterPatrol.gen.cpp.obj",
+			"BTTask_ClearBbValue.gen.cpp.obj",
+			"HorrorGameMode.gen.cpp.obj",
+			"HorrorPlayerController.gen.cpp.obj",
+			"MyProject.init.gen.cpp.obj",
+			"PlayerCharacter.gen.cpp.obj"
+		]
+	}
+}
