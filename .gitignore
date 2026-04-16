@@ -39,3 +39,14 @@
 
 # debug information files
 *.dwo
+
+# Unreal temporära mappar
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vscode/
+.vs/
+*.sln
+*.xcodeproj

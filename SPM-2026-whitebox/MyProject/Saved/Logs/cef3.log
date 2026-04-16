@@ -1,5 +1,0 @@
-[25512:24240:0415/220026.137:WARNING:chrome_main_delegate.cc(745)] This is Chrome version 128.0.6613.138 (not a warning)
-[25512:24240:0415/220026.253:WARNING:account_consistency_mode_manager.cc(77)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
-[25512:24240:0415/220031.774:ERROR:device_event_log_impl.cc(196)] [22:00:31.447] USB: usb_service_win.cc:105 SetupDiGetDeviceProperty({{A45C254E-DF1C-4EFD-8020-67D146A850E0}, 6}) failed: Det gick inte att hitta elementet. (0x490)
-[21176:5380:0415/220034.111:WARNING:frame_impl.cc(430)] virtual CefFrameImpl::SendProcessMessage sent to detached frame 5-CB9175E5E86EAAD74FA6281615AC7A5F will be ignored
-[25512:10588:0415/220034.874:ERROR:cast_crl.cc(443)] CRL - Verification failed.

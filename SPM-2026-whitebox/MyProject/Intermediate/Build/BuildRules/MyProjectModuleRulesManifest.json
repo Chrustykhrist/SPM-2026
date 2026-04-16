@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"F:\\RiderProjectsUnreal\\SPM-2026\\SPM-2026-whitebox\\MyProject\\Source\\MyProject\\MyProject.Build.cs",
-		"F:\\RiderProjectsUnreal\\SPM-2026\\SPM-2026-whitebox\\MyProject\\Source\\MyProject.Target.cs",
-		"F:\\RiderProjectsUnreal\\SPM-2026\\SPM-2026-whitebox\\MyProject\\Source\\MyProjectEditor.Target.cs"
-	],
-	"EngineVersion": "5.7.4"
-}
