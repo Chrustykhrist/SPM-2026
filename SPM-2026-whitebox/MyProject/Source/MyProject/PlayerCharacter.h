@@ -123,9 +123,6 @@ private:
 	UPROPERTY()
 	class UCharacterMovementComponent* MovementComponent;
 	
-	UPROPERTY()
-	class UTimelineComponent* Timeline;
-	
 	/*
 	// Delegate function to be bound with TimelineFloatReturn(float Value)
 	FOnTimelineFloat InterpFunction{};
@@ -176,8 +173,4 @@ private:
 	// Height of the player when crouching
 	UPROPERTY(EditAnywhere, Category="Input")
 	float CrouchingHeight;
-	
-	// difference between standing and crouching
-	UPROPERTY(EditAnywhere, Category="Input")
-	float Offset;
 };

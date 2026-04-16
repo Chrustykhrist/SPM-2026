@@ -9,6 +9,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "iostream"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 
 // Sets default values
@@ -16,14 +18,6 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	/*
-	Timeline = CreateDefaultSubobject<UTimelineComponent>("Timeline");
-	
-	InterpFunction.BindUFunction(this, FName("TimelineFloatReturn"));
-	TimelineFinished.BindUFunction(this, FName("OnTimelineFinished"));
-	
-	Offset = 20.0f;
-	*/
 }
 
 // Called when the game starts or when spawned
@@ -49,12 +43,6 @@ void APlayerCharacter::BeginPlay()
 	
 	StandingHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
 	CrouchingHeight = MovementComponent->GetCrouchedHalfHeight();
-	/*
-	if (FCurve && Timeline)
-	{
-		Timeline->AddInterpFloat(FCurve, InterpFunction, FName("Alpha"));
-	}
-	*/
 }
 
 // Called every frame
@@ -91,26 +79,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 
 }
-/*
-void APlayerCharacter::TimelineFloatReturn(float Value)
-{
-	float NewHeight = FMath::Lerp(StandingHeight, CrouchingHeight, Value);
-    
-	GetCapsuleComponent()->SetCapsuleHalfHeight(NewHeight);
-	
-	FVector MeshLocation = GetMesh()->GetRelativeLocation();
 
-	MeshLocation.Z = -NewHeight;
-    
-	GetMesh()->SetRelativeLocation(MeshLocation);
-}
-*/
-/*
-void APlayerCharacter::OnTimelineFinished()
-{
-	
-}
-*/
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	bMoving = true;
@@ -137,26 +106,32 @@ void APlayerCharacter::PlayerJump(const FInputActionValue& Value)
 	}
 }
 
+/**
+ *  Camera crouching slowdown/movement is managed in the blueprints rather than the code
+ * 
+ * @param Value Input
+ */
 void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 {
 	bCrouching = true;
 	
 	MovementComponent->MaxWalkSpeed = CrouchSpeed;
 	
-	GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::Lerp(StandingHeight, CrouchingHeight, 1.0f));
-	
-	//Crouch();
+	Crouch();
 }
 
+/**
+ * Camera uncrouch slowdown/movement is managed in the blueprints rather than the code
+ * 
+ * @param Value 
+ */
 void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 {
 	bCrouching = false;
 	
 	MovementComponent->MaxWalkSpeed = WalkSpeed;
 	
-	GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::Lerp(CrouchingHeight, StandingHeight, 1.0f));
-	
-	//UnCrouch();
+	UnCrouch();
 }
 
 void APlayerCharacter::Sprint(const FInputActionValue& Value)
