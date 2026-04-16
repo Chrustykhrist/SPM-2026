@@ -50,3 +50,7 @@ Saved/
 .vs/
 *.sln
 *.xcodeproj
+
+# Rider workspace inställningar
+.idea/
+*.sln.DotSettings.user

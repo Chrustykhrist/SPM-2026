@@ -31,6 +31,7 @@ ABlindMonsterCharacter::ABlindMonsterCharacter()
 	// Set the rotate speed on the Yaw
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 360.0f, 0.0f);
 	
+	// Creates a UPawnSensingComponent at all instances of this class
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSenser"));
 	PawnSensingComponent->SightRadius = 0.0f;
 	PawnSensingComponent->SetPeripheralVisionAngle(0.0f);
