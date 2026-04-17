@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionvalue.h"
-#include "Components/TimelineComponent.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -52,10 +51,6 @@ protected:
 	// Input to control sprinting
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IASprint;
-	
-	// Curve to control speed of crouching
-	UPROPERTY(EditAnywhere, Category="Input")
-	class UCurveFloat* FCurve;
 
 public:	
 	// Called every frame
@@ -63,14 +58,6 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	/*
-	UFUNCTION()
-	void TimelineFloatReturn(float Value);
-	
-	UFUNCTION()
-	void OnTimelineFinished();
-	*/
 private:
 	/*
 	 *  Functions to handle the movement of the player 
@@ -86,12 +73,6 @@ private:
 	 */
 	
 	void Look(const FInputActionValue& Value);
-	
-	/*
-	 *  Functions to handle player jumping
-	 */
-	
-	void PlayerJump(const FInputActionValue& Value);
 	
 	/*
 	 *  Functions to handle The player crouching
@@ -122,14 +103,6 @@ private:
 	// The movement component of the player character
 	UPROPERTY()
 	class UCharacterMovementComponent* MovementComponent;
-	
-	/*
-	// Delegate function to be bound with TimelineFloatReturn(float Value)
-	FOnTimelineFloat InterpFunction{};
-	
-	// Delegate Function to be bound with OnTimelineFinished()
-	FOnTimelineEvent TimelineFinished{};
-	*/
 	
 	/*
 	 *  Booleans used to check what the player is currently doing
@@ -166,11 +139,4 @@ private:
 	// How many seconds the player can run
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	float Stamina = 5;
-
-	// Height of the player when standing
-	float StandingHeight;
-	
-	// Height of the player when crouching
-	UPROPERTY(EditAnywhere, Category="Input")
-	float CrouchingHeight;
 };
