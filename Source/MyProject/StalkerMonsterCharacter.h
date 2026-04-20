@@ -9,8 +9,8 @@
 UENUM(BlueprintType)
 enum class EStalkerMonsterCharacterState : uint8
 {
-	Idle,
-	Stalking,
+	Idle UMETA(DisplayName = "Idle"),
+	Stalking UMETA(DisplayName = "Stalking"),
 	Peeking,
 	Approaching,
 	Fleeing,
@@ -79,4 +79,6 @@ private:
 	// Adjusts the distance of the trace, how far the player can see the monster, 5000 = 50 meters
 	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = true))
 	float TraceScalar = 5000.0f;
+	
+	class AStalkerMonsterAIController* StalkerMonsterAIController;
 };

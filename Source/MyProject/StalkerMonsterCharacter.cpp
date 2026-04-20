@@ -49,6 +49,7 @@ void AStalkerMonsterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	StalkerMonsterAIController = Cast<AStalkerMonsterAIController>(GetController());
 }
 
 // Called every frame
@@ -62,10 +63,14 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 		LookTimer = 0.0f;
 		bool bMonsterIsSeen = CheckIfPlayerIsLooking();
 		
-		ABlindMonsterAIController* BlindMonsterAIController = Cast<ABlindMonsterAIController>(GetController());
-		if (BlindMonsterAIController && BlindMonsterAIController->GetBlackboardComponent())
+		if (StalkerMonsterAIController && StalkerMonsterAIController->GetBlackboardComponent())
 		{
-			BlindMonsterAIController->GetBlackboardComponent()->SetValueAsBool("IsDetected", bMonsterIsSeen);
+			if (bMonsterIsSeen)
+			{
+				StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsBool("IsDetected", true);
+				StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsEnum("MonsterState", (uint8) EStalkerMonsterCharacterState::Fleeing);
+			}
+			
 		}
 	}
 }
