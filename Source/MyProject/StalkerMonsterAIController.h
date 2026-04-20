@@ -36,7 +36,7 @@ protected:
 	
 	//BlackboardComponent for the monster
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
-	UBlackboardComponent* BlackboardComp;
+	class UBlackboardComponent* BlackboardComp;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	FName TargetPlayerKey = "TargetPlayer";
