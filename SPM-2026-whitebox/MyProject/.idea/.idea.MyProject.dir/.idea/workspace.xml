@@ -16,10 +16,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 4,
-  "fromUser": false
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4,
+  &quot;fromUser&quot;: false
+}</component>
   <component name="ProjectId" id="3Cc3PXxxvsfOVkKqgJuEFpRl8ya" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -35,7 +35,7 @@
     "Uproject.MyProject.executor": "Run",
     "cidr.known.project.marker": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "OliverNordlander",
+    "git-widget-placeholder": "Test",
     "ignore.virus.scanning.warn.message": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -123,6 +123,7 @@
       <option name="presentableId" value="Default" />
       <updated>1776671009235</updated>
       <workItem from="1776671011243" duration="2597000" />
+      <workItem from="1776675359892" duration="1094000" />
     </task>
     <servers />
   </component>
