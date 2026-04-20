@@ -35,6 +35,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	class UAIPerceptionComponent* AIPerceptionComp;
 	
+	// SenseCongif_Sight to adjust the configs of the sight of the monster
 	class UAISenseConfig_Sight* SightConfig;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
@@ -43,7 +44,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Sound")
 	class UAudioComponent* AudioComp;
 	
+	// Varaibles for how ofter the monster should check if the player sees it
+	float LookInterval = 0.1f;
+	float LookTimer = 0.0f;
 	
+	// Method to check if the player is looking at the monster
+	bool CheckIfPlayerIsLooking();
+	
+	// Pawn variable for the player pawn for refrence to the player
+	APawn* PlayerPawn;
 
 public:	
 	// Called every frame
@@ -67,5 +76,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = true))
 	float FleeDistance = 600.0f;
 	
-	
+	// Adjusts the distance of the trace, how far the player can see the monster, 5000 = 50 meters
+	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = true))
+	float TraceScalar = 5000.0f;
 };

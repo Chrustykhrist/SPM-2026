@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "EnvironmentQuery/EnvQueryTypes.h"
 #include "StalkerMonsterAIController.generated.h"
 
 /**
@@ -16,14 +17,24 @@ class MYPROJECT_API AStalkerMonsterAIController : public AAIController
 	
 	
 public:
+	// Constructor
 	AStalkerMonsterAIController();
 	
+	void FindStalkLocation();
+	
+	void OnStalkLocationFound(TSharedPtr<FEnvQueryResult> Result);
+	
 protected:
+	virtual void BeginPlay() override;
+	
+	// Override of OnPossess to set the behaviortree on possess
 	virtual void OnPossess(APawn* InPawn) override;
 	
+	//BhaviorTree component for the monster
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
-	UBehaviorTreeComponent* BehaviorTreeComp;
+	class UBehaviorTreeComponent* BehaviorTreeComp;
 	
+	//BlackboardComponent for the monster
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	UBlackboardComponent* BlackboardComp;
 	
@@ -32,5 +43,8 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	FName MonsterStateKey = "MonsterState";
+	
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	class UEnvQuery* StalkerQuery;
 	
 };

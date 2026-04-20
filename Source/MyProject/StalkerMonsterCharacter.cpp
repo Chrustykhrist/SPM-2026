@@ -3,10 +3,15 @@
 
 #include "StalkerMonsterCharacter.h"
 
+#include "BlindMonsterAIController.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/PlayerController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "StalkerMonsterAIController.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Components/AudioComponent.h"
+
 // Sets default values
 AStalkerMonsterCharacter::AStalkerMonsterCharacter()
 {
@@ -43,14 +48,26 @@ AStalkerMonsterCharacter::AStalkerMonsterCharacter()
 void AStalkerMonsterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 }
 
 // Called every frame
 void AStalkerMonsterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
+	LookTimer += DeltaTime;
+	if (LookTimer >= LookInterval)
+	{
+		LookTimer = 0.0f;
+		bool bMonsterIsSeen = CheckIfPlayerIsLooking();
+		
+		ABlindMonsterAIController* BlindMonsterAIController = Cast<ABlindMonsterAIController>(GetController());
+		if (BlindMonsterAIController && BlindMonsterAIController->GetBlackboardComponent())
+		{
+			BlindMonsterAIController->GetBlackboardComponent()->SetValueAsBool("IsDetected", bMonsterIsSeen);
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -63,4 +80,39 @@ void AStalkerMonsterCharacter::SetupPlayerInputComponent(UInputComponent* Player
 void AStalkerMonsterCharacter::SetMonsterState(EStalkerMonsterCharacterState NewState)
 {
 	CurrentState = NewState;
+}
+
+bool AStalkerMonsterCharacter::CheckIfPlayerIsLooking()
+{
+	if (!PlayerPawn) return false;
+	
+	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
+	if (!PlayerController) return false;
+	
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
+	
+	FVector TraceStart = CameraLocation;
+	FVector TraceEnd = TraceStart + (CameraRotation.Vector() * TraceScalar);
+	
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(PlayerPawn); // Ingnore the player itself
+	
+	// Makes a SweepTrace every 0.1f so 10 times every second to see if it hits this monster, if so returns true.
+	//We can change from Sweep to other like line if we dont want the error marginell
+	FCollisionShape SphereTrace = FCollisionShape::MakeSphere(50.0f); // 50~1 meter width, could make variable for it
+	if (GetWorld()->SweepSingleByChannel(HitResult, TraceStart, TraceEnd, FQuat::Identity
+		,ECollisionChannel::ECC_Visibility, SphereTrace, CollisionParams))
+	{
+		if (HitResult.GetActor() == this)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s hit"), *HitResult.GetActor()->GetName());
+			return true;
+		}
+	}
+	
+	return false;
+	
 }
