@@ -32,10 +32,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	class UInputAction* IAMove;
 	
-	// Input to control jumping
-	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* IAJump;
-	
 	// Input to control camera movement with controller
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IALook;

@@ -13,24 +13,19 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-<<<<<<< HEAD:Source/MyProject/PlayerCharacter.cpp
+	
 	CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 
-=======
->>>>>>> Test:SPM-2026-whitebox/MyProject/Source/MyProject/PlayerCharacter.cpp
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-<<<<<<< HEAD:Source/MyProject/PlayerCharacter.cpp
 	UE_LOG(LogTemp, Warning, TEXT("BeingPlay"));
-=======
 	
 	// Adding the custom mapping context to the character
 	
->>>>>>> Test:SPM-2026-whitebox/MyProject/Source/MyProject/PlayerCharacter.cpp
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
 	{
 		if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
@@ -83,12 +78,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		// Looking
 		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
-<<<<<<< HEAD:Source/MyProject/PlayerCharacter.cpp
-		UEnhancedInput->BindAction(IAJump, ETriggerEvent::Triggered, this, &APlayerCharacter::PlayerJump);
-=======
 		
 		// Crouching
->>>>>>> Test:SPM-2026-whitebox/MyProject/Source/MyProject/PlayerCharacter.cpp
 		UEnhancedInput->BindAction(IACrouch, ETriggerEvent::Triggered, this, &APlayerCharacter::PlayerCrouch);
 		UEnhancedInput->BindAction(IACrouch, ETriggerEvent::Completed, this, &APlayerCharacter::PlayerUnCrouch);
 		
@@ -130,20 +121,6 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	AddControllerYawInput(Value.Get<FVector2D>().X * Sensitivity * GetWorld()->GetDeltaSeconds());
 }
 
-<<<<<<< HEAD:Source/MyProject/PlayerCharacter.cpp
-void APlayerCharacter::PlayerJump(const FInputActionValue& Value)
-{
-	UE_LOG(LogTemp, Warning, TEXT("PlayerJump"));
-	MakeNoise(1.0f, this, GetActorLocation());
-	Jump();
-	
-}
-
-void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
-{
-	UE_LOG(LogTemp, Warning, TEXT("PlayerCrouch"));
-	//MakeNoise(1.0f, this, GetActorLocation());
-=======
 /**
  *  Makes the player crouch
  *
@@ -153,7 +130,6 @@ void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 {
 	bCrouching = true;
 	
->>>>>>> Test:SPM-2026-whitebox/MyProject/Source/MyProject/PlayerCharacter.cpp
 	Crouch();
 }
 

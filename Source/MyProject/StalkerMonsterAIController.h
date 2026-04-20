@@ -22,10 +22,10 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
-	UBehaviorTreeComponent* BehaviorTreeComp;
+	class UBehaviorTreeComponent* BehaviorTreeComp;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
-	UBlackboardComponent* BlackboardComp;
+	class UBlackboardComponent* BlackboardComp;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	FName TargetPlayerKey = "TargetPlayer";
