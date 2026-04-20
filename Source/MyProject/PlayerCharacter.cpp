@@ -115,6 +115,9 @@ void APlayerCharacter::StopMoving(const FInputActionValue& Value)
  */
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Moving %f"), Value.Get<FVector2D>().Y);
+	UE_LOG(LogTemp, Warning, TEXT("SHMooving %f"), Value.Get<FVector2D>().X);
+	
 	// Moves the camera up and down
 	AddControllerPitchInput(Value.Get<FVector2D>().Y * Sensitivity * GetWorld()->GetDeltaSeconds());
 	// Moves the camera left and right
