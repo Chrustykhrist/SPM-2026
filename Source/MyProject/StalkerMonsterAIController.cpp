@@ -28,7 +28,9 @@ void AStalkerMonsterAIController::OnPossess(APawn* InPawn)
 	if (StalkerMonster && StalkerMonster->BehaviorTreeAsset)
 	{
 		BlackboardComp->InitializeBlackboard(*StalkerMonster->BehaviorTreeAsset->BlackboardAsset);
-		BehaviorTreeComp->StartTree(*StalkerMonster->BehaviorTreeAsset);
+		//BehaviorTreeComp->StartTree(*StalkerMonster->BehaviorTreeAsset);
+		//BehaviorTreeComp->RunBehaviorTree(*StalkerMonster->BehaviorTreeAsset);
+		RunBehaviorTree(StalkerMonster->BehaviorTreeAsset);
 	}
 }
 
