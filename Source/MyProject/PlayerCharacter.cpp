@@ -7,6 +7,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
+#include "GameFramework/GameModeBase.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
