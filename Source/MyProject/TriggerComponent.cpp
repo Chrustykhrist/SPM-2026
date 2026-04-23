@@ -6,6 +6,7 @@
 #include "MovieSceneSequenceID.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/PlayerStart.h"
+#include "GameFramework/PlayerState.h"
 
 UTriggerComponent::UTriggerComponent()
 {
@@ -22,43 +23,51 @@ void UTriggerComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
+	// Gets the player
 	Player = GetPlayer();
 	
+	// Makes sure that a player was actually gotten and that we haven't already save the position
 	if (Player != nullptr && !bNewSpawn)
 	{
+		// Makes this true so we don't save more than once
 		bNewSpawn = true;
-		GetWorld()->GetAuthGameMode()->FindPlayerStart(GetWorld()->GetFirstPlayerController())->Destroy();
+		// Calls the function to save the position
 		SetSpawnPoint();
 	}
 }
 
+/**
+ * Saves the position of the checkpoint
+ */
 void UTriggerComponent::SetSpawnPoint()
 {
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	AGameModeBase* GM = GetWorld()->GetAuthGameMode();
-	
-	FVector Pos = GetOwner()->GetActorLocation();
-	FRotator Rot = GetOwner()->GetActorRotation();
-	
-	FActorSpawnParameters SpawnParams;
-	
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	
-	AActor* NewStart = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), Pos, Rot, SpawnParams);
+	// Saves the position
+	SpawnPosition = GetOwner()->GetActorLocation();
+	// Saves the rotation
+	SpawnRotation = GetOwner()->GetActorRotation();
 }
 
-AActor* UTriggerComponent::GetPlayer()
+/**
+ * Returns the actor that has stepped into the trigger if they are the player
+ * 
+ * @return  The player
+ */
+AActor* UTriggerComponent::GetPlayer() const
 {
+	// An array that will contain all the actors that are in the collider
 	TArray<AActor*> PlayerActors;
+	// Adds the actor that is in the collider to the array
 	GetOverlappingActors(PlayerActors);
 	
+	// Goes through all the actors that are in the array
 	for (AActor* Actor : PlayerActors)
 	{
+		// If the actor has the tag "PLayer" which only the player should have, returns that actor
 		if (Actor->ActorHasTag("Player"))
 		{
 			return Actor;
 		}
 	}
-	
+	// Otherwise return null
 	return nullptr;
 }
