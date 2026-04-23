@@ -22,16 +22,13 @@ USpawnComponent::USpawnComponent()
 void USpawnComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-
-	
 }
 
-void USpawnComponent::SetSpawner()
+void USpawnComponent::SetNewSpawner()
 {
-	GetWorld()->GetAuthGameMode()->FindPlayerStart(GetWorld()->GetFirstPlayerController());
+	GetWorld()->GetAuthGameMode()->FindPlayerStart(GetWorld()->GetFirstPlayerController())->Destroy();
 	
-	APlayerStart* PlayerStart = CreateDefaultSubobject<APlayerStart>(TEXT("PlayerStart"));
+	APlayerStart* PlayerStart = CreateDefaultSubobject<APlayerStart>(TEXT("Player Start New"));
 }
 
 

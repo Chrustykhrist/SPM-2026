@@ -7,6 +7,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
+#include "GameFramework/GameModeBase.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -129,6 +130,15 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 {
 	bCrouching = true;
+	
+	AGameModeBase* Gamemode = GetWorld()->GetAuthGameMode();
+	
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	
+	if (Gamemode && PlayerController)
+	{
+		Gamemode->RestartPlayer(PlayerController);
+	}
 	
 	Crouch();
 }

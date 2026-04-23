@@ -20,7 +20,8 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void SetSpawner();
+	UFUNCTION( BlueprintCallable )
+	void SetNewSpawner();
 
 public:	
 	// Called every frame
