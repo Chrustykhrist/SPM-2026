@@ -90,7 +90,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 
 }
-
+#pragma region MOVE
 /**
  *  Moves the player
  */
@@ -110,7 +110,7 @@ void APlayerCharacter::StopMoving(const FInputActionValue& Value)
 {
 	bMoving = false;
 }
-
+#pragma endregion
 /**
  *  Lets the player look around
  */
@@ -122,6 +122,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	AddControllerYawInput(Value.Get<FVector2D>().X * Sensitivity * GetWorld()->GetDeltaSeconds());
 }
 
+#pragma region CROUCH
 /**
  *  Makes the player crouch
  *
@@ -145,7 +146,9 @@ void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 	
 	UnCrouch();
 }
+#pragma endregion
 
+#pragma region SPRINT
 /**
  *  Makes the player sprint for the "Stamina value" amount of time
  */
@@ -186,3 +189,4 @@ void APlayerCharacter::SlowDown(const FInputActionValue& Value)
 	MovementComponent->MaxWalkSpeed = WalkSpeed;
 	bRunning = false;
 }
+#pragma endregion
