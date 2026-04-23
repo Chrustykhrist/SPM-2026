@@ -80,7 +80,19 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = true))
 	float TraceScalar = 5000.0f;
 	
+	UPROPERTY(EditAnywhere, Category = "AI", meta = (AllowPrivateAccess = true))
+	float FollowRotationSpeed = 10.0f;
 	
+	UPROPERTY(EditAnywhere, Category = "AI", meta = (AllowPrivateAccess = true))
+	float FollowRunSpeed = 10.0f;
+	
+	UPROPERTY(EditAnywhere, Category = "AI", meta = (AllowPrivateAccess = true))
+	float AttachDistance = 110.0f;
+	
+	UPROPERTY(EditAnywhere, Category = "AI", meta = (AllowPrivateAccess = true))
+	float StalkDistance = 100.0f;
+	
+	bool bIsAttached = false;
 	
 	class AStalkerMonsterAIController* StalkerMonsterAIController;
 };

@@ -7,6 +7,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "StalkerMonsterCharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "Kismet/GameplayStatics.h"
 
 AStalkerMonsterAIController::AStalkerMonsterAIController()
 {
@@ -98,11 +99,11 @@ void AStalkerMonsterAIController::OnStalkLocationFound(TSharedPtr<FEnvQueryResul
 			UE_LOG(LogTemp, Warning, TEXT("HasTeleported"));
 			
 		}
-		
-		BlackboardComp->SetValueAsVector("TargetLocation", TargetLocation);
-		UE_LOG(LogTemp, Warning, TEXT("LocationFound To Sneak"));
-		DrawDebugSphere(GetWorld(), TargetLocation, 50.0f, 12, 
-			FColor::Green, false, 8);
+		// PlayerLocation = (UGameplayStatics::GetPlayerPawn(GetWorld(), 0))->GetActorLocation();
+		// BlackboardComp->SetValueAsVector("PlayerLocation", PlayerLocation);
+		// UE_LOG(LogTemp, Warning, TEXT("LocationFound To Sneak"));
+		// DrawDebugSphere(GetWorld(), PlayerLocation, 50.0f, 12, 
+		// 	FColor::Green, false, 8);
 		
 	}
 }
