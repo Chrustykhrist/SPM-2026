@@ -26,6 +26,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game Rules")
 	void OnPlayerDeathVisuals();
 	
+	UFUNCTION(BlueprintImplementableEvent, Category = "Game Rules")
+	void RemoveVisuals();
+	
 	void GameOver() const;
 	
 private:

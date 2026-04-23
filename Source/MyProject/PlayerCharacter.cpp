@@ -131,15 +131,6 @@ void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 {
 	bCrouching = true;
 	
-	AGameModeBase* Gamemode = GetWorld()->GetAuthGameMode();
-	
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	
-	if (Gamemode && PlayerController)
-	{
-		Gamemode->RestartPlayer(PlayerController);
-	}
-	
 	Crouch();
 }
 

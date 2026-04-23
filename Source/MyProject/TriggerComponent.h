@@ -24,18 +24,6 @@ public:
 	/**	Tick */
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
-	/**
-	 * Position information about checkpoint
-	 */
-	
-	// The position in the world
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector SpawnPosition;
-	
-	// The rotation
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FRotator SpawnRotation;
-	
 private:
 	// The player
 	UPROPERTY()
@@ -49,6 +37,7 @@ private:
 	UFUNCTION()
 	AActor* GetPlayer() const;
 	
+	// Boolean to make sure the call to set the check point only happens once
 	UPROPERTY()
 	bool bNewSpawn = false;
 };

@@ -3,10 +3,8 @@
 
 #include "TriggerComponent.h"
 
-#include "MovieSceneSequenceID.h"
-#include "GameFramework/GameModeBase.h"
-#include "GameFramework/PlayerStart.h"
-#include "GameFramework/PlayerState.h"
+#include "CustomPlayerState.h"
+
 
 UTriggerComponent::UTriggerComponent()
 {
@@ -41,10 +39,23 @@ void UTriggerComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
  */
 void UTriggerComponent::SetSpawnPoint()
 {
-	// Saves the position
-	SpawnPosition = GetOwner()->GetActorLocation();
-	// Saves the rotation
-	SpawnRotation = GetOwner()->GetActorRotation();
+	// Saves the player as a pawn
+	APawn* PlayerPawn = Cast<APawn>(Player);
+	
+	// Checks to make sure if the player isn't nullptr
+	check(PlayerPawn != nullptr);
+	
+	// Checks to make sure the player has a controller
+	if (PlayerPawn->GetController())
+	{
+		// Gets the player state
+		ACustomPlayerState* PS = PlayerPawn->GetPlayerState<ACustomPlayerState>();
+		// Checks to make sure that the player state isn't nullptr
+		check(PS != nullptr);
+		
+		// Sets the transform of the spawn point the transform of the object the code is on
+		PS->SetCheckPointTransform(GetOwner()->GetActorTransform());
+	}
 }
 
 /**

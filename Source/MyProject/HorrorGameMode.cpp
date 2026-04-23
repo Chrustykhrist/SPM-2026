@@ -3,6 +3,7 @@
 
 #include "HorrorGameMode.h"
 
+#include "CustomPlayerState.h"
 #include "Kismet/GameplayStatics.h"
 
 void AHorrorGameMode::PlayerDied()
@@ -27,9 +28,32 @@ void AHorrorGameMode::PlayerDied()
 	
 	GetWorldTimerManager().SetTimer(RestartTimerHandle, this, &AHorrorGameMode::GameOver, RestartDelay, false);
 	
+	RemoveVisuals();
 }
 
 void AHorrorGameMode::GameOver() const
 {
-	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	
+	check(PC != nullptr);
+	
+	GetWorld()->GetAuthGameMode()->RestartPlayer(PC);
+	
+	ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
+	APawn* NewPawn = PC->GetPawn();
+	
+	check(PS != nullptr);
+	check(NewPawn != nullptr);
+	
+	if (!PS->GetCheckPointTransform().GetLocation().IsZero())
+	{
+		NewPawn->SetActorLocationAndRotation(
+			PS->GetCheckPointTransform().GetLocation(),
+			PS->GetCheckPointTransform().GetRotation()
+		);
+	}
+	
+	NewPawn->EnableInput(PC);
 }
