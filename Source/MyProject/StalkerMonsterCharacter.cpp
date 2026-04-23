@@ -67,8 +67,13 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 		{
 			if (bMonsterIsSeen)
 			{
-				StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsBool("IsDetected", true);
-				StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsEnum("MonsterState", (uint8) EStalkerMonsterCharacterState::Fleeing);
+				StalkerMonsterAIController->TriggerFlee();
+				// SetMonsterState(EStalkerMonsterCharacterState::Fleeing);
+				// StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsBool("IsDetected", true);
+				// StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsEnum("MonsterState", (uint8) EStalkerMonsterCharacterState::Fleeing);
+			}else
+			{
+				StalkerMonsterAIController->TriggerStalk();
 			}
 			
 		}

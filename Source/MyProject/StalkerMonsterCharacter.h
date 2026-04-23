@@ -80,5 +80,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = true))
 	float TraceScalar = 5000.0f;
 	
+	
+	
 	class AStalkerMonsterAIController* StalkerMonsterAIController;
 };

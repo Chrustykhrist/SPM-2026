@@ -17,13 +17,22 @@ class MYPROJECT_API AStalkerMonsterAIController : public AAIController
 	
 	
 public:
+	
+	//virtual void Tick(float DeltaTime) override;
+	
 	// Constructor
 	AStalkerMonsterAIController();
+	
+	void TriggerFlee();
+	
+	void TriggerStalk();
 	
 	void FindStalkLocation();
 	
 	void OnStalkLocationFound(TSharedPtr<FEnvQueryResult> Result);
 	
+	
+	bool bIsFleeing = false;
 protected:
 	virtual void BeginPlay() override;
 	
@@ -46,5 +55,8 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	class UEnvQuery* StalkerQuery;
+	
+private:
+	bool bHasTeleported = false;
 	
 };
