@@ -28,6 +28,7 @@ void AHorrorGameMode::PlayerDied()
 	
 	GetWorldTimerManager().SetTimer(RestartTimerHandle, this, &AHorrorGameMode::GameOver, RestartDelay, false);
 	
+	// Needed for removal of visuals, does not work in GameOver method, not sure why
 	RemoveVisuals();
 }
 
