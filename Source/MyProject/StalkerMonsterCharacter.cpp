@@ -56,19 +56,54 @@ void AStalkerMonsterCharacter::BeginPlay()
 void AStalkerMonsterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (!PlayerPawn || !StalkerMonsterAIController) return;
+	
+	float DistanceToPlayer = FVector::Dist(GetActorLocation(), PlayerPawn->GetActorLocation());
+	
+	// Check if not attached and if monster distance is within the point where it should start to attach and is Stalking
+	UE_LOG(LogTemp, Warning, TEXT("DistanceToPlayer: %f and CurrentState: %s"), DistanceToPlayer, *UEnum::GetValueAsString(CurrentState));
+	if (!bIsAttached && DistanceToPlayer <= AttachDistance && CurrentState == EStalkerMonsterCharacterState::Stalking)
+	{
+		bIsAttached = true;
+		
+		StalkerMonsterAIController->StopMovement();
+		
+		//if (AudioComp && !AudioComp->IsPlaying()) AudioComp->Play();
+		UE_LOG(LogTemp, Warning, TEXT("Attached true and sound"));
+	}
+	
+	if (bIsAttached && CurrentState == EStalkerMonsterCharacterState::Stalking)
+	{
+		FVector AttachedLocation = PlayerPawn->GetActorLocation() - (PlayerPawn->GetActorForwardVector() * StalkDistance);
+		FVector SmoothedLocation = FMath::VInterpTo(GetActorLocation(), AttachedLocation, DeltaTime, FollowRunSpeed);
+		SetActorLocation(SmoothedLocation);
+		
+		FRotator PlayerRotation = PlayerPawn->GetActorRotation();
+		FRotator SmoothMonsterRotation = FMath::RInterpTo(GetActorRotation(), PlayerRotation, DeltaTime, FollowRotationSpeed);
+		SetActorRotation(SmoothMonsterRotation);
+		UE_LOG(LogTemp, Warning, TEXT("Actively being stalked"));
+	}
 	
 	LookTimer += DeltaTime;
 	if (LookTimer >= LookInterval)
 	{
 		LookTimer = 0.0f;
-		bool bMonsterIsSeen = CheckIfPlayerIsLooking();
+		//bool bMonsterIsSeen = CheckIfPlayerIsLooking();
 		
-		if (StalkerMonsterAIController && StalkerMonsterAIController->GetBlackboardComponent())
+		if (StalkerMonsterAIController->GetBlackboardComponent())
 		{
-			if (bMonsterIsSeen)
+			if (CheckIfPlayerIsLooking())
 			{
-				StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsBool("IsDetected", true);
-				StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsEnum("MonsterState", (uint8) EStalkerMonsterCharacterState::Fleeing);
+				SetMonsterState((EStalkerMonsterCharacterState::Fleeing));
+				bIsAttached = false;
+				StalkerMonsterAIController->TriggerFlee();
+				// SetMonsterState(EStalkerMonsterCharacterState::Fleeing);
+				// StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsBool("IsDetected", true);
+				// StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsEnum("MonsterState", (uint8) EStalkerMonsterCharacterState::Fleeing);
+			}else
+			{
+				SetMonsterState(EStalkerMonsterCharacterState::Stalking);
+				StalkerMonsterAIController->TriggerStalk();
 			}
 			
 		}
