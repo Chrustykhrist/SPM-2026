@@ -4,9 +4,11 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "PickUp.h"
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
+#include "GameFramework/GameModeBase.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -86,10 +88,13 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		// Sprinting
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Completed, this, &APlayerCharacter::SlowDown);
+
+		// Use item / Pick up item
+		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
 	}
 
 }
-
+#pragma region MOVE
 /**
  *  Moves the player
  */
@@ -109,7 +114,7 @@ void APlayerCharacter::StopMoving(const FInputActionValue& Value)
 {
 	bMoving = false;
 }
-
+#pragma endregion
 /**
  *  Lets the player look around
  */
@@ -121,6 +126,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	AddControllerYawInput(Value.Get<FVector2D>().X * Sensitivity * GetWorld()->GetDeltaSeconds());
 }
 
+#pragma region CROUCH
 /**
  *  Makes the player crouch
  *
@@ -144,7 +150,9 @@ void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 	
 	UnCrouch();
 }
+#pragma endregion
 
+#pragma region SPRINT
 /**
  *  Makes the player sprint for the "Stamina value" amount of time
  */
@@ -184,4 +192,12 @@ void APlayerCharacter::SlowDown(const FInputActionValue& Value)
 	// sets the players max speed to walk speed
 	MovementComponent->MaxWalkSpeed = WalkSpeed;
 	bRunning = false;
+}
+#pragma endregion
+
+void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
+{
+	UPickUp* PickUp = Cast<UPickUp>(GetComponentByClass(UPickUp::StaticClass()));
+
+	PickUp->PickUp();
 }

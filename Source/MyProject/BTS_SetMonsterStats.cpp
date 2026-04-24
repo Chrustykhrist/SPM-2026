@@ -19,7 +19,7 @@ void UBTS_SetMonsterStats::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, u
 {
 	
 	Super::OnBecomeRelevant(OwnerComp, NodeMemory);
-	UE_LOG(LogTemp, Warning, TEXT("Monster Stats Relevant"));
+	
 	AAIController* MonsterController = OwnerComp.GetAIOwner();
 	if (MonsterController)
 	{
@@ -35,7 +35,7 @@ void UBTS_SetMonsterStats::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, u
 			{
 				MonsterMovement->MaxWalkSpeed = MonsterSpeed;
 				MonsterMovement->RotationRate.Yaw = MonsterRotationSpeed;
-				UE_LOG(LogTemp, Warning, TEXT("Speed: %f and Rotation: %s"), MonsterMovement->MaxWalkSpeed, *MonsterMovement->RotationRate.ToString());
+				//UE_LOG(LogTemp, Warning, TEXT("Speed: %f and Rotation: %s"), MonsterMovement->MaxWalkSpeed, *MonsterMovement->RotationRate.ToString());
 			}
 			
 		}
