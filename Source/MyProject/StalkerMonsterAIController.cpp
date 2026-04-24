@@ -51,13 +51,12 @@ void AStalkerMonsterAIController::TriggerFlee()
 
 void AStalkerMonsterAIController::TriggerStalk()
 {
-	if (BlackboardComp->GetValueAsEnum("MonsterState") == (uint8)EStalkerMonsterCharacterState::Stalking)
-	{
-		return;
-	}
-	
 	if (bIsFleeing) return;
 	
+	if (BlackboardComp->GetValueAsEnum("MonsterState") 
+		== (uint8)EStalkerMonsterCharacterState::Stalking) return;
+	
+	bHasTeleported = false;
 	BlackboardComp->SetValueAsEnum("MonsterState", (uint8)EStalkerMonsterCharacterState::Stalking);
 	BlackboardComp->SetValueAsBool("IsDetected", false);
 	UE_LOG(LogTemp, Warning, TEXT("TriggerStalk"));

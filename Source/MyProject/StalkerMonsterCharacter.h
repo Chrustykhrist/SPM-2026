@@ -68,7 +68,7 @@ public:
 	class UBehaviorTree* BehaviorTreeAsset;
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = true))
-	float StalkReactionTimeBehind = 5.0f;
+	float IntervalUntilKilling = 5.0f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = true))
 	float StalkReactionTimePeek = 7.0f;

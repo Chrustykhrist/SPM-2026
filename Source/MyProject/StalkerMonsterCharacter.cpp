@@ -61,7 +61,7 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 	float DistanceToPlayer = FVector::Dist(GetActorLocation(), PlayerPawn->GetActorLocation());
 	
 	// Check if not attached and if monster distance is within the point where it should start to attach and is Stalking
-	UE_LOG(LogTemp, Warning, TEXT("DistanceToPlayer: %f and CurrentState: %s"), DistanceToPlayer, *UEnum::GetValueAsString(CurrentState));
+	//UE_LOG(LogTemp, Warning, TEXT("DistanceToPlayer: %f and CurrentState: %s"), DistanceToPlayer, *UEnum::GetValueAsString(CurrentState));
 	if (!bIsAttached && DistanceToPlayer <= AttachDistance && CurrentState == EStalkerMonsterCharacterState::Stalking)
 	{
 		bIsAttached = true;
@@ -69,7 +69,7 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 		StalkerMonsterAIController->StopMovement();
 		
 		//if (AudioComp && !AudioComp->IsPlaying()) AudioComp->Play();
-		UE_LOG(LogTemp, Warning, TEXT("Attached true and sound"));
+		//UE_LOG(LogTemp, Warning, TEXT("Attached true and sound"));
 	}
 	
 	if (bIsAttached && CurrentState == EStalkerMonsterCharacterState::Stalking)
@@ -82,6 +82,17 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 		FRotator SmoothMonsterRotation = FMath::RInterpTo(GetActorRotation(), PlayerRotation, DeltaTime, FollowRotationSpeed);
 		SetActorRotation(SmoothMonsterRotation);
 		UE_LOG(LogTemp, Warning, TEXT("Actively being stalked"));
+		
+		//Psuedo
+		/*
+		 *if KillTimer >= IntervalUntilKilling
+		 *activate Killing state, CurrentState = Killing
+		 *If player now looks at monster he kills/attacks
+		 *KillAnywayasEvenThoPlayerHasNotLookedAtMonster >= IntervalKillAnyways
+		 * 
+		 * Note: If player looks before the Killtimer hits monster still flees and that part already works
+		 * though you need to put a another Check in TriggerFlee that CurrentState != Killing
+		 */
 	}
 	
 	LookTimer += DeltaTime;
@@ -92,6 +103,7 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 		
 		if (StalkerMonsterAIController->GetBlackboardComponent())
 		{
+			// For Flee check if player sees monster and monster is not in Killing mode
 			if (CheckIfPlayerIsLooking())
 			{
 				SetMonsterState((EStalkerMonsterCharacterState::Fleeing));
@@ -102,6 +114,10 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 				// StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsEnum("MonsterState", (uint8) EStalkerMonsterCharacterState::Fleeing);
 			}else
 			{
+				// If lets the flee sequence finish before stalk otherwise it will as soon as monster flees
+				// ChechIfPlayerIsLooking can be false therefore make enum to Stalking and other requirements can also
+				// be fulfilled (bIsAttached false and PlayerDistance <= AttachDistance)
+				if (StalkerMonsterAIController->bIsFleeing) return;
 				SetMonsterState(EStalkerMonsterCharacterState::Stalking);
 				StalkerMonsterAIController->TriggerStalk();
 			}

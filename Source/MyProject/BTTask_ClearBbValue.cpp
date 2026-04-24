@@ -18,7 +18,11 @@ EBTNodeResult::Type UBTTask_ClearBbValue::ExecuteTask(UBehaviorTreeComponent& Ow
 	if (BBComp)
 	{
 		BBComp->ClearValue(GetSelectedBlackboardKey());
-		if (AIC->bIsFleeing) AIC->bIsFleeing = false;
+		if (AIC->bIsFleeing)
+		{
+			AIC->bIsFleeing = false;
+			AIC->bHasTeleported = false;
+		}
 		return EBTNodeResult::Succeeded;
 		
 	}
