@@ -135,4 +135,10 @@ private:
 	// How many seconds the player can run
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	float Stamina = 5;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	TSubclassOf<class UUserWidget> PauseScreenClass;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	UUserWidget* PauseScreen;
 };

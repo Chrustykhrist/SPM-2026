@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "PickUp.h"
+#include "Blueprint/UserWidget.h"
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
@@ -207,6 +208,8 @@ void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
 void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 {
 	bool bIsPaused = UGameplayStatics::IsGamePaused(GetWorld());
+
+	PauseScreen = CreateWidget<UUserWidget>(this, );
 	
 	if (bIsPaused)
 	{
