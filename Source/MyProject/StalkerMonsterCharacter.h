@@ -109,6 +109,8 @@ private:
 	
 	bool bMonsterIsSeen = false;
 	
+	bool bIsKilling = false;
+	
 	class AStalkerMonsterAIController* StalkerMonsterAIController;
 	
 	void AttachToPlayer(float DeltaTime);

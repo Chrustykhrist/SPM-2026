@@ -4,6 +4,7 @@
 #include "StalkerMonsterCharacter.h"
 
 #include "BlindMonsterAIController.h"
+#include "HorrorGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -129,6 +130,7 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 			if (bMonsterIsSeen && CurrentState != EStalkerMonsterCharacterState::Killing)
 			{
 				KillTimer = 0.0f;
+				AudioComp->Stop();
 				SetMonsterState((EStalkerMonsterCharacterState::Fleeing));
 				bIsAttached = false;
 				StalkerMonsterAIController->TriggerFlee();
@@ -217,6 +219,9 @@ void AStalkerMonsterCharacter::AttachToPlayer(float DeltaTime)
 
 void AStalkerMonsterCharacter::TriggerKilling()
 {
+	if (bIsKilling) return;
+	bIsKilling = true;
+	
 	bIsAttached = false;
 	KillTimer = 0.0f;
 	KillAnywayTimer = 0.0f;
@@ -242,6 +247,11 @@ void AStalkerMonsterCharacter::TriggerKilling()
 		}
 	}
 	
+	AHorrorGameMode* GM = Cast<AHorrorGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GM)
+	{
+		GM->PlayerDied();
+	}
 	// can put more in here for example like a animation PlayAnimMontage
 	// and a blueprintcallable method to create like screen shake or other things
 	// damage can also be applied and gameover
