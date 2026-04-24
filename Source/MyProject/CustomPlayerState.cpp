@@ -3,6 +3,14 @@
 
 #include "CustomPlayerState.h"
 
+void ACustomPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CollectedItems.Add(FName("Battery"), 0);
+	CollectedItems.Add(FName("Medicine"), 0);
+}
+
 void ACustomPlayerState::SetCheckPointTransform(FTransform NewSpawnTransform)
 {
 	SpawnTransform = NewSpawnTransform;
@@ -11,5 +19,10 @@ void ACustomPlayerState::SetCheckPointTransform(FTransform NewSpawnTransform)
 FTransform ACustomPlayerState::GetCheckPointTransform() const
 {
 	return SpawnTransform;
+}
+
+void ACustomPlayerState::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 

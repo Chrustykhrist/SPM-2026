@@ -4,6 +4,7 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "PickUp.h"
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
@@ -87,6 +88,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		// Sprinting
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Completed, this, &APlayerCharacter::SlowDown);
+
+		// Use item / Pick up item
+		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Triggered, this, &APlayerCharacter::PickUpItem);
 	}
 
 }
@@ -190,3 +194,10 @@ void APlayerCharacter::SlowDown(const FInputActionValue& Value)
 	bRunning = false;
 }
 #pragma endregion
+
+void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
+{
+	UPickUp* PickUp = Cast<UPickUp>(GetComponentByClass(UPickUp::StaticClass()));
+
+	PickUp->PickUp();
+}

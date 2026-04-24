@@ -48,6 +48,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IASprint;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IAUse;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -55,6 +58,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
+#pragma region InputMethods	
 	/*
 	 *  Functions to handle the movement of the player 
 	 */
@@ -89,7 +93,15 @@ private:
 	
 	// Function to make the player slow down after sprinting
 	void SlowDown(const FInputActionValue& Value);
+
+	/*
+	 *  Functions to handle using items and picking up items
+	 */
+
+	// Function to pick up items
+	void PickUpItem(const FInputActionValue& Value);
 	
+#pragma endregion	
 	/*
 	 *  Components
 	 */

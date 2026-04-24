@@ -15,6 +15,8 @@ class MYPROJECT_API ACustomPlayerState : public APlayerState
 	GENERATED_BODY()
 	
 public:
+	virtual void BeginPlay() override;
+	
 	UPROPERTY()
 	FTransform SpawnTransform;
 	
@@ -23,4 +25,9 @@ public:
 	
 	UFUNCTION()
 	FTransform GetCheckPointTransform() const;
+
+	UPROPERTY()
+	TMap<FName, int> CollectedItems;
+
+	virtual void Tick(float DeltaTime) override;
 };

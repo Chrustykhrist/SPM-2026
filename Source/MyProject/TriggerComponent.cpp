@@ -43,7 +43,7 @@ void UTriggerComponent::SetSpawnPoint()
 	APawn* PlayerPawn = Cast<APawn>(Player);
 	
 	// Checks to make sure if the player isn't nullptr
-	check(PlayerPawn != nullptr);
+	if (PlayerPawn == nullptr)
 	
 	// Checks to make sure the player has a controller
 	if (PlayerPawn->GetController())
