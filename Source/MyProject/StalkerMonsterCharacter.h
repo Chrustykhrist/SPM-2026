@@ -62,7 +62,14 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	class UBehaviorTree* BehaviorTreeAsset;
+	
 private:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = true))
+	USoundBase* KillSound;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Kill", meta = (AllowPrivateAccess = true))
+	TSubclassOf<UUserWidget> KillWidgetClass;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = true))
 	float IntervalUntilKilling = 5.0f;
 	
@@ -106,5 +113,5 @@ private:
 	
 	void AttachToPlayer(float DeltaTime);
 	
-	
+	void TriggerKilling();
 };

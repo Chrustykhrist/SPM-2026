@@ -11,7 +11,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Components/AudioComponent.h"
-
+#include "Blueprint/UserWidget.h"
 // Sets default values
 AStalkerMonsterCharacter::AStalkerMonsterCharacter()
 {
@@ -22,6 +22,7 @@ AStalkerMonsterCharacter::AStalkerMonsterCharacter()
 	
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 	
+	// The sound the mosnter should make when its attached to the back of the player
 	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
 	
 	AIControllerClass = AStalkerMonsterAIController::StaticClass();
@@ -68,7 +69,7 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 		
 		StalkerMonsterAIController->StopMovement();
 		
-		//if (AudioComp && !AudioComp->IsPlaying()) AudioComp->Play();
+		if (AudioComp && !AudioComp->IsPlaying()) AudioComp->Play();
 		//UE_LOG(LogTemp, Warning, TEXT("Attached true and sound"));
 	}
 	
@@ -83,7 +84,7 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 		// SetActorRotation(SmoothMonsterRotation);
 		
 		AttachToPlayer(DeltaTime);
-		UE_LOG(LogTemp, Warning, TEXT("Actively being stalked"));
+		//UE_LOG(LogTemp, Warning, TEXT("Actively being stalked"));
 		
 		KillTimer += DeltaTime;
 		if (KillTimer >= IntervalUntilKilling)
@@ -111,7 +112,8 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 		if (KillAnywayTimer >= IntervalKillAnyway)
 		{
 			KillAnywayTimer = 0.0f;
-			//TriggerKilling();
+			UE_LOG(LogTemp, Warning, TEXT("Monster KillAnyway"));
+			TriggerKilling();
 		}
 	}
 	
@@ -137,7 +139,8 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 			else if (bMonsterIsSeen && CurrentState == EStalkerMonsterCharacterState::Killing)
 			{
 				KillAnywayTimer = 0.0f;
-				//TriggerKilling();
+				UE_LOG(LogTemp, Warning, TEXT("Trigger Killing from else if"));
+				TriggerKilling();
 			}
 			else
 			{
@@ -145,6 +148,7 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 				// ChechIfPlayerIsLooking can be false therefore make enum to Stalking and other requirements can also
 				// be fulfilled (bIsAttached false and PlayerDistance <= AttachDistance)
 				if (StalkerMonsterAIController->bIsFleeing) return;
+				if (CurrentState == EStalkerMonsterCharacterState::Killing) return;
 				SetMonsterState(EStalkerMonsterCharacterState::Stalking);
 				StalkerMonsterAIController->TriggerStalk();
 			}
@@ -209,5 +213,37 @@ void AStalkerMonsterCharacter::AttachToPlayer(float DeltaTime)
 	FRotator PlayerRotation = PlayerPawn->GetActorRotation();
 	FRotator SmoothMonsterRotation = FMath::RInterpTo(GetActorRotation(), PlayerRotation, DeltaTime, FollowRotationSpeed);
 	SetActorRotation(SmoothMonsterRotation);
+}
+
+void AStalkerMonsterCharacter::TriggerKilling()
+{
+	bIsAttached = false;
+	KillTimer = 0.0f;
+	KillAnywayTimer = 0.0f;
+	SetMonsterState(EStalkerMonsterCharacterState::Killing);
+	UE_LOG(LogTemp, Warning, TEXT("Killing"));
+	StalkerMonsterAIController->StopMovement();
+	
+	// There is also UGameplayStatics::PlaySoundAtLocation(this, KillSound, GetActorLocation());
+	if (KillSound)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Kill sound should play %s"), *KillSound->GetName());
+		UGameplayStatics::PlaySound2D(this, KillSound);
+	}
+	if (KillWidgetClass)
+	{
+		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		
+		if (PC)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PC fetched"));
+			UUserWidget* KillWidget = CreateWidget<UUserWidget>(PC,  KillWidgetClass);
+			if (KillWidget) KillWidget->AddToViewport();
+		}
+	}
+	
+	// can put more in here for example like a animation PlayAnimMontage
+	// and a blueprintcallable method to create like screen shake or other things
+	// damage can also be applied and gameover
 }
 
