@@ -51,6 +51,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IAUse;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IAPause;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -59,24 +62,14 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
 #pragma region InputMethods	
-	/*
-	 *  Functions to handle the movement of the player 
-	 */
 	
 	// Function to move the player
 	void Move(const FInputActionValue& Value);
 	// Function to handle the player stopping
 	void StopMoving(const FInputActionValue& Value);
-	
-	/*
-	 *  Functions to hanlde the player camera Movement
-	 */
-	
+
+	// Function that handles camera movement
 	void Look(const FInputActionValue& Value);
-	
-	/*
-	 *  Functions to handle The player crouching
-	 */
 	
 	// Function to make the player crouch
 	void PlayerCrouch(const FInputActionValue& Value);
@@ -84,22 +77,17 @@ private:
 	// Function to make the player stand up from being crouched
 	void PlayerUnCrouch(const FInputActionValue& Value);
 	
-	/*
-	 *  Functions to handle player sprinting
-	 */
-	
 	// Function to make the player quicker when sprinting
 	void Sprint(const FInputActionValue& Value);
 	
 	// Function to make the player slow down after sprinting
 	void SlowDown(const FInputActionValue& Value);
 
-	/*
-	 *  Functions to handle using items and picking up items
-	 */
-
 	// Function to pick up items
 	void PickUpItem(const FInputActionValue& Value);
+
+	// Function to handle pausing
+	void PauseGame(const FInputActionValue& Value);
 	
 #pragma endregion	
 	/*

@@ -4,11 +4,12 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "HorrorPlayerController.h"
 #include "PickUp.h"
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
-#include "GameFramework/GameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -17,7 +18,6 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
-
 }
 
 // Called when the game starts or when spawned
@@ -91,6 +91,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// Use item / Pick up item
 		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
+
+		// Pause
+		UEnhancedInput->BindAction(IAPause, ETriggerEvent::Started, this, &APlayerCharacter::PauseGame);
 	}
 
 }
@@ -200,4 +203,18 @@ void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
 	UPickUp* PickUp = Cast<UPickUp>(GetComponentByClass(UPickUp::StaticClass()));
 
 	PickUp->PickUp();
+}
+
+void APlayerCharacter::PauseGame(const FInputActionValue& Value)
+{
+	bool bIsPaused = UGameplayStatics::IsGamePaused(GetWorld());
+	
+	if (bIsPaused)
+	{
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+	}
+	else
+	{
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+	}
 }
