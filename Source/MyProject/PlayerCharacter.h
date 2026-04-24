@@ -60,6 +60,12 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Input")
+	void ShowPauseScreen();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Input")
+	void HidePauseScreen();
 private:
 #pragma region InputMethods	
 	
@@ -112,6 +118,8 @@ private:
 	
 	// True if the player is walking, false if not
 	bool bMoving = false;
+
+	bool bPaused = false;
 	
 	/*
 	 * Variables to change different values on the character and its inputs
@@ -135,10 +143,4 @@ private:
 	// How many seconds the player can run
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	float Stamina = 5;
-
-	UPROPERTY(EditAnywhere, Category="Input")
-	TSubclassOf<class UUserWidget> PauseScreenClass;
-
-	UPROPERTY(EditAnywhere, Category="Input")
-	UUserWidget* PauseScreen;
 };

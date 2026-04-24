@@ -207,16 +207,24 @@ void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
 
 void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 {
-	bool bIsPaused = UGameplayStatics::IsGamePaused(GetWorld());
-
-	PauseScreen = CreateWidget<UUserWidget>(this, );
-	
-	if (bIsPaused)
+	if (bPaused)
 	{
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		
+		HidePauseScreen();
+
+		bPaused = false;
+		
+		UE_LOG(LogTemp, Warning, TEXT("Hidden"));
 	}
 	else
 	{
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		
+		ShowPauseScreen();
+
+		bPaused = true;
+
+		UE_LOG(LogTemp, Warning, TEXT("Shown"));
 	}
 }
