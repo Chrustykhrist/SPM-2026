@@ -74,15 +74,24 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 	
 	if (bIsAttached && CurrentState == EStalkerMonsterCharacterState::Stalking)
 	{
-		FVector AttachedLocation = PlayerPawn->GetActorLocation() - (PlayerPawn->GetActorForwardVector() * StalkDistance);
-		FVector SmoothedLocation = FMath::VInterpTo(GetActorLocation(), AttachedLocation, DeltaTime, FollowRunSpeed);
-		SetActorLocation(SmoothedLocation);
+		// FVector AttachedLocation = PlayerPawn->GetActorLocation() - (PlayerPawn->GetActorForwardVector() * StalkDistance);
+		// FVector SmoothedLocation = FMath::VInterpTo(GetActorLocation(), AttachedLocation, DeltaTime, FollowRunSpeed);
+		// SetActorLocation(SmoothedLocation);
+		//
+		// FRotator PlayerRotation = PlayerPawn->GetActorRotation();
+		// FRotator SmoothMonsterRotation = FMath::RInterpTo(GetActorRotation(), PlayerRotation, DeltaTime, FollowRotationSpeed);
+		// SetActorRotation(SmoothMonsterRotation);
 		
-		FRotator PlayerRotation = PlayerPawn->GetActorRotation();
-		FRotator SmoothMonsterRotation = FMath::RInterpTo(GetActorRotation(), PlayerRotation, DeltaTime, FollowRotationSpeed);
-		SetActorRotation(SmoothMonsterRotation);
+		AttachToPlayer(DeltaTime);
 		UE_LOG(LogTemp, Warning, TEXT("Actively being stalked"));
 		
+		KillTimer += DeltaTime;
+		if (KillTimer >= IntervalUntilKilling)
+		{
+			KillTimer = 0.0f;
+			SetMonsterState(EStalkerMonsterCharacterState::Killing);
+			UE_LOG(LogTemp, Warning, TEXT("Monster Killing State"));
+		}
 		//Psuedo
 		/*
 		 *if KillTimer >= IntervalUntilKilling
@@ -95,24 +104,42 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 		 */
 	}
 	
+	if (bIsAttached && CurrentState == EStalkerMonsterCharacterState::Killing)
+	{
+		AttachToPlayer(DeltaTime);
+		KillAnywayTimer += DeltaTime;
+		if (KillAnywayTimer >= IntervalKillAnyway)
+		{
+			KillAnywayTimer = 0.0f;
+			//TriggerKilling();
+		}
+	}
+	
 	LookTimer += DeltaTime;
 	if (LookTimer >= LookInterval)
 	{
 		LookTimer = 0.0f;
-		//bool bMonsterIsSeen = CheckIfPlayerIsLooking();
+		bMonsterIsSeen = CheckIfPlayerIsLooking();
 		
 		if (StalkerMonsterAIController->GetBlackboardComponent())
 		{
 			// For Flee check if player sees monster and monster is not in Killing mode
-			if (CheckIfPlayerIsLooking())
+			if (bMonsterIsSeen && CurrentState != EStalkerMonsterCharacterState::Killing)
 			{
+				KillTimer = 0.0f;
 				SetMonsterState((EStalkerMonsterCharacterState::Fleeing));
 				bIsAttached = false;
 				StalkerMonsterAIController->TriggerFlee();
 				// SetMonsterState(EStalkerMonsterCharacterState::Fleeing);
 				// StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsBool("IsDetected", true);
 				// StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsEnum("MonsterState", (uint8) EStalkerMonsterCharacterState::Fleeing);
-			}else
+			}
+			else if (bMonsterIsSeen && CurrentState == EStalkerMonsterCharacterState::Killing)
+			{
+				KillAnywayTimer = 0.0f;
+				//TriggerKilling();
+			}
+			else
 			{
 				// If lets the flee sequence finish before stalk otherwise it will as soon as monster flees
 				// ChechIfPlayerIsLooking can be false therefore make enum to Stalking and other requirements can also
@@ -172,3 +199,15 @@ bool AStalkerMonsterCharacter::CheckIfPlayerIsLooking()
 	return false;
 	
 }
+
+void AStalkerMonsterCharacter::AttachToPlayer(float DeltaTime)
+{
+	FVector AttachedLocation = PlayerPawn->GetActorLocation() - (PlayerPawn->GetActorForwardVector() * StalkDistance);
+	FVector SmoothedLocation = FMath::VInterpTo(GetActorLocation(), AttachedLocation, DeltaTime, FollowRunSpeed);
+	SetActorLocation(SmoothedLocation);
+		
+	FRotator PlayerRotation = PlayerPawn->GetActorRotation();
+	FRotator SmoothMonsterRotation = FMath::RInterpTo(GetActorRotation(), PlayerRotation, DeltaTime, FollowRotationSpeed);
+	SetActorRotation(SmoothMonsterRotation);
+}
+

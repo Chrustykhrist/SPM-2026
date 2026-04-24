@@ -44,10 +44,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Sound")
 	class UAudioComponent* AudioComp;
 	
-	// Varaibles for how ofter the monster should check if the player sees it
-	float LookInterval = 0.1f;
-	float LookTimer = 0.0f;
-	
 	// Method to check if the player is looking at the monster
 	bool CheckIfPlayerIsLooking();
 	
@@ -71,6 +67,9 @@ private:
 	float IntervalUntilKilling = 5.0f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = true))
+	float IntervalKillAnyway = 5.0f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = true))
 	float StalkReactionTimePeek = 7.0f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = true))
@@ -92,7 +91,20 @@ private:
 	UPROPERTY(EditAnywhere, Category = "AI", meta = (AllowPrivateAccess = true))
 	float StalkDistance = 100.0f;
 	
+	// Varaibles for how ofter the monster should check if the player sees it
+	float LookInterval = 0.1f;
+	float LookTimer = 0.0f;
+	
+	float KillTimer = 0.0f;
+	float KillAnywayTimer = 0.0f;
+	
 	bool bIsAttached = false;
 	
+	bool bMonsterIsSeen = false;
+	
 	class AStalkerMonsterAIController* StalkerMonsterAIController;
+	
+	void AttachToPlayer(float DeltaTime);
+	
+	
 };
