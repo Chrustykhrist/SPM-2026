@@ -34,35 +34,38 @@ void UPickUp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 	// ...
 }
 
+/**
+ * Checks if the player is able to pick up the item which the player is looking at and then puts the item in the inventory of the player if able
+ */
 void UPickUp::PickUp()
 {
+	// Vector to check where the player is looking and how far
 	FVector PlayerPos = GetComponentLocation();
 	FVector GrabVector = PlayerPos + GetForwardVector() * MaxGrabDistance;
 
 #if WITH_EDITOR
+	// Shows where the player is looking
 	DrawDebugLine(GetWorld(), PlayerPos, GrabVector, FColor::Red);
+	DrawDebugSphere(GetWorld(), GrabVector, GrabRadius, 10, FColor::Blue);
 #endif
-
+	
 	FHitResult ItemHit;
 
+	// Shape that is used to check whether an item is hit
 	FCollisionShape GrabVolume = FCollisionShape::MakeSphere(GrabRadius);
 
-	bIsGrabbed = GetWorld()->SweepSingleByChannel(ItemHit, PlayerPos, GrabVector, FQuat::Identity, ECC_GameTraceChannel2, GrabVolume);
+	// true if we hit an item that has the required hit channel as "Block", otherwise false
+	bGrabbable = GetWorld()->SweepSingleByChannel(ItemHit, PlayerPos, GrabVector, FQuat::Identity, ECC_GameTraceChannel2, GrabVolume);
 	
-	if (bIsGrabbed)
+	if (bGrabbable)
 	{
+		// Puts the item in the inventory and then removes it
 		APlayerController* PC = GetWorld()->GetFirstPlayerController();
 		ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
 
 		FName ItemName = ItemHit.GetActor()->Tags[0];
 
-		if (PS->CollectedItems.Contains(ItemName))
-		{
-			PS->CollectedItems.Add(ItemName, PS->CollectedItems[ItemName] + 1);
-		} else
-		{
-			PS->CollectedItems.Add(ItemName, 1);
-		}
+		PS->CollectedItems.Add(ItemName, PS->CollectedItems[ItemName] + 1);
 
 		ItemHit.GetActor()->Destroy();
 	}

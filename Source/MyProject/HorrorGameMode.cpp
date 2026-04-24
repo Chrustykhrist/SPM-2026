@@ -37,17 +37,34 @@ void AHorrorGameMode::GameOver() const
 	//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	
-	check(PC != nullptr);
-	
+
+	// Makes sure that we get the player controller
+	if (PC == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player controller is null"));
+		return;
+	}
+
+	// Restarts the player
 	GetWorld()->GetAuthGameMode()->RestartPlayer(PC);
 	
 	ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
 	APawn* NewPawn = PC->GetPawn();
-	
-	check(PS != nullptr);
-	check(NewPawn != nullptr);
-	
+
+	// Makes sure we get the player state
+	if (PS == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player state is null"));
+		return;
+	}
+	// Makes sure we get the player pawn
+	if (NewPawn == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player pawn is null"));
+		return;
+	}
+
+	// Spawns the player at the check point
 	if (!PS->GetCheckPointTransform().GetLocation().IsZero())
 	{
 		NewPawn->SetActorLocationAndRotation(

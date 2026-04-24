@@ -90,7 +90,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Completed, this, &APlayerCharacter::SlowDown);
 
 		// Use item / Pick up item
-		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Triggered, this, &APlayerCharacter::PickUpItem);
+		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
 	}
 
 }
