@@ -4,13 +4,10 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "HorrorGameMode.h"
 #include "PickUp.h"
-#include "Blueprint/UserWidget.h"
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -94,7 +91,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
 
 		// Pause
-		const FEnhancedInputActionEventBinding& Toggle = UEnhancedInput->BindAction(IAPause, ETriggerEvent::Started, this, &APlayerCharacter::PauseGame);
+		UEnhancedInput->BindAction(IAPause, ETriggerEvent::Started, this, &APlayerCharacter::PauseGame);
 	}
 
 }
@@ -217,6 +214,11 @@ void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 
 		PC->SetPause(bPaused);
 
+		PC->bShowMouseCursor = false;
+
+		FInputModeGameOnly inputMode;
+
+		PC->SetInputMode(inputMode);
 	}
 	else
 	{
@@ -225,5 +227,7 @@ void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 		bPaused = true;
 
 		PC->SetPause(bPaused);
+
+		PC->bShowMouseCursor = true;
 	}
 }
