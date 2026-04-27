@@ -55,7 +55,7 @@ void UTriggerComponent::SetSpawnPoint()
 		// Gets the player state
 		ACustomPlayerState* PS = PlayerPawn->GetPlayerState<ACustomPlayerState>();
 		// Checks to make sure that the player state isn't nullptr
-
+		
 		if (PS == nullptr)
 		{
 			UE_LOG(LogTemp, Error, TEXT("No playerState found"));
@@ -64,6 +64,9 @@ void UTriggerComponent::SetSpawnPoint()
 		
 		// Sets the transform of the spawn point the transform of the object the code is on
 		PS->SetCheckPointTransform(GetOwner()->GetActorTransform());
+		
+		GetOwner()->Destroy();
+
 	}
 }
 

@@ -46,6 +46,8 @@ void APlayerCharacter::BeginPlay()
 	
 	// Setting the speed att which the player moves when crouched
 	MovementComponent->MaxWalkSpeedCrouched = CrouchSpeed;
+
+	SpeedDecrease = 250/Stamina;
 }
 
 // Called every frame
@@ -59,8 +61,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 	{
 		Stamina += GetWorld()->GetDeltaSeconds();
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), MovementComponent->MaxWalkSpeed);
 }
 
 // Called to bind functionality to input
@@ -166,7 +166,7 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 	// Slows the player down depending on different conditions
 	if (Stamina > 0 && !bCrouching && bMoving)
 	{
-		MovementComponent->MaxWalkSpeed = WalkSpeed + 25 * Stamina;
+		MovementComponent->MaxWalkSpeed = WalkSpeed + SpeedDecrease * Stamina;
 		Stamina -= GetWorld()->GetDeltaSeconds();
 	} else if (bCrouching)
 	{
@@ -215,7 +215,7 @@ void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 		bPaused = false;
 
 		PC->SetPause(bPaused);
-
+		
 		PC->bShowMouseCursor = false;
 
 		FInputModeGameOnly inputMode;
