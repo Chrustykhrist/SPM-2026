@@ -142,5 +142,5 @@ private:
 	
 	// How many seconds the player can run
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
-	float Stamina = 5;
+	float Stamina = 10;
 };

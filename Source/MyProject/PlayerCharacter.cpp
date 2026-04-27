@@ -55,10 +55,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	// Check if the player has stopped running and/or is crouching, 
 	// if true recover the stamina of the player
-	if ((!bRunning || bCrouching) && Stamina < 5)
+	if ((!bRunning || bCrouching) && Stamina < 10)
 	{
 		Stamina += GetWorld()->GetDeltaSeconds();
 	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), MovementComponent->MaxWalkSpeed);
 }
 
 // Called to bind functionality to input
@@ -164,7 +166,7 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 	// Slows the player down depending on different conditions
 	if (Stamina > 0 && !bCrouching && bMoving)
 	{
-		MovementComponent->MaxWalkSpeed = SprintSpeed;
+		MovementComponent->MaxWalkSpeed = WalkSpeed + 25 * Stamina;
 		Stamina -= GetWorld()->GetDeltaSeconds();
 	} else if (bCrouching)
 	{
