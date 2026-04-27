@@ -65,7 +65,9 @@ void UPickUp::PickUp()
 
 		FName ItemName = ItemHit.GetActor()->Tags[0];
 
-		PS->CollectedItems.Add(ItemName, PS->CollectedItems[ItemName] + 1);
+		PS->CollectedItems[ItemName]++;
+
+		//PS->CollectedItems.Add(ItemName, PS->CollectedItems[ItemName] + 1);
 
 		ItemHit.GetActor()->Destroy();
 	}

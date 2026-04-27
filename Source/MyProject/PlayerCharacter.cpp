@@ -8,7 +8,6 @@
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
-#include "GameFramework/GameModeBase.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -17,7 +16,6 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
-
 }
 
 // Called when the game starts or when spawned
@@ -91,6 +89,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// Use item / Pick up item
 		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
+
+		// Pause
+		UEnhancedInput->BindAction(IAPause, ETriggerEvent::Started, this, &APlayerCharacter::PauseGame);
 	}
 
 }
@@ -159,23 +160,18 @@ void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 void APlayerCharacter::Sprint(const FInputActionValue& Value)
 {
 	bRunning = true;
-	
-	// Checks that the player has stamina, isn't crouching and is moving,
-	// if true make the player quicker, and lower stamina by one per second until it reaches zero.
+
+	// Slows the player down depending on different conditions
 	if (Stamina > 0 && !bCrouching && bMoving)
 	{
 		MovementComponent->MaxWalkSpeed = SprintSpeed;
 		Stamina -= GetWorld()->GetDeltaSeconds();
 	} else if (bCrouching)
 	{
-		// If player is crouching make sure they only move as quick as crouching speed 
-		// Safety net for the possibility of pressing both sprint and crouch,
-		// would otherwise result in walking speed
 		MovementComponent->MaxWalkSpeed = CrouchSpeed;
 		bRunning = false;
 	} else
 	{
-		// make the player as quick as their walking speed
 		MovementComponent->MaxWalkSpeed = WalkSpeed;
 		bRunning = false;
 	}
@@ -183,21 +179,55 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 }
 
 /**
- *  Make the player slow down after they stop sprinting
+ *  Make the player slow down to walkspeed after they stop sprinting
  */
 void APlayerCharacter::SlowDown(const FInputActionValue& Value)
 {
-	// Makes the player slow down quickly
 	MovementComponent->MaxWalkSpeed *= 0;
-	// sets the players max speed to walk speed
 	MovementComponent->MaxWalkSpeed = WalkSpeed;
 	bRunning = false;
 }
 #pragma endregion
 
+/**
+ * Makes the player pick up the item they are looking at
+ */
 void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
 {
 	UPickUp* PickUp = Cast<UPickUp>(GetComponentByClass(UPickUp::StaticClass()));
 
 	PickUp->PickUp();
+}
+
+/**
+ * Makes the game stop and shows the pause screen 
+ */
+void APlayerCharacter::PauseGame(const FInputActionValue& Value)
+{
+	APlayerController* PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
+	
+	if (bPaused)
+	{
+		HidePauseScreen();
+
+		bPaused = false;
+
+		PC->SetPause(bPaused);
+
+		PC->bShowMouseCursor = false;
+
+		FInputModeGameOnly inputMode;
+
+		PC->SetInputMode(inputMode);
+	}
+	else
+	{
+		ShowPauseScreen();
+
+		bPaused = true;
+
+		PC->SetPause(bPaused);
+
+		PC->bShowMouseCursor = true;
+	}
 }
