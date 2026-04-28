@@ -112,6 +112,8 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(GetActorForwardVector(), Value.Get<FVector2D>().Y);
 	// Left and right movement
 	AddMovementInput(GetActorRightVector(), Value.Get<FVector2D>().X);
+	
+	MakeNoise(WalkLoudnessMultiplier, this, GetActorLocation());
 }
 
 /**
@@ -170,6 +172,7 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 	// Slows the player down depending on different conditions
 	if (Stamina > 0 && !bCrouching && bMoving)
 	{
+		MakeNoise(SprintLoudnessMultiplier, this, GetActorLocation());
 		MovementComponent->MaxWalkSpeed = WalkSpeed + SpeedDecrease * Stamina;
 		Stamina -= GetWorld()->GetDeltaSeconds();
 	} else if (bCrouching)

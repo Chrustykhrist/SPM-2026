@@ -111,10 +111,10 @@ private:
 	
 	float WalkSpeed;
 	
-	UPROPERTY(EditAnywhere, Category="Input", meta=(Units="cm"))
+	UPROPERTY(EditAnywhere, Category="Input")
 	float SprintSpeed = 800;
 	
-	UPROPERTY(EditAnywhere, Category="Input", meta=(Units="cm"))
+	UPROPERTY(EditAnywhere, Category="Input")
 	float CrouchSpeed = 200;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -129,4 +129,10 @@ private:
 
 	UPROPERTY()
 	UHidingComponent* HidingComponent;
+	
+	UPROPERTY(EditAnywhere, Category="Sound")
+	float SprintLoudnessMultiplier = 0.4f;
+	
+	UPROPERTY(EditAnywhere, Category="Sound")
+	float WalkLoudnessMultiplier = 0.1f;
 };
