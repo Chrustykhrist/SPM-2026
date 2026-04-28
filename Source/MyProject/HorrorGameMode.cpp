@@ -67,7 +67,8 @@ void AHorrorGameMode::GameOver() const
 	// Spawns the player at the check point
 	if (!PS->GetCheckPointTransform().GetLocation().IsZero())
 	{
-		NewPawn->SetActorLocationAndRotation(
+		NewPawn->SetActorLocationAndRotation
+		(
 			PS->GetCheckPointTransform().GetLocation(),
 			PS->GetCheckPointTransform().GetRotation()
 		);

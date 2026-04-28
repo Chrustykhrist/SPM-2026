@@ -35,7 +35,7 @@ ABlindMonsterCharacter::ABlindMonsterCharacter()
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSenser"));
 	PawnSensingComponent->SightRadius = 0.0f;
 	PawnSensingComponent->SetPeripheralVisionAngle(0.0f);
-	PawnSensingComponent->HearingThreshold = 1200.0f;
+	PawnSensingComponent->HearingThreshold = 2000.0f;
 }
 
 // Called when the game starts or when spawned
@@ -95,7 +95,7 @@ void ABlindMonsterCharacter::OnHearNoise(APawn* OtherPawn, const FVector& Locati
 				AIController->GetBlackboardComponent()->SetValueAsVector("TargetLocation", Location);
 				AIController->GetBlackboardComponent()->SetValueAsBool("IsAlerted", false);
 				AIController->GetBlackboardComponent()->SetValueAsBool("IsAlerted", true);
-				UE_LOG(LogTemp, Warning, TEXT("Spelare hördes vid %s"), *Location.ToString());
+				UE_LOG(LogTemp, Warning, TEXT("Spelare hördes vid: %s och med ljudstyrkan: %f"), *Location.ToString(), Volume);
 			}
 		}
 }

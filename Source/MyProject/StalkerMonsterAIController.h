@@ -32,6 +32,8 @@ public:
 	void OnStalkLocationFound(TSharedPtr<FEnvQueryResult> Result);
 	
 	bool bIsFleeing = false;
+	
+	bool bHasTeleported = false;
 protected:
 	virtual void BeginPlay() override;
 	
@@ -56,7 +58,7 @@ protected:
 	class UEnvQuery* StalkerQuery;
 	
 private:
-	bool bHasTeleported = false;
+	
 	
 	FVector PlayerLocation;
 	
