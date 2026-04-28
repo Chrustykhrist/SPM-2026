@@ -4,6 +4,8 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "PickUp.h"
+#include "HidingComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
@@ -15,7 +17,6 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
-
 }
 
 // Called when the game starts or when spawned
@@ -46,6 +47,8 @@ void APlayerCharacter::BeginPlay()
 	
 	// Setting the speed att which the player moves when crouched
 	MovementComponent->MaxWalkSpeedCrouched = CrouchSpeed;
+
+	SpeedDecrease = 250/Stamina;
 }
 
 // Called every frame
@@ -55,7 +58,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	// Check if the player has stopped running and/or is crouching, 
 	// if true recover the stamina of the player
-	if ((!bRunning || bCrouching) && Stamina < 5)
+	if ((!bRunning || bCrouching) && Stamina < 10)
 	{
 		Stamina += GetWorld()->GetDeltaSeconds();
 	}
@@ -86,10 +89,19 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		// Sprinting
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Triggered, this, &APlayerCharacter::Sprint);
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Completed, this, &APlayerCharacter::SlowDown);
+
+		// Use item / Pick up item
+		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
+
+		// Pause
+		UEnhancedInput->BindAction(IAPause, ETriggerEvent::Started, this, &APlayerCharacter::PauseGame);
+
+		// Hide
+		UEnhancedInput->BindAction(IAHide, ETriggerEvent::Started, this, &APlayerCharacter::HideInLocker);
 	}
 
 }
-
+#pragma region MOVE
 /**
  *  Moves the player
  */
@@ -100,6 +112,8 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(GetActorForwardVector(), Value.Get<FVector2D>().Y);
 	// Left and right movement
 	AddMovementInput(GetActorRightVector(), Value.Get<FVector2D>().X);
+	
+	MakeNoise(WalkLoudnessMultiplier, this, GetActorLocation());
 }
 
 /**
@@ -109,7 +123,7 @@ void APlayerCharacter::StopMoving(const FInputActionValue& Value)
 {
 	bMoving = false;
 }
-
+#pragma endregion
 /**
  *  Lets the player look around
  */
@@ -121,6 +135,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	AddControllerYawInput(Value.Get<FVector2D>().X * Sensitivity * GetWorld()->GetDeltaSeconds());
 }
 
+#pragma region CROUCH
 /**
  *  Makes the player crouch
  *
@@ -144,30 +159,28 @@ void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 	
 	UnCrouch();
 }
+#pragma endregion
 
+#pragma region SPRINT
 /**
  *  Makes the player sprint for the "Stamina value" amount of time
  */
 void APlayerCharacter::Sprint(const FInputActionValue& Value)
 {
 	bRunning = true;
-	
-	// Checks that the player has stamina, isn't crouching and is moving,
-	// if true make the player quicker, and lower stamina by one per second until it reaches zero.
+
+	// Slows the player down depending on different conditions
 	if (Stamina > 0 && !bCrouching && bMoving)
 	{
-		MovementComponent->MaxWalkSpeed = SprintSpeed;
+		MakeNoise(SprintLoudnessMultiplier, this, GetActorLocation());
+		MovementComponent->MaxWalkSpeed = WalkSpeed + SpeedDecrease * Stamina;
 		Stamina -= GetWorld()->GetDeltaSeconds();
 	} else if (bCrouching)
 	{
-		// If player is crouching make sure they only move as quick as crouching speed 
-		// Safety net for the possibility of pressing both sprint and crouch,
-		// would otherwise result in walking speed
 		MovementComponent->MaxWalkSpeed = CrouchSpeed;
 		bRunning = false;
 	} else
 	{
-		// make the player as quick as their walking speed
 		MovementComponent->MaxWalkSpeed = WalkSpeed;
 		bRunning = false;
 	}
@@ -175,13 +188,72 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 }
 
 /**
- *  Make the player slow down after they stop sprinting
+ *  Make the player slow down to walkspeed after they stop sprinting
  */
 void APlayerCharacter::SlowDown(const FInputActionValue& Value)
 {
-	// Makes the player slow down quickly
 	MovementComponent->MaxWalkSpeed *= 0;
-	// sets the players max speed to walk speed
 	MovementComponent->MaxWalkSpeed = WalkSpeed;
 	bRunning = false;
+}
+#pragma endregion
+
+/**
+ * Makes the player pick up the item they are looking at
+ */
+void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
+{
+	UPickUp* PickUp = Cast<UPickUp>(GetComponentByClass(UPickUp::StaticClass()));
+
+	PickUp->PickUp();
+}
+
+/**
+ * Makes the game stop and shows the pause screen 
+ */
+void APlayerCharacter::PauseGame(const FInputActionValue& Value)
+{
+	APlayerController* PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
+	
+	if (bPaused)
+	{
+		HidePauseScreen();
+
+		bPaused = false;
+
+		PC->SetPause(bPaused);
+		
+		PC->bShowMouseCursor = false;
+
+		FInputModeGameOnly inputMode;
+
+		PC->SetInputMode(inputMode);
+	}
+	else
+	{
+		ShowPauseScreen();
+
+		bPaused = true;
+
+		PC->SetPause(bPaused);
+
+		PC->bShowMouseCursor = true;
+	}
+}
+
+void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
+{
+	if (HidingComponent->bHiding)
+	{
+		HidingComponent->GetOut();
+	}
+	else
+	{
+		HidingComponent->Hide();
+	}
+}
+
+void APlayerCharacter::SetHidingComponent(UHidingComponent* NewHidingComponent)
+{
+	HidingComponent = NewHidingComponent;
 }

@@ -4,6 +4,7 @@
 #include "StalkerMonsterCharacter.h"
 
 #include "BlindMonsterAIController.h"
+#include "HorrorGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -11,7 +12,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Components/AudioComponent.h"
-
+#include "Blueprint/UserWidget.h"
 // Sets default values
 AStalkerMonsterCharacter::AStalkerMonsterCharacter()
 {
@@ -22,6 +23,7 @@ AStalkerMonsterCharacter::AStalkerMonsterCharacter()
 	
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 	
+	// The sound the mosnter should make when its attached to the back of the player
 	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
 	
 	AIControllerClass = AStalkerMonsterAIController::StaticClass();
@@ -56,19 +58,101 @@ void AStalkerMonsterCharacter::BeginPlay()
 void AStalkerMonsterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (!PlayerPawn || !StalkerMonsterAIController) return;
+	
+	float DistanceToPlayer = FVector::Dist(GetActorLocation(), PlayerPawn->GetActorLocation());
+	
+	// Check if not attached and if monster distance is within the point where it should start to attach and is Stalking
+	//UE_LOG(LogTemp, Warning, TEXT("DistanceToPlayer: %f and CurrentState: %s"), DistanceToPlayer, *UEnum::GetValueAsString(CurrentState));
+	if (!bIsAttached && DistanceToPlayer <= AttachDistance && CurrentState == EStalkerMonsterCharacterState::Stalking)
+	{
+		bIsAttached = true;
+		
+		StalkerMonsterAIController->StopMovement();
+		
+		if (AudioComp && !AudioComp->IsPlaying()) AudioComp->Play();
+		//UE_LOG(LogTemp, Warning, TEXT("Attached true and sound"));
+	}
+	
+	if (bIsAttached && CurrentState == EStalkerMonsterCharacterState::Stalking)
+	{
+		// FVector AttachedLocation = PlayerPawn->GetActorLocation() - (PlayerPawn->GetActorForwardVector() * StalkDistance);
+		// FVector SmoothedLocation = FMath::VInterpTo(GetActorLocation(), AttachedLocation, DeltaTime, FollowRunSpeed);
+		// SetActorLocation(SmoothedLocation);
+		//
+		// FRotator PlayerRotation = PlayerPawn->GetActorRotation();
+		// FRotator SmoothMonsterRotation = FMath::RInterpTo(GetActorRotation(), PlayerRotation, DeltaTime, FollowRotationSpeed);
+		// SetActorRotation(SmoothMonsterRotation);
+		
+		AttachToPlayer(DeltaTime);
+		//UE_LOG(LogTemp, Warning, TEXT("Actively being stalked"));
+		
+		KillTimer += DeltaTime;
+		if (KillTimer >= IntervalUntilKilling)
+		{
+			KillTimer = 0.0f;
+			SetMonsterState(EStalkerMonsterCharacterState::Killing);
+			UE_LOG(LogTemp, Warning, TEXT("Monster Killing State"));
+		}
+		//Psuedo
+		/*
+		 *if KillTimer >= IntervalUntilKilling
+		 *activate Killing state, CurrentState = Killing
+		 *If player now looks at monster he kills/attacks
+		 *KillAnywayasEvenThoPlayerHasNotLookedAtMonster >= IntervalKillAnyways
+		 * 
+		 * Note: If player looks before the Killtimer hits monster still flees and that part already works
+		 * though you need to put a another Check in TriggerFlee that CurrentState != Killing
+		 */
+	}
+	
+	if (bIsAttached && CurrentState == EStalkerMonsterCharacterState::Killing)
+	{
+		AttachToPlayer(DeltaTime);
+		KillAnywayTimer += DeltaTime;
+		if (KillAnywayTimer >= IntervalKillAnyway)
+		{
+			KillAnywayTimer = 0.0f;
+			UE_LOG(LogTemp, Warning, TEXT("Monster KillAnyway"));
+			TriggerKilling();
+		}
+	}
 	
 	LookTimer += DeltaTime;
 	if (LookTimer >= LookInterval)
 	{
 		LookTimer = 0.0f;
-		bool bMonsterIsSeen = CheckIfPlayerIsLooking();
+		bMonsterIsSeen = CheckIfPlayerIsLooking();
 		
-		if (StalkerMonsterAIController && StalkerMonsterAIController->GetBlackboardComponent())
+		if (StalkerMonsterAIController->GetBlackboardComponent())
 		{
-			if (bMonsterIsSeen)
+			// For Flee check if player sees monster and monster is not in Killing mode
+			if (bMonsterIsSeen && CurrentState != EStalkerMonsterCharacterState::Killing)
 			{
-				StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsBool("IsDetected", true);
-				StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsEnum("MonsterState", (uint8) EStalkerMonsterCharacterState::Fleeing);
+				KillTimer = 0.0f;
+				AudioComp->Stop();
+				SetMonsterState((EStalkerMonsterCharacterState::Fleeing));
+				bIsAttached = false;
+				StalkerMonsterAIController->TriggerFlee();
+				// SetMonsterState(EStalkerMonsterCharacterState::Fleeing);
+				// StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsBool("IsDetected", true);
+				// StalkerMonsterAIController->GetBlackboardComponent()->SetValueAsEnum("MonsterState", (uint8) EStalkerMonsterCharacterState::Fleeing);
+			}
+			else if (bMonsterIsSeen && CurrentState == EStalkerMonsterCharacterState::Killing)
+			{
+				KillAnywayTimer = 0.0f;
+				UE_LOG(LogTemp, Warning, TEXT("Trigger Killing from else if"));
+				TriggerKilling();
+			}
+			else
+			{
+				// If lets the flee sequence finish before stalk otherwise it will as soon as monster flees
+				// ChechIfPlayerIsLooking can be false therefore make enum to Stalking and other requirements can also
+				// be fulfilled (bIsAttached false and PlayerDistance <= AttachDistance)
+				if (StalkerMonsterAIController->bIsFleeing) return;
+				if (CurrentState == EStalkerMonsterCharacterState::Killing) return;
+				SetMonsterState(EStalkerMonsterCharacterState::Stalking);
+				StalkerMonsterAIController->TriggerStalk();
 			}
 			
 		}
@@ -121,3 +205,55 @@ bool AStalkerMonsterCharacter::CheckIfPlayerIsLooking()
 	return false;
 	
 }
+
+void AStalkerMonsterCharacter::AttachToPlayer(float DeltaTime)
+{
+	FVector AttachedLocation = PlayerPawn->GetActorLocation() - (PlayerPawn->GetActorForwardVector() * StalkDistance);
+	FVector SmoothedLocation = FMath::VInterpTo(GetActorLocation(), AttachedLocation, DeltaTime, FollowRunSpeed);
+	SetActorLocation(SmoothedLocation);
+		
+	FRotator PlayerRotation = PlayerPawn->GetActorRotation();
+	FRotator SmoothMonsterRotation = FMath::RInterpTo(GetActorRotation(), PlayerRotation, DeltaTime, FollowRotationSpeed);
+	SetActorRotation(SmoothMonsterRotation);
+}
+
+void AStalkerMonsterCharacter::TriggerKilling()
+{
+	if (bIsKilling) return;
+	bIsKilling = true;
+	
+	bIsAttached = false;
+	KillTimer = 0.0f;
+	KillAnywayTimer = 0.0f;
+	SetMonsterState(EStalkerMonsterCharacterState::Killing);
+	UE_LOG(LogTemp, Warning, TEXT("Killing"));
+	StalkerMonsterAIController->StopMovement();
+	
+	// There is also UGameplayStatics::PlaySoundAtLocation(this, KillSound, GetActorLocation());
+	if (KillSound)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Kill sound should play %s"), *KillSound->GetName());
+		UGameplayStatics::PlaySound2D(this, KillSound);
+	}
+	if (KillWidgetClass)
+	{
+		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		
+		if (PC)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PC fetched"));
+			UUserWidget* KillWidget = CreateWidget<UUserWidget>(PC,  KillWidgetClass);
+			if (KillWidget) KillWidget->AddToViewport();
+		}
+	}
+	
+	AHorrorGameMode* GM = Cast<AHorrorGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GM)
+	{
+		GM->PlayerDied();
+	}
+	// can put more in here for example like a animation PlayAnimMontage
+	// and a blueprintcallable method to create like screen shake or other things
+	// damage can also be applied and gameover
+}
+

@@ -25,6 +25,10 @@ protected:
 	
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game Rules")
 	void OnPlayerDeathVisuals();
+
+	// Removes the jumpscare from the screen
+	UFUNCTION(BlueprintImplementableEvent, Category = "Game Rules")
+	void RemoveVisuals();
 	
 	void GameOver() const;
 	
@@ -33,4 +37,5 @@ private:
 	float RestartDelay = 3.f;
 	
 	FTimerHandle RestartTimerHandle;
+
 };
