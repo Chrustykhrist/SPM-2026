@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "PickUp.h"
+#include "HidingComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
@@ -94,6 +95,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// Pause
 		UEnhancedInput->BindAction(IAPause, ETriggerEvent::Started, this, &APlayerCharacter::PauseGame);
+
+		// Hide
+		UEnhancedInput->BindAction(IAHide, ETriggerEvent::Started, this, &APlayerCharacter::HideInLocker);
 	}
 
 }
@@ -232,4 +236,21 @@ void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 
 		PC->bShowMouseCursor = true;
 	}
+}
+
+void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
+{
+	if (HidingComponent->bHiding)
+	{
+		HidingComponent->GetOut();
+	}
+	else
+	{
+		HidingComponent->Hide();
+	}
+}
+
+void APlayerCharacter::SetHidingComponent(UHidingComponent* NewHidingComponent)
+{
+	HidingComponent = NewHidingComponent;
 }
