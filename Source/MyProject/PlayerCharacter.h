@@ -7,6 +7,8 @@
 #include "InputActionvalue.h"
 #include "PlayerCharacter.generated.h"
 
+class UHidingComponent;
+
 UCLASS()
 class MYPROJECT_API APlayerCharacter : public ACharacter
 {
@@ -50,6 +52,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IAPause;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IAHide;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -62,6 +67,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Input")
 	void HidePauseScreen();
+
+	void SetHidingComponent(UHidingComponent* NewHidingComponent);
+
 private:
 #pragma region InputMethods	
 	
@@ -79,6 +87,8 @@ private:
 	void PickUpItem(const FInputActionValue& Value);
 
 	void PauseGame(const FInputActionValue& Value);
+
+	void HideInLocker(const FInputActionValue& Value);
 	
 #pragma endregion	
 	UPROPERTY()
@@ -116,6 +126,9 @@ private:
 
 	UPROPERTY()
 	float SpeedDecrease;
+
+	UPROPERTY()
+	UHidingComponent* HidingComponent;
 	
 	UPROPERTY(EditAnywhere, Category="Sound")
 	float SprintLoudnessMultiplier = 0.4f;

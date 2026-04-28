@@ -26,12 +26,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Hide();
 
+	UFUNCTION(BlueprintCallable)
+	void GetOut();
+
 	UFUNCTION()
-	AActor* GetPlayer();
+	AActor* GetPlayer() const;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bHiding = false;
 
 private:
 	UPROPERTY()
 	AActor* Player;
 
+	// Position to help leaving the locker
 	FTransform EntryPosition;
 };
