@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <memory>
-
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
 #include "HidingComponent.generated.h"

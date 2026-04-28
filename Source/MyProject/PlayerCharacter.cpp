@@ -2,10 +2,13 @@
 
 
 #include "PlayerCharacter.h"
+
+#include "CustomPlayerState.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "PickUp.h"
 #include "HidingComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
@@ -58,7 +61,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	// Check if the player has stopped running and/or is crouching, 
 	// if true recover the stamina of the player
-	if ((!bRunning || bCrouching) && Stamina < 10)
+	if (!bRunning && !bHoldBreath && Stamina <= 10)
 	{
 		Stamina += GetWorld()->GetDeltaSeconds();
 	}
@@ -98,10 +101,15 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// Hide
 		UEnhancedInput->BindAction(IAHide, ETriggerEvent::Started, this, &APlayerCharacter::HideInLocker);
+
+		// Hold breath
+		UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Triggered, this, &APlayerCharacter::HoldBreath);
+		UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Completed, this, &APlayerCharacter::ReleaseBreath);
 	}
 
 }
 #pragma region MOVE
+
 /**
  *  Moves the player
  */
@@ -124,6 +132,7 @@ void APlayerCharacter::StopMoving(const FInputActionValue& Value)
 	bMoving = false;
 }
 #pragma endregion
+
 /**
  *  Lets the player look around
  */
@@ -136,6 +145,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 }
 
 #pragma region CROUCH
+
 /**
  *  Makes the player crouch
  *
@@ -162,6 +172,7 @@ void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 #pragma endregion
 
 #pragma region SPRINT
+
 /**
  *  Makes the player sprint for the "Stamina value" amount of time
  */
@@ -206,6 +217,11 @@ void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
 	UPickUp* PickUp = Cast<UPickUp>(GetComponentByClass(UPickUp::StaticClass()));
 
 	PickUp->PickUp();
+
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
+
+	UE_LOG(LogTemp, Warning, TEXT("%d"), PS->CollectedItems["Battery"]);
 }
 
 /**
@@ -241,19 +257,65 @@ void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 	}
 }
 
+#pragma region HIDING
+
+/**
+ * Hides the player in the locker that they are at
+ */
 void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
 {
+	if (HidingComponent == nullptr)
+	{
+		return;
+	}
+	
 	if (HidingComponent->bHiding)
 	{
+		GetCapsuleComponent()->Activate();
 		HidingComponent->GetOut();
 	}
 	else
 	{
+		GetCapsuleComponent()->Deactivate();
 		HidingComponent->Hide();
 	}
 }
 
+/**
+ * Lowers stamina when holding space
+ */
+void APlayerCharacter::HoldBreath(const FInputActionValue& Value)
+{
+	if (HidingComponent == nullptr)
+	{
+		return;
+	}
+
+	if (HidingComponent->bHiding)
+	{
+		if (Stamina > 0)
+		{
+			Stamina -= GetWorld()->GetDeltaSeconds()/2;
+		}
+		bHoldBreath = true;
+		UE_LOG(LogTemp, Display, TEXT("%f"), Stamina);
+	}
+}
+
+/**
+ * Lets the player recover stamina
+ */
+void APlayerCharacter::ReleaseBreath(const FInputActionValue& Value)
+{
+	bHoldBreath = false;
+}
+
+/**
+ * Sets the component the player is hiding in
+ */
 void APlayerCharacter::SetHidingComponent(UHidingComponent* NewHidingComponent)
 {
 	HidingComponent = NewHidingComponent;
 }
+
+#pragma endregion

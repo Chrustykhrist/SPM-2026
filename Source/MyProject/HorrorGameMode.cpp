@@ -32,6 +32,9 @@ void AHorrorGameMode::PlayerDied()
 	RemoveVisuals();
 }
 
+/**
+ * Respawns the player at the last gotten checkpoint
+ */
 void AHorrorGameMode::GameOver() const
 {
 	//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
