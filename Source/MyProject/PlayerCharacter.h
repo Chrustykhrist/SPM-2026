@@ -116,6 +116,8 @@ private:
 	bool bPaused = false;
 
 	bool bHoldBreath = false;
+	
+	bool bHiding = false;
 #pragma endregion	
 	/*
 	 * Variables to change different values on the character and its inputs

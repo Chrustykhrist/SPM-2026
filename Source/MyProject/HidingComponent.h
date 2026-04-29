@@ -32,11 +32,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bHiding = false;
+	
+	// Position to help leaving the locker
+	FTransform EntryPosition;
 
 private:
 	UPROPERTY()
 	AActor* Player;
-
-	// Position to help leaving the locker
-	FTransform EntryPosition;
 };
