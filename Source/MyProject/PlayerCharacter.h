@@ -21,7 +21,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
+#pragma region INPUT_ACTIONS	
 	/*
 	 *  Variables to connect input actions to the code
 	 */
@@ -55,6 +56,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IAHide;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IAHoldBreath;
+#pragma endregion	
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -71,7 +76,7 @@ public:
 	void SetHidingComponent(UHidingComponent* NewHidingComponent);
 
 private:
-#pragma region InputMethods	
+#pragma region INPUT_METHODS	
 	
 	void Move(const FInputActionValue& Value);
 	void StopMoving(const FInputActionValue& Value);
@@ -89,6 +94,10 @@ private:
 	void PauseGame(const FInputActionValue& Value);
 
 	void HideInLocker(const FInputActionValue& Value);
+
+	void HoldBreath(const FInputActionValue& Value);
+
+	void ReleaseBreath(const FInputActionValue& Value);
 	
 #pragma endregion	
 	UPROPERTY()
@@ -97,6 +106,7 @@ private:
 	/*
 	 *  Booleans used to check what the player is currently doing
 	 */
+#pragma region BOOLEANS	
 	bool bRunning = false;
 	
 	bool bCrouching = false;
@@ -104,11 +114,16 @@ private:
 	bool bMoving = false;
 
 	bool bPaused = false;
+
+	bool bHoldBreath = false;
 	
+	bool bHiding = false;
+#pragma endregion	
 	/*
 	 * Variables to change different values on the character and its inputs
 	 */
-	
+
+#pragma region VARIABLES	
 	float WalkSpeed;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -124,6 +139,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	float Stamina = 10;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	float RecoveryRate = 0.5;
+
 	UPROPERTY()
 	float SpeedDecrease;
 
@@ -135,4 +153,5 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category="Sound")
 	float WalkLoudnessMultiplier = 0.1f;
+#pragma endregion	
 };

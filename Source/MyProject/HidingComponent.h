@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <memory>
-
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
 #include "HidingComponent.generated.h"
@@ -34,11 +32,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bHiding = false;
+	
+	// Position to help leaving the locker
+	FTransform EntryPosition;
 
 private:
 	UPROPERTY()
 	AActor* Player;
-
-	// Position to help leaving the locker
-	FTransform EntryPosition;
 };

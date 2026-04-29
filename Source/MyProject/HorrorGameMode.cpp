@@ -3,6 +3,7 @@
 
 #include "HorrorGameMode.h"
 
+#include "BlindMonsterCharacter.h"
 #include "CustomPlayerState.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -32,6 +33,9 @@ void AHorrorGameMode::PlayerDied()
 	RemoveVisuals();
 }
 
+/**
+ * Respawns the player at the last gotten checkpoint
+ */
 void AHorrorGameMode::GameOver() const
 {
 	//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
@@ -47,6 +51,10 @@ void AHorrorGameMode::GameOver() const
 
 	// Restarts the player
 	GetWorld()->GetAuthGameMode()->RestartPlayer(PC);
+	
+	// Find the blind monster
+	AActor* MonsterActor = UGameplayStatics::GetActorOfClass(GetWorld(), ABlindMonsterCharacter::StaticClass());
+	ABlindMonsterCharacter* BlindMonster = Cast<ABlindMonsterCharacter>(MonsterActor);
 	
 	ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
 	APawn* NewPawn = PC->GetPawn();
@@ -75,4 +83,10 @@ void AHorrorGameMode::GameOver() const
 	}
 	
 	NewPawn->EnableInput(PC);
+	
+	// If we found blind monster reset its movement
+	if (BlindMonster)
+	{
+		BlindMonster->ResetMovement();
+	}
 }

@@ -35,7 +35,7 @@ void UTriggerComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 }
 
 /**
- * Saves the position of the checkpoint
+ * Saves the position of the checkpoint to use as the position to respawn after death
  */
 void UTriggerComponent::SetSpawnPoint()
 {
