@@ -113,7 +113,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	// Left and right movement
 	AddMovementInput(GetActorRightVector(), Value.Get<FVector2D>().X);
 	
-	MakeNoise(WalkLoudnessMultiplier, this, GetActorLocation());
+	if (!bCrouching) MakeNoise(WalkLoudnessMultiplier, this, GetActorLocation());
 }
 
 /**

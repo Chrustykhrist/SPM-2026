@@ -38,4 +38,6 @@ public:
 	
 	UFUNCTION()
 	void OnHearNoise(APawn* OtherPawn, const FVector& Location, float Volume);
+	
+	void ResetMovement();
 };
