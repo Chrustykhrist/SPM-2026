@@ -220,8 +220,6 @@ void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
 
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
-
-	UE_LOG(LogTemp, Warning, TEXT("%d"), PS->CollectedItems["Battery"]);
 }
 
 /**
