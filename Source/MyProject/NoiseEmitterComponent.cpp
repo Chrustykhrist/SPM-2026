@@ -42,9 +42,9 @@ void UNoiseEmitterComponent::TriggerNoise(APawn* Instigator, float LoudnessMulti
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, Sound, FinalLocation);
 		}
-		
+		UE_LOG(LogTemp, Warning, TEXT("FinalLocation: %s and PlayerLocation: %s"), *FinalLocation.ToString(), *GetOwner()->GetActorLocation().ToString());
 		Instigator->MakeNoise(DefaultLoudness * LoudnessMultiplier, Instigator, FinalLocation);
 		
-		DrawDebugSphere(GetWorld(), Location, 12, 12, FColor::Red, false, 5.0f);
+		DrawDebugSphere(GetWorld(), FinalLocation, 12, 12, FColor::Red, false, 5.0f);
 	}
 }

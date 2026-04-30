@@ -100,3 +100,17 @@ void ABlindMonsterCharacter::OnHearNoise(APawn* OtherPawn, const FVector& Locati
 		}
 }
 
+void ABlindMonsterCharacter::ResetMovement()
+{
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+		
+		ABlindMonsterAIController* AIController = Cast<ABlindMonsterAIController>(GetController());
+		if (AIController && AIController->GetBlackboardComponent())
+		{
+			AIController->GetBlackboardComponent()->SetValueAsBool("IsAlerted", false);
+		}
+	}
+}
+
