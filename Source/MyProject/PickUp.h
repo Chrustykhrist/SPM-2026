@@ -31,11 +31,11 @@ public:
 private:
 	// The max distance allowed between the players eyes and the item. Measured in cm
 	UPROPERTY(EditAnywhere)
-	float MaxGrabDistance = 250;
+	float MaxGrabDistance = 100;
 
 	// The radius of the sphere that hits the item
 	UPROPERTY(EditAnywhere)
-	float GrabRadius = 20;
+	float GrabRadius = 50;
 
 	// Bool to check if the item is grabbable
 	bool bGrabbable = false;

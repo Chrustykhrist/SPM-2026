@@ -14,7 +14,7 @@
 // Sets default values
 ABlindMonsterCharacter::ABlindMonsterCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
 	DeathBoxTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathBoxTrigger"));
@@ -32,10 +32,12 @@ ABlindMonsterCharacter::ABlindMonsterCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 360.0f, 0.0f);
 	
 	// Creates a UPawnSensingComponent at all instances of this class
+	PRAGMA_DISABLE_DEPRECATION_WARNINGS
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSenser"));
 	PawnSensingComponent->SightRadius = 0.0f;
 	PawnSensingComponent->SetPeripheralVisionAngle(0.0f);
 	PawnSensingComponent->HearingThreshold = 2000.0f;
+	PRAGMA_ENABLE_DEPRECATION_WARNINGS
 }
 
 // Called when the game starts or when spawned
@@ -45,7 +47,9 @@ void ABlindMonsterCharacter::BeginPlay()
 	
 	if (PawnSensingComponent)
 	{
+		PRAGMA_DISABLE_DEPRECATION_WARNINGS
 		PawnSensingComponent->OnHearNoise.AddDynamic(this, &ABlindMonsterCharacter::OnHearNoise);
+		PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	}
 }
 
