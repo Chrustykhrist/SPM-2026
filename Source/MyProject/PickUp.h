@@ -33,6 +33,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	float MaxGrabDistance = 100;
 
+	// Max distance between player and keypad
 	UPROPERTY(EditAnywhere)
 	float MaxPushDistance = 150;
 
@@ -40,11 +41,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	float GrabRadius = 50;
 
-	UPROPERTY(EditAnywhere)
-	float PushRadius = 15;
-
 	// Bool to check if the item is grabbable
 	bool bGrabbable = false;
 
+	// Bool to check if the item is pushable
 	bool bPushable = false;
 };

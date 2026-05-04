@@ -4,6 +4,7 @@
 #include "PickUp.h"
 
 #include "CustomPlayerState.h"
+#include "KeyPadComponent.h"
 
 // Sets default values for this component's properties
 UPickUp::UPickUp()
@@ -47,8 +48,7 @@ void UPickUp::PickUp()
 #if WITH_EDITOR
 	// Shows where the player is looking
 	DrawDebugLine(GetWorld(), PlayerPos, GrabVector, FColor::Red);
-	//DrawDebugSphere(GetWorld(), GrabVector, GrabRadius, 10, FColor::Blue);
-	DrawDebugSphere(GetWorld(), PushVector, PushRadius, 10, FColor::Green);
+	DrawDebugSphere(GetWorld(), GrabVector, GrabRadius, 10, FColor::Blue);
 #endif
 	
 	FHitResult ItemHit;
@@ -56,11 +56,10 @@ void UPickUp::PickUp()
 
 	// Shape that is used to check whether an item is hit
 	FCollisionShape GrabVolume = FCollisionShape::MakeSphere(GrabRadius);
-	FCollisionShape PushVolume = FCollisionShape::MakeSphere(PushRadius);
 
 	// true if we hit an item that has the required hit channel as "Block", otherwise false
 	bGrabbable = GetWorld()->SweepSingleByChannel(ItemHit, PlayerPos, GrabVector, FQuat::Identity, ECC_GameTraceChannel2, GrabVolume);
-	bPushable = GetWorld()->SweepSingleByChannel(ButtonHit, PlayerPos, PushVector, FQuat::Identity, ECC_GameTraceChannel3, PushVolume);
+	bPushable = GetWorld()->LineTraceSingleByChannel(ButtonHit, PlayerPos, PushVector, ECC_GameTraceChannel3);
 	
 	if (bGrabbable)
 	{
@@ -71,15 +70,24 @@ void UPickUp::PickUp()
 		FName ItemName = ItemHit.GetActor()->Tags[0];
 
 		PS->CollectedItems[ItemName]++;
-
-		//PS->CollectedItems.Add(ItemName, PS->CollectedItems[ItemName] + 1);
-
+		
 		ItemHit.GetActor()->Destroy();
 	}
 
 	if (bPushable)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Pushable"));
+		// Saves the pressed buttons and then checks if it is correct
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->GetName());
+
+		if (UKeyPadComponent* KP = Cast<UKeyPadComponent>(ButtonHit.GetActor()->GetComponentByClass(UKeyPadComponent::StaticClass())))
+		{
+			KP->Pressed(ButtonHit.GetComponent()->ComponentTags[0]);
+
+			if (KP->PressedButtons.Num() == 4)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Succeded"));
+			}
+		}
 	}
 }
 

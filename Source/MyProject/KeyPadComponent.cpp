@@ -3,6 +3,9 @@
 
 #include "KeyPadComponent.h"
 
+#include "PickUp.h"
+#include "PlayerCharacter.h"
+
 // Sets default values for this component's properties
 UKeyPadComponent::UKeyPadComponent()
 {
@@ -30,5 +33,24 @@ void UKeyPadComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+	
+}
+
+/**
+ * Adds the number that is pressed to PressedButtons
+ * 
+ * @param number The pressed number, Tag of the component
+ */
+void UKeyPadComponent::Pressed(FName number)
+{
+	PressedButtons.Add(number);
+}
+
+/**
+ * Opens the locked door when the correct numbers are inputted
+ */
+void UKeyPadComponent::Accepted()
+{
+	UE_LOG(LogTemp, Display, TEXT("Accepted"));
 }
 

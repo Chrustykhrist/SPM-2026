@@ -24,5 +24,14 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	// Adds the number that was pressed on the in-game keypad
+	UFUNCTION()
+	void Pressed(FName number);
+
+	// Called when the correct numbers are inputed
+	UFUNCTION()
+	void Accepted();
+	
+	UPROPERTY()
+	TArray<FName> PressedButtons;
 };
