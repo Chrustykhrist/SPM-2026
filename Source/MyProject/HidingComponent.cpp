@@ -20,7 +20,11 @@ void UHidingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	Player = GetPlayer();
+	//Only updates tick if not hiding
+	if (!bHiding)
+	{
+		Player = GetPlayer();
+	}
 }
 
 /**
@@ -34,7 +38,7 @@ void UHidingComponent::Hide()
 		return;
 	}
 	
-	APawn* PP = Cast<APawn>(Player);
+	ACharacter* PP = Cast<ACharacter>(Player);
 
 	if (PP == nullptr)
 	{
@@ -43,8 +47,20 @@ void UHidingComponent::Hide()
 	}
 
 	EntryPosition = PP->GetActorTransform();
+	
+	FVector FinalOffset = HideOffset;
+	
+	// Makes player invisible"
+	PP->SetActorEnableCollision(false);
 
-	PP->SetActorTransform(GetOwner()->GetActorTransform());
+	// Calculate the position
+	FVector NewLocation = GetOwner()->GetActorLocation() + HideOffset;
+    
+	// Set rotation to the same as the locker
+	FRotator NewRotation = GetOwner()->GetActorRotation(); 
+    
+	// Teleport player with offset
+	PP->SetActorLocationAndRotation(NewLocation, NewRotation);
 
 	bHiding = true;
 }
@@ -63,6 +79,8 @@ void UHidingComponent::GetOut()
 	}
 
 	PlayerPawn->SetActorTransform(EntryPosition);
+	
+	PlayerPawn->SetActorEnableCollision(true);
 	
 	bHiding = false;
 }
