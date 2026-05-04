@@ -12,8 +12,9 @@
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
+#include "InteractionComponent.h"
 #include "Misc/LowLevelTestAdapter.h"
-
+#include "Camera/CameraComponent.h"
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
@@ -21,13 +22,14 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
+	
+	// InteractionComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("BeingPlay"));
 	
 	// Adding the custom mapping context to the character
 	
@@ -106,6 +108,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		// Hold breath
 		UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Triggered, this, &APlayerCharacter::HoldBreath);
 		UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Completed, this, &APlayerCharacter::ReleaseBreath);
+		
+		// Interaction valves
+		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Started, this, &APlayerCharacter::InteractBegin);
+		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Completed, this, &APlayerCharacter::InteractEnd);
+		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
 	}
 
 }
@@ -333,3 +340,52 @@ void APlayerCharacter::SetHidingComponent(UHidingComponent* NewHidingComponent)
 }
 
 #pragma endregion
+
+#pragma region INTERACTING
+
+void APlayerCharacter::InteractBegin(const FInputActionValue& Value)
+{
+	UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(GetComponentByClass(UInteractionComponent::StaticClass()));
+	if (InteractionComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("InteractBegin"));
+		InteractionComponent->BeginInteract();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Else Begin, Component: %s"), InteractionComponent ? *InteractionComponent->GetName() : TEXT("NULL"));
+	}
+	
+}
+
+void APlayerCharacter::InteractHold(const FInputActionValue& Value)
+{
+	UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(GetComponentByClass(UInteractionComponent::StaticClass()));;
+	if (InteractionComponent && InteractionComponent->bIsInteracting)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Hold"));
+		InteractionComponent->InteractHeld(Value.Get<FVector2D>().X);
+	}
+	else
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("else hold"));
+		Look(Value);
+	}
+}
+
+void APlayerCharacter::InteractEnd(const FInputActionValue& Value)
+{
+	UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(GetComponentByClass(UInteractionComponent::StaticClass()));;
+	if (InteractionComponent && InteractionComponent->bIsInteracting)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("End"));
+		InteractionComponent->EndInteract();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Else End"));
+		PickUpItem(Value);
+	}
+}
+
+#pragma endregion	
