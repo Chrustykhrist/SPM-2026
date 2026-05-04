@@ -269,14 +269,14 @@ void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
 	
 	if (bHiding)
 	{
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		HidingComponent->GetOut();
 		bHiding = false;
 	}
 	else
 	{
 		HidingComponent->Hide();
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		bHiding = true;
 	}
 }
