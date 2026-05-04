@@ -42,20 +42,25 @@ void UPickUp::PickUp()
 	// Vector to check where the player is looking and how far
 	FVector PlayerPos = GetComponentLocation();
 	FVector GrabVector = PlayerPos + GetForwardVector() * MaxGrabDistance;
+	FVector PushVector = PlayerPos + GetForwardVector() * MaxPushDistance;
 
 #if WITH_EDITOR
 	// Shows where the player is looking
 	DrawDebugLine(GetWorld(), PlayerPos, GrabVector, FColor::Red);
-	DrawDebugSphere(GetWorld(), GrabVector, GrabRadius, 10, FColor::Blue);
+	//DrawDebugSphere(GetWorld(), GrabVector, GrabRadius, 10, FColor::Blue);
+	DrawDebugSphere(GetWorld(), PushVector, PushRadius, 10, FColor::Green);
 #endif
 	
 	FHitResult ItemHit;
+	FHitResult ButtonHit;
 
 	// Shape that is used to check whether an item is hit
 	FCollisionShape GrabVolume = FCollisionShape::MakeSphere(GrabRadius);
+	FCollisionShape PushVolume = FCollisionShape::MakeSphere(PushRadius);
 
 	// true if we hit an item that has the required hit channel as "Block", otherwise false
 	bGrabbable = GetWorld()->SweepSingleByChannel(ItemHit, PlayerPos, GrabVector, FQuat::Identity, ECC_GameTraceChannel2, GrabVolume);
+	bPushable = GetWorld()->SweepSingleByChannel(ButtonHit, PlayerPos, PushVector, FQuat::Identity, ECC_GameTraceChannel3, PushVolume);
 	
 	if (bGrabbable)
 	{
@@ -70,6 +75,11 @@ void UPickUp::PickUp()
 		//PS->CollectedItems.Add(ItemName, PS->CollectedItems[ItemName] + 1);
 
 		ItemHit.GetActor()->Destroy();
+	}
+
+	if (bPushable)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Pushable"));
 	}
 }
 

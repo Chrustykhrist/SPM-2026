@@ -33,10 +33,18 @@ private:
 	UPROPERTY(EditAnywhere)
 	float MaxGrabDistance = 100;
 
+	UPROPERTY(EditAnywhere)
+	float MaxPushDistance = 150;
+
 	// The radius of the sphere that hits the item
 	UPROPERTY(EditAnywhere)
 	float GrabRadius = 50;
 
+	UPROPERTY(EditAnywhere)
+	float PushRadius = 15;
+
 	// Bool to check if the item is grabbable
 	bool bGrabbable = false;
+
+	bool bPushable = false;
 };
