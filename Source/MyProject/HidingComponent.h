@@ -33,6 +33,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bHiding = false;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hiding")
+	FVector HideOffset = FVector(0.0f, 0.0f, -40.0f); // Take character down when hiding -40 as default
+	
 	// Position to help leaving the locker
 	FTransform EntryPosition;
 
