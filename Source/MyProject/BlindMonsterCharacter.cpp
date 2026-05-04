@@ -9,6 +9,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/BoxComponent.h"
+#include "HidingComponent.h" 
 
 #include "BehaviorTree/BehaviorTree.h"
 // Sets default values
@@ -72,6 +73,17 @@ void ABlindMonsterCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedCompo
 {
 	if (OtherActor && OtherActor->IsA(APlayerCharacter::StaticClass()))
 	{
+		//Check if player is in the locker
+		APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
+		if (Player)
+		{
+			UHidingComponent* HidingComp = Player->FindComponentByClass<UHidingComponent>();
+			if (HidingComp && HidingComp->bHiding)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Monster tried to attack in the locker"));
+				return; 
+			}
+		}
 		AHorrorGameMode* GameMode = Cast<AHorrorGameMode>(GetWorld()->GetAuthGameMode());
 		if (GameMode)
 		{
@@ -85,6 +97,18 @@ void ABlindMonsterCharacter::OnHearNoise(APawn* OtherPawn, const FVector& Locati
 {
 		if (OtherPawn != nullptr && OtherPawn != this && OtherPawn->IsPlayerControlled())
 		{
+			//Dont react to sound if player hide
+			APlayerCharacter* Player = Cast<APlayerCharacter>(OtherPawn);
+			if (Player)
+			{
+				UHidingComponent* HidingComp = Player->FindComponentByClass<UHidingComponent>();
+				if (HidingComp && HidingComp->bHiding)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Sound is ignored cuz player hid"));
+					return; // Cancels before retargeting location
+				}
+			}
+			
 			//UE_LOG(LogTemp, Warning, TEXT("OtherPawn är inte sig själv eller nullptr!"));
 			ABlindMonsterAIController* AIController = Cast<ABlindMonsterAIController>(GetController());
 			//UE_LOG(LogTemp, Warning, TEXT("AIController namn %s"), *AIController->GetClass()->GetName());

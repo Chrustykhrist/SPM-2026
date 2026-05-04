@@ -20,7 +20,11 @@ void UHidingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	Player = GetPlayer();
+	//Uppdaterar ticken bara om man inte gömmer sig
+	if (!bHiding)
+	{
+		Player = GetPlayer();
+	}
 }
 
 /**
@@ -45,6 +49,9 @@ void UHidingComponent::Hide()
 	EntryPosition = PP->GetActorTransform();
 
 	PP->SetActorTransform(GetOwner()->GetActorTransform());
+	
+	// Makes player invisible"
+	PP->SetActorEnableCollision(false);
 
 	bHiding = true;
 }
@@ -61,6 +68,8 @@ void UHidingComponent::GetOut()
 		UE_LOG(LogTemp, Error, TEXT("Player pawn is null"));
 		return;
 	}
+	
+	PlayerPawn->SetActorEnableCollision(true);
 
 	PlayerPawn->SetActorTransform(EntryPosition);
 	
