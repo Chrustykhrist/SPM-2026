@@ -12,6 +12,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
+#include "Misc/LowLevelTestAdapter.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -153,6 +154,12 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
  */
 void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 {
+	//If hiding ignore crouch inputs
+	if (bHiding)
+	{
+		return;
+	}
+	
 	bCrouching = true;
 	
 	Crouch();
@@ -165,6 +172,11 @@ void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
  */
 void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 {
+	if (bHiding)
+	{
+		return;
+	}
+	
 	bCrouching = false;
 	
 	UnCrouch();
@@ -269,14 +281,16 @@ void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
 	
 	if (bHiding)
 	{
-		// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		HidingComponent->GetOut();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		UnCrouch();
 		bHiding = false;
 	}
 	else
 	{
+		
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		HidingComponent->Hide();
-		// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		bHiding = true;
 	}
 }
