@@ -34,16 +34,19 @@ void AValveActor::Tick(float DeltaTime)
 
 void AValveActor::OnInteractBegin(APlayerController* PC)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Begin interact Valve Actor"));
 	ValveComponent->BeginInteraction();
 }
 
 void AValveActor::OnInteractHold(APlayerController* PC, float Delta)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Hold Valve Actor"));
 	ValveComponent->ApplyRotationDelta(Delta);
 }
 
 void AValveActor::OnInteractEnd(APlayerController* PC)
 {
+	UE_LOG(LogTemp, Warning, TEXT("End Valve Actor"));
 	ValveComponent->EndInteraction();
 }
 

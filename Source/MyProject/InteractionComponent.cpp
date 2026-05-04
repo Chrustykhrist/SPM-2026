@@ -3,6 +3,7 @@
 
 #include "InteractionComponent.h"
 #include "Interactable.h"
+#include "DrawDebugHelpers.h"
 // Sets default values for this component's properties
 UInteractionComponent::UInteractionComponent()
 {
@@ -40,22 +41,43 @@ AActor* UInteractionComponent::FindInteractingActor() const
 	FHitResult ActorHit;
 	FCollisionShape Sphere = FCollisionShape::MakeSphere(InteractionRadius);
 	
-	bool bHit = GetWorld()->SweepSingleByChannel(ActorHit, StartLocation, 
-		EndLocation, FQuat::Identity, ECC_GameTraceChannel13, Sphere);
+	//bool bHit = GetWorld()->SweepSingleByChannel(ActorHit, StartLocation, 
+		//EndLocation, FQuat::Identity, ECC_GameTraceChannel13, Sphere);
 	
-	if (bHit && ActorHit.GetActor() && 
-		ActorHit.GetActor()->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+	bool bHit = GetWorld()->SweepSingleByChannel(ActorHit, StartLocation, 
+		EndLocation, FQuat::Identity, ECC_Visibility, Sphere);
+	
+	// if (bHit && ActorHit.GetActor() && 
+	// 	ActorHit.GetActor()->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+	// {
+	// 	return ActorHit.GetActor(); ECC_Visibility
+	// }
+	AActor* HitActor = ActorHit.GetActor();
+	DrawDebugSphere(GetWorld(), EndLocation, InteractionRadius, 12, FColor::Red, false, 2.0f);
+	if (bHit && HitActor)
 	{
-		return ActorHit.GetActor();
+		if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+		{
+			return HitActor;
+		}
+        
+		UE_LOG(LogTemp, Warning, TEXT("Hit %s but it has no interactable interface"), *HitActor->GetName());
 	}
+	else 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("FindInteractingActor did not hit anything."));
+	}
+	
 	return nullptr;
 }
 
 void UInteractionComponent::BeginInteract()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent %s"), bIsInteracting ? TEXT("true") : TEXT("false"));
 	if (bIsInteracting) return;
-	
+	UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent"));
 	AActor* TargetActor = FindInteractingActor();
+	UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent, Actor: %s"), TargetActor ? *TargetActor->GetName() : TEXT("None"));
 	if (!TargetActor) return;
 	
 	IInteractable* InteractableActor = Cast<IInteractable>(TargetActor);
@@ -70,7 +92,7 @@ void UInteractionComponent::BeginInteract()
 void UInteractionComponent::InteractHeld(float Delta)
 {
 	if (!bIsInteracting || !CurrentInteractingActor) return;
-	
+	UE_LOG(LogTemp, Warning, TEXT("Interact Held"));
 	IInteractable* InteractableActor = Cast<IInteractable>(CurrentInteractingActor);
 	if (InteractableActor)
 	{

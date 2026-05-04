@@ -17,10 +17,10 @@ public:
 	UInteractionComponent();
 	
 	UPROPERTY(EditAnywhere, Category = "Interaction")
-	float MaxInteractionDistance = 120.0f;
+	float MaxInteractionDistance = 500.0f;
 	
 	UPROPERTY(EditAnywhere, Category = "Interaction")
-	float InteractionRadius = 10.0f;
+	float InteractionRadius = 50.0f;
 	
 	void BeginInteract();
 	

@@ -32,20 +32,23 @@ void UValveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 void UValveComponent::BeginInteraction()
 {
+	UE_LOG(LogTemp, Warning, TEXT("BeginInteraction"));
 	if (bComplete) return;
 	bActive = true;
+	UE_LOG(LogTemp, Warning, TEXT("bActive is true"));
 }
 
 void UValveComponent::ApplyRotationDelta(float Delta)
 {
 	if (!bActive || bComplete) return;
-	
+	UE_LOG(LogTemp, Warning, TEXT("ApplyRotationDelta"));
 	CurrentRotation = FMath::Clamp(CurrentRotation + Delta * InputSensitivity * 
 		GetWorld()->GetDeltaSeconds(), 0.0f, RequiredRotationDegrees);
 	
 	// rotate the mesh of the valve physically on its own local z axis
 	if (ValveMesh)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Rotate mesh"));
 		ValveMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 
 			FMath::GetMappedRangeValueClamped(
 				FVector2D(0.0f, RequiredRotationDegrees),
