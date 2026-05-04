@@ -4,7 +4,6 @@
 #include "PickUp.h"
 
 #include "CustomPlayerState.h"
-#include "KeyPadComponent.h"
 
 // Sets default values for this component's properties
 UPickUp::UPickUp()
@@ -43,7 +42,6 @@ void UPickUp::PickUp()
 	// Vector to check where the player is looking and how far
 	FVector PlayerPos = GetComponentLocation();
 	FVector GrabVector = PlayerPos + GetForwardVector() * MaxGrabDistance;
-	FVector PushVector = PlayerPos + GetForwardVector() * MaxPushDistance;
 
 #if WITH_EDITOR
 	// Shows where the player is looking
@@ -52,14 +50,12 @@ void UPickUp::PickUp()
 #endif
 	
 	FHitResult ItemHit;
-	FHitResult ButtonHit;
 
 	// Shape that is used to check whether an item is hit
 	FCollisionShape GrabVolume = FCollisionShape::MakeSphere(GrabRadius);
 
 	// true if we hit an item that has the required hit channel as "Block", otherwise false
 	bGrabbable = GetWorld()->SweepSingleByChannel(ItemHit, PlayerPos, GrabVector, FQuat::Identity, ECC_GameTraceChannel2, GrabVolume);
-	bPushable = GetWorld()->LineTraceSingleByChannel(ButtonHit, PlayerPos, PushVector, ECC_GameTraceChannel3);
 	
 	if (bGrabbable)
 	{
@@ -70,24 +66,10 @@ void UPickUp::PickUp()
 		FName ItemName = ItemHit.GetActor()->Tags[0];
 
 		PS->CollectedItems[ItemName]++;
-		
+
+		//PS->CollectedItems.Add(ItemName, PS->CollectedItems[ItemName] + 1);
+
 		ItemHit.GetActor()->Destroy();
-	}
-
-	if (bPushable)
-	{
-		// Saves the pressed buttons and then checks if it is correct
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->GetName());
-
-		if (UKeyPadComponent* KP = Cast<UKeyPadComponent>(ButtonHit.GetActor()->GetComponentByClass(UKeyPadComponent::StaticClass())))
-		{
-			KP->Pressed(ButtonHit.GetComponent()->ComponentTags[0]);
-
-			if (KP->PressedButtons.Num() == 4)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Succeded"));
-			}
-		}
 	}
 }
 
