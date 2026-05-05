@@ -19,10 +19,10 @@ public:
 	TObjectPtr<UStaticMeshComponent> FluidMesh;
 	
 	UPROPERTY(EditAnywhere, Category = "Tube")
-	FName FillLevel = TEXT("FillLevel");
+	FName FillLevelParameterName  = TEXT("FillLevel");
 	
 	UPROPERTY(EditAnywhere, Category = "Tube")
-	float DrainDuration = 5.0f;
+	float DrainDuration = 12.0f;
 	
 	UFUNCTION(BlueprintCallable)
 	void Drain();
@@ -39,4 +39,6 @@ private:
 	bool bDraining = false;
 	float CurrentFillLevel = 1.0f;
 	TObjectPtr<UMaterialInstanceDynamic> DynamicFluidMaterial;
+	FVector UnderTheMap;
+	FVector StartLocation;
 };
