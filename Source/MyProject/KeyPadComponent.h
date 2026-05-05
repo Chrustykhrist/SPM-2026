@@ -41,5 +41,14 @@ public:
 	UPROPERTY()
 	TArray<FName> NeededCode;
 
+	UPROPERTY(EditAnywhere, Category="Doors")
+	TArray<AActor*> Doors;
+
 	bool CorrectInput = true;
+
+	bool Turn = false;
+
+private:
+	UPROPERTY()
+	TArray<float> DoorYaws;
 };

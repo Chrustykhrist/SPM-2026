@@ -41,6 +41,11 @@ void UKeyPadComponent::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum2);
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum3);
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum4);
+
+	for (int i = 0; i < Doors.Num(); i++)
+	{
+		DoorYaws.Add(Doors[i]->GetActorRotation().Yaw);
+	}
 	
 	// ...
 	
@@ -53,6 +58,21 @@ void UKeyPadComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+
+	if (Turn)
+	{
+		for (int i = 0; i < Doors.Num(); i++)
+		{
+			if (Doors[i]->ActorHasTag("Left"))
+			{
+				Doors[i]->SetActorRotation(FMath::RInterpConstantTo(Doors[i]->GetActorRotation(), FRotator(0,  DoorYaws[i] + 90, 0), DeltaTime, 30));
+			}
+			else
+			{
+				Doors[i]->SetActorRotation(FMath::RInterpConstantTo(Doors[i]->GetActorRotation(), FRotator(0,  DoorYaws[i] - 90, 0), DeltaTime, 30));
+			}
+		}
+	}
 	
 }
 
@@ -85,6 +105,9 @@ void UKeyPadComponent::Accepted()
 	{
 		// TODO: Add unlock/open behaviour
 		UE_LOG(LogTemp, Display, TEXT("Correct"));
+		// Doors[0]->SetActorRotation(FRotator(0, 90, 0));
+		// Doors[0]->SetActorRotation(FMath::RInterpConstantTo(Doors[0]->GetActorRotation(), FRotator(0, 90, 0), GetWorld()->GetDeltaSeconds(), 2));
+		Turn = true;
 	}
 	else
 	{
