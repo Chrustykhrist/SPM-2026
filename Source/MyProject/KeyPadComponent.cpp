@@ -42,6 +42,7 @@ void UKeyPadComponent::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum3);
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum4);
 
+	// Find all the yaws of the doors
 	for (int i = 0; i < Doors.Num(); i++)
 	{
 		DoorYaws.Add(Doors[i]->GetActorRotation().Yaw);
@@ -59,6 +60,7 @@ void UKeyPadComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 	// ...
 
+	// Turn the doors 90 degrees
 	if (Turn)
 	{
 		for (int i = 0; i < Doors.Num(); i++)
@@ -91,6 +93,7 @@ void UKeyPadComponent::Pressed(FName number)
  */
 void UKeyPadComponent::Accepted()
 {
+	// Check if the code is correct
 	for (int i = 0; i < NeededCode.Num(); i++)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s"), (PressedButtons[i] != NeededCode[i]) ? TEXT("Different") : TEXT("Same"));
@@ -100,13 +103,12 @@ void UKeyPadComponent::Accepted()
 			CorrectInput = false;
 		}
 	}
-				
+
+	// If correct, allow the door to turn, otherwise do nothing
 	if (CorrectInput)
 	{
 		// TODO: Add unlock/open behaviour
 		UE_LOG(LogTemp, Display, TEXT("Correct"));
-		// Doors[0]->SetActorRotation(FRotator(0, 90, 0));
-		// Doors[0]->SetActorRotation(FMath::RInterpConstantTo(Doors[0]->GetActorRotation(), FRotator(0, 90, 0), GetWorld()->GetDeltaSeconds(), 2));
 		Turn = true;
 	}
 	else
@@ -116,6 +118,9 @@ void UKeyPadComponent::Accepted()
 	}
 }
 
+/**
+ * Removes all the buttons the user had pressed, called if more than 4 buttons are pressed or the clear button is pressed
+ */
 void UKeyPadComponent::ClearPressed()
 {
 	PressedButtons.Empty();
