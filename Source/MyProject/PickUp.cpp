@@ -71,14 +71,16 @@ void UPickUp::PickUp()
 		FName ItemName = ItemHit.GetActor()->Tags[0];
 
 		PS->CollectedItems[ItemName]++;
+
+		//UE_LOG(LogTemp, Display, TEXT("%s, %d"), *ItemHit.GetActor()->GetName(), PS->CollectedItems[ItemName]);
 		
 		ItemHit.GetActor()->Destroy();
 	}
 
 	if (bPushable)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->GetName());
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->ComponentTags[0].ToString());
+		// UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->GetName());
+		// UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->ComponentTags[0].ToString());
 
 		if (UKeyPadComponent* KP = Cast<UKeyPadComponent>(ButtonHit.GetActor()->GetComponentByClass(UKeyPadComponent::StaticClass())))
 		{
@@ -103,7 +105,15 @@ void UPickUp::PickUp()
 				KP->Pressed(ButtonHit.GetComponent()->ComponentTags[0]);
 
 			}
+		} else if(ButtonHit.GetActor()->Tags[0].IsEqual("PowerSwitch"))
+		{
+			bPowerSwitchPushed = true;
 		}
 	}
+}
+
+bool UPickUp::GetPowerswitched()
+{
+	return bPowerSwitchPushed;
 }
 

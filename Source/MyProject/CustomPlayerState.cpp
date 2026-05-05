@@ -10,6 +10,7 @@ ACustomPlayerState::ACustomPlayerState()
 	// Make places for the items that will be added
 	CollectedItems.Add(FName("Battery"), 0);
 	CollectedItems.Add(FName("Medicine"), 0);
+	CollectedItems.Add(FName("PowerKey"), 0);
 }
 
 void ACustomPlayerState::BeginPlay()

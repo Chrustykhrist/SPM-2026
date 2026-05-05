@@ -28,6 +28,9 @@ public:
 	UFUNCTION()
 	void PickUp();
 
+	UFUNCTION(BlueprintCallable)
+	bool GetPowerswitched();
+
 private:
 	// The max distance allowed between the players eyes and the item. Measured in cm
 	UPROPERTY(EditAnywhere)
@@ -46,4 +49,6 @@ private:
 
 	// Bool to check if the item is pushable
 	bool bPushable = false;
+	
+	bool bPowerSwitchPushed = false;
 };
