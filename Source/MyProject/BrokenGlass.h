@@ -44,4 +44,6 @@ private:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
 	FTimerHandle StepTimerHandle;
+	
+	float LoudnessMultiplier = 0.85f;
 };

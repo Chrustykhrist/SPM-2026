@@ -384,7 +384,7 @@ void APlayerCharacter::InteractEnd(const FInputActionValue& Value)
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Else End"));
-		PickUpItem(Value);
+		// PickUpItem(Value);
 	}
 }
 

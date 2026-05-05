@@ -22,6 +22,31 @@ void UKeyPadComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	int num1 = FMath::RandRange(0, 9);
+	int num2 = FMath::RandRange(0, 9);
+	int num3 = FMath::RandRange(0, 9);
+	int num4 = FMath::RandRange(0, 9);
+
+	FString SNum1 = FString::FromInt(num1);
+	FString SNum2 = FString::FromInt(num2);
+	FString SNum3 = FString::FromInt(num3);
+	FString SNum4 = FString::FromInt(num4);
+	
+	NeededCode.Add(FName(SNum1));
+	NeededCode.Add(FName(SNum2));
+	NeededCode.Add(FName(SNum3));
+	NeededCode.Add(FName(SNum4));
+
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum1);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum2);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum3);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum4);
+
+	for (int i = 0; i < Doors.Num(); i++)
+	{
+		DoorYaws.Add(Doors[i]->GetActorRotation().Yaw);
+	}
+	
 	// ...
 	
 }
@@ -33,6 +58,21 @@ void UKeyPadComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+
+	if (Turn)
+	{
+		for (int i = 0; i < Doors.Num(); i++)
+		{
+			if (Doors[i]->ActorHasTag("Left"))
+			{
+				Doors[i]->SetActorRotation(FMath::RInterpConstantTo(Doors[i]->GetActorRotation(), FRotator(0,  DoorYaws[i] + 90, 0), DeltaTime, 30));
+			}
+			else
+			{
+				Doors[i]->SetActorRotation(FMath::RInterpConstantTo(Doors[i]->GetActorRotation(), FRotator(0,  DoorYaws[i] - 90, 0), DeltaTime, 30));
+			}
+		}
+	}
 	
 }
 
@@ -51,6 +91,34 @@ void UKeyPadComponent::Pressed(FName number)
  */
 void UKeyPadComponent::Accepted()
 {
-	UE_LOG(LogTemp, Display, TEXT("Accepted"));
+	for (int i = 0; i < NeededCode.Num(); i++)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s"), (PressedButtons[i] != NeededCode[i]) ? TEXT("Different") : TEXT("Same"));
+					
+		if (PressedButtons[i] != NeededCode[i])
+		{
+			CorrectInput = false;
+		}
+	}
+				
+	if (CorrectInput)
+	{
+		// TODO: Add unlock/open behaviour
+		UE_LOG(LogTemp, Display, TEXT("Correct"));
+		// Doors[0]->SetActorRotation(FRotator(0, 90, 0));
+		// Doors[0]->SetActorRotation(FMath::RInterpConstantTo(Doors[0]->GetActorRotation(), FRotator(0, 90, 0), GetWorld()->GetDeltaSeconds(), 2));
+		Turn = true;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Incorrect"));
+		CorrectInput = true;
+	}
+}
+
+void UKeyPadComponent::ClearPressed()
+{
+	PressedButtons.Empty();
+	UE_LOG(LogTemp, Display, TEXT("Clear Pressed"));
 }
 
