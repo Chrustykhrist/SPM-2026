@@ -22,6 +22,26 @@ void UKeyPadComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	int num1 = FMath::RandRange(0, 9);
+	int num2 = FMath::RandRange(0, 9);
+	int num3 = FMath::RandRange(0, 9);
+	int num4 = FMath::RandRange(0, 9);
+
+	FString SNum1 = FString::FromInt(num1);
+	FString SNum2 = FString::FromInt(num2);
+	FString SNum3 = FString::FromInt(num3);
+	FString SNum4 = FString::FromInt(num4);
+	
+	NeededCode.Add(FName(SNum1));
+	NeededCode.Add(FName(SNum2));
+	NeededCode.Add(FName(SNum3));
+	NeededCode.Add(FName(SNum4));
+
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum1);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum2);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum3);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *SNum4);
+	
 	// ...
 	
 }
@@ -51,6 +71,30 @@ void UKeyPadComponent::Pressed(FName number)
  */
 void UKeyPadComponent::Accepted()
 {
-	UE_LOG(LogTemp, Display, TEXT("Accepted"));
+	for (int i = 0; i < NeededCode.Num(); i++)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s"), (PressedButtons[i] != NeededCode[i]) ? TEXT("Different") : TEXT("Same"));
+					
+		if (PressedButtons[i] != NeededCode[i])
+		{
+			CorrectInput = false;
+		}
+	}
+				
+	if (CorrectInput)
+	{
+		// TODO: Add unlock/open behaviour
+		UE_LOG(LogTemp, Display, TEXT("Correct"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Incorrect"));
+	}
+}
+
+void UKeyPadComponent::ClearPressed()
+{
+	PressedButtons.Empty();
+	UE_LOG(LogTemp, Display, TEXT("Clear Pressed"));
 }
 

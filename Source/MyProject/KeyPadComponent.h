@@ -31,7 +31,15 @@ public:
 	// Called when the correct numbers are inputed
 	UFUNCTION()
 	void Accepted();
+
+	UFUNCTION()
+	void ClearPressed();
 	
 	UPROPERTY()
 	TArray<FName> PressedButtons;
+
+	UPROPERTY()
+	TArray<FName> NeededCode;
+
+	bool CorrectInput = true;
 };
