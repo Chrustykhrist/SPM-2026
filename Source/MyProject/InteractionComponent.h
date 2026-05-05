@@ -17,7 +17,7 @@ public:
 	UInteractionComponent();
 	
 	UPROPERTY(EditAnywhere, Category = "Interaction")
-	float MaxInteractionDistance = 500.0f;
+	float MaxInteractionDistance = 200.0f;
 	
 	UPROPERTY(EditAnywhere, Category = "Interaction")
 	float InteractionRadius = 50.0f;
@@ -41,4 +41,6 @@ private:
 	TObjectPtr<AActor> CurrentInteractingActor;
 	
 	AActor* FindInteractingActor() const;
+	
+	float AcceptableLookRatio = 0.7f;
 };
