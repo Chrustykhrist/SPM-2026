@@ -89,6 +89,7 @@ void UKeyPadComponent::Accepted()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Incorrect"));
+		CorrectInput = true;
 	}
 }
 
