@@ -93,6 +93,30 @@ void UInteractionComponent::InteractHeld(float Delta)
 {
 	if (!bIsInteracting || !CurrentInteractingActor) return;
 	UE_LOG(LogTemp, Warning, TEXT("Interact Held"));
+	
+	// does a proximity check if the player is close enough to the valve
+	// so they cant just hold E and the walk away and turn the valve from anywhere in the level
+	FVector VectorToValveFromPlayer = CurrentInteractingActor->GetActorLocation() - GetComponentLocation();
+	float Distance = VectorToValveFromPlayer.SizeSquared();
+	// dont forget to adjust maxinteractiondistance its at 500 in the editor now
+	if (Distance > FMath::Square(MaxInteractionDistance))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player to far away from valve"));
+		EndInteract();
+		return;
+	}
+	
+	// makes sure that the player is looking at the valve when turning it and dont care about lenght of vector only
+	// direction difference between the angle of valve and player
+	FVector DirectionToValve = VectorToValveFromPlayer.GetSafeNormal();
+	float Dot = FVector::DotProduct(GetForwardVector(), DirectionToValve);
+	
+	if (Dot < AcceptableLookRatio)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player looked away from valve"));
+		EndInteract();
+		return;
+	}
 	IInteractable* InteractableActor = Cast<IInteractable>(CurrentInteractingActor);
 	if (InteractableActor)
 	{

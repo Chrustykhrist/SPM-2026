@@ -31,7 +31,24 @@ public:
 	// Called when the correct numbers are inputed
 	UFUNCTION()
 	void Accepted();
+
+	UFUNCTION()
+	void ClearPressed();
 	
 	UPROPERTY()
 	TArray<FName> PressedButtons;
+
+	UPROPERTY()
+	TArray<FName> NeededCode;
+
+	UPROPERTY(EditAnywhere, Category="Doors")
+	TArray<AActor*> Doors;
+
+	bool CorrectInput = true;
+
+	bool Turn = false;
+
+private:
+	UPROPERTY()
+	TArray<float> DoorYaws;
 };

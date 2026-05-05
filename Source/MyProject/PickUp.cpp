@@ -4,6 +4,7 @@
 #include "PickUp.h"
 
 #include "CustomPlayerState.h"
+#include "DiffUtils.h"
 #include "KeyPadComponent.h"
 
 // Sets default values for this component's properties
@@ -78,14 +79,27 @@ void UPickUp::PickUp()
 	{
 		// Saves the pressed buttons and then checks if it is correct
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->ComponentTags[0].ToString());
 
 		if (UKeyPadComponent* KP = Cast<UKeyPadComponent>(ButtonHit.GetActor()->GetComponentByClass(UKeyPadComponent::StaticClass())))
 		{
-			KP->Pressed(ButtonHit.GetComponent()->ComponentTags[0]);
-
-			if (KP->PressedButtons.Num() == 4)
+			if (ButtonHit.GetComponent()->ComponentTags[0].IsEqual("Accept"))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Succeded"));
+				KP->Accepted();
+			}
+			else if (ButtonHit.GetComponent()->ComponentTags[0].IsEqual("Clear"))
+			{
+				KP->ClearPressed();
+			}
+			else
+			{
+				if (KP->PressedButtons.Num() == 4)
+				{
+					KP->ClearPressed();
+				}
+				
+				KP->Pressed(ButtonHit.GetComponent()->ComponentTags[0]);
+
 			}
 		}
 	}

@@ -49,11 +49,12 @@ void UValveComponent::ApplyRotationDelta(float Delta)
 	if (ValveMesh)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Rotate mesh"));
-		ValveMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 
-			FMath::GetMappedRangeValueClamped(
+		float MappedRotateAngle = FMath::GetMappedRangeValueClamped(
 				FVector2D(0.0f, RequiredRotationDegrees),
 				FVector2D(0.0f, 360.0f), 
-				CurrentRotation)));
+				CurrentRotation);
+		
+		ValveMesh->SetRelativeRotation(FRotator(0.0f, MappedRotateAngle, 0.0f));
 	}
 	
 	if (CurrentRotation >= RequiredRotationDegrees)

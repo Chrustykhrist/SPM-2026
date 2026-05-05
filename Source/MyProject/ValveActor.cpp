@@ -15,14 +15,14 @@ AValveActor::AValveActor()
 	ValveWheelMesh->SetupAttachment(ValveBaseMesh);
 	
 	ValveComponent = CreateDefaultSubobject<UValveComponent>(TEXT("ValveComponent"));
-	ValveComponent->ValveMesh = ValveBaseMesh;
+	ValveComponent->ValveMesh = ValveWheelMesh;
 }
 
 // Called when the game starts or when spawned
 void AValveActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	ValveComponent->ValveMesh = ValveWheelMesh;
 }
 
 // Called every frame
