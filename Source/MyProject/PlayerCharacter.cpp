@@ -236,9 +236,6 @@ void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
 	UPickUp* PickUp = Cast<UPickUp>(GetComponentByClass(UPickUp::StaticClass()));
 
 	PickUp->PickUp();
-
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
 }
 
 /**

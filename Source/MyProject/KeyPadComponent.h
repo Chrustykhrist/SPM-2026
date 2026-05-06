@@ -32,23 +32,30 @@ public:
 	UFUNCTION()
 	void Accepted();
 
+	// Remove all the pressed buttons form the array of pressed buttons.
 	UFUNCTION()
 	void ClearPressed();
-	
+
+	// What buttons have been pressed
 	UPROPERTY()
 	TArray<FName> PressedButtons;
 
+	// The code that needs to be inputted
 	UPROPERTY()
 	TArray<FName> NeededCode;
 
+	// The list of doors that are to open
 	UPROPERTY(EditAnywhere, Category="Doors")
 	TArray<AActor*> Doors;
 
+	// True if correct buttons in correct sequence, otherwise false
 	bool CorrectInput = true;
 
+	// True if doors should turn
 	bool Turn = false;
 
 private:
+	// Array of all the doors yaws
 	UPROPERTY()
 	TArray<float> DoorYaws;
 };
