@@ -54,7 +54,7 @@ void ABrokenGlass::PlayerStep()
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	if (PlayerPawn && PlayerPawn->GetVelocity().Size() > 0)
 	{
-		NoiseEmitter->TriggerNoise(PlayerPawn, 0.8f, GetActorLocation());
+		NoiseEmitter->TriggerNoise(PlayerPawn, LoudnessMultiplier, GetActorLocation());
 	}
 }
 

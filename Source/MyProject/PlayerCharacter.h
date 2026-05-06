@@ -155,10 +155,10 @@ private:
 	UHidingComponent* HidingComponent;
 	
 	UPROPERTY(EditAnywhere, Category="Sound")
-	float SprintLoudnessMultiplier = 0.4f;
+	float SprintLoudnessMultiplier = 0.65f;
 	
 	UPROPERTY(EditAnywhere, Category="Sound")
-	float WalkLoudnessMultiplier = 0.1f;
+	float WalkLoudnessMultiplier = 0.35f;
 	
 	//UPROPERTY(VisibleAnywhere)
 	//TObjectPtr<UInteractionComponent> InteractionComponent;
