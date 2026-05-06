@@ -35,13 +35,16 @@ public:
 	// Remove all the pressed buttons form the array of pressed buttons.
 	UFUNCTION()
 	void ClearPressed();
+	
+	UFUNCTION(BlueprintCallable, Blueprintable)
+	TArray<FName> GetNeededCode();
 
 	// What buttons have been pressed
 	UPROPERTY()
 	TArray<FName> PressedButtons;
 
 	// The code that needs to be inputted
-	UPROPERTY()
+	UPROPERTY(meta=(BlueprintCallable))
 	TArray<FName> NeededCode;
 
 	// The list of doors that are to open
