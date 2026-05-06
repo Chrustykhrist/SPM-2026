@@ -44,6 +44,8 @@ AActor* UInteractionComponent::FindInteractingActor() const
 	//bool bHit = GetWorld()->SweepSingleByChannel(ActorHit, StartLocation, 
 		//EndLocation, FQuat::Identity, ECC_GameTraceChannel13, Sphere);
 	
+	// Going to change the TraceChannel to 13 or something but will do that later
+	// when i know no one else changes the project setting since there will be annoying conflicts
 	bool bHit = GetWorld()->SweepSingleByChannel(ActorHit, StartLocation, 
 		EndLocation, FQuat::Identity, ECC_Visibility, Sphere);
 	
@@ -61,11 +63,11 @@ AActor* UInteractionComponent::FindInteractingActor() const
 			return HitActor;
 		}
         
-		UE_LOG(LogTemp, Warning, TEXT("Hit %s but it has no interactable interface"), *HitActor->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("Hit %s but it has no interactable interface"), *HitActor->GetName());
 	}
 	else 
 	{
-		UE_LOG(LogTemp, Warning, TEXT("FindInteractingActor did not hit anything."));
+		//UE_LOG(LogTemp, Warning, TEXT("FindInteractingActor did not hit anything."));
 	}
 	
 	return nullptr;
@@ -73,11 +75,11 @@ AActor* UInteractionComponent::FindInteractingActor() const
 
 void UInteractionComponent::BeginInteract()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent %s"), bIsInteracting ? TEXT("true") : TEXT("false"));
+	//UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent %s"), bIsInteracting ? TEXT("true") : TEXT("false"));
 	if (bIsInteracting) return;
-	UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent"));
+	//UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent"));
 	AActor* TargetActor = FindInteractingActor();
-	UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent, Actor: %s"), TargetActor ? *TargetActor->GetName() : TEXT("None"));
+	//UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent, Actor: %s"), TargetActor ? *TargetActor->GetName() : TEXT("None"));
 	if (!TargetActor) return;
 	
 	IInteractable* InteractableActor = Cast<IInteractable>(TargetActor);
@@ -92,7 +94,7 @@ void UInteractionComponent::BeginInteract()
 void UInteractionComponent::InteractHeld(float Delta)
 {
 	if (!bIsInteracting || !CurrentInteractingActor) return;
-	UE_LOG(LogTemp, Warning, TEXT("Interact Held"));
+	//UE_LOG(LogTemp, Warning, TEXT("Interact Held"));
 	
 	// does a proximity check if the player is close enough to the valve
 	// so they cant just hold E and the walk away and turn the valve from anywhere in the level
@@ -101,7 +103,7 @@ void UInteractionComponent::InteractHeld(float Delta)
 	// dont forget to adjust maxinteractiondistance its at 500 in the editor now
 	if (Distance > FMath::Square(MaxInteractionDistance))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player to far away from valve"));
+		//UE_LOG(LogTemp, Warning, TEXT("Player to far away from valve"));
 		EndInteract();
 		return;
 	}
@@ -113,7 +115,7 @@ void UInteractionComponent::InteractHeld(float Delta)
 	
 	if (Dot < AcceptableLookRatio)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player looked away from valve"));
+		//UE_LOG(LogTemp, Warning, TEXT("Player looked away from valve"));
 		EndInteract();
 		return;
 	}
