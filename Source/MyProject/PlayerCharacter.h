@@ -7,6 +7,7 @@
 #include "InputActionvalue.h"
 #include "PlayerCharacter.generated.h"
 
+class UInteractionComponent;
 class UHidingComponent;
 
 UCLASS()
@@ -99,6 +100,11 @@ private:
 
 	void ReleaseBreath(const FInputActionValue& Value);
 	
+	void InteractBegin(const FInputActionValue& Value);
+	
+	void InteractHold(const FInputActionValue& Value);
+	
+	void InteractEnd(const FInputActionValue& Value);
 #pragma endregion	
 	UPROPERTY()
 	class UCharacterMovementComponent* MovementComponent;
@@ -149,9 +155,14 @@ private:
 	UHidingComponent* HidingComponent;
 	
 	UPROPERTY(EditAnywhere, Category="Sound")
-	float SprintLoudnessMultiplier = 0.4f;
+	float SprintLoudnessMultiplier = 0.65f;
 	
 	UPROPERTY(EditAnywhere, Category="Sound")
-	float WalkLoudnessMultiplier = 0.1f;
+	float WalkLoudnessMultiplier = 0.35f;
+	
+	//UPROPERTY(VisibleAnywhere)
+	//TObjectPtr<UInteractionComponent> InteractionComponent;
+	
+	float CurrentTurnDelta = 0.0f;
 #pragma endregion	
 };
