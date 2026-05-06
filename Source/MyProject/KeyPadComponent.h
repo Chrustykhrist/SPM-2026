@@ -36,7 +36,7 @@ public:
 	UFUNCTION()
 	void ClearPressed();
 	
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Blueprintable)
 	TArray<FName> GetNeededCode();
 
 	// What buttons have been pressed
