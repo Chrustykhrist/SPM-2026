@@ -30,6 +30,9 @@ public:
 	// Get spawn point
 	UFUNCTION()
 	FTransform GetCheckPointTransform() const;
+	
+	UFUNCTION(BlueprintCallable)
+	bool CheckForPowerKey();
 
 	// Inventory of the collected items, Key : Tag, Value : Number of items with that tag
 	UPROPERTY()

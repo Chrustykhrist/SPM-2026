@@ -3,6 +3,8 @@
 
 #include "CustomPlayerState.h"
 
+#include <rapidjson/rapidjson.h>
+
 #include "GameFramework/GameModeBase.h"
 
 ACustomPlayerState::ACustomPlayerState()
@@ -39,4 +41,17 @@ void ACustomPlayerState::SetCheckPointTransform(FTransform NewSpawnTransform)
 FTransform ACustomPlayerState::GetCheckPointTransform() const
 {
 	return SpawnTransform;
+}
+
+/**
+ * @return If we have the key or not
+ */
+bool ACustomPlayerState::CheckForPowerKey()
+{
+	if (CollectedItems[FName("PowerKey")] >= 1)
+	{
+		return true;
+	}
+	
+	return false;
 }
