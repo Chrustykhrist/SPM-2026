@@ -127,3 +127,8 @@ void UKeyPadComponent::ClearPressed()
 	UE_LOG(LogTemp, Display, TEXT("Clear Pressed"));
 }
 
+TArray<FName> UKeyPadComponent::GetNeededCode()
+{
+	return NeededCode;
+}
+
