@@ -7,6 +7,7 @@
 #include "InputActionvalue.h"
 #include "PlayerCharacter.generated.h"
 
+class UFootstepComponent;
 class UInteractionComponent;
 class UHidingComponent;
 
@@ -164,5 +165,9 @@ private:
 	//TObjectPtr<UInteractionComponent> InteractionComponent;
 	
 	float CurrentTurnDelta = 0.0f;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
+	UFootstepComponent* FootstepComponent;
+	
 #pragma endregion	
 };
