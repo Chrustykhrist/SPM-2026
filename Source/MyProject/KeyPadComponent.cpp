@@ -93,6 +93,11 @@ void UKeyPadComponent::Pressed(FName number)
  */
 void UKeyPadComponent::Accepted()
 {
+	if (PressedButtons.Num() < 4)
+	{
+		return;
+	}
+
 	// Check if the code is correct
 	for (int i = 0; i < NeededCode.Num(); i++)
 	{

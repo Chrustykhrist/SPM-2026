@@ -87,7 +87,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAMove, ETriggerEvent::Completed, this, &APlayerCharacter::StopMoving);
 		
 		// Looking
-		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::ControllerLook);
 		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		
 		// Crouching
@@ -146,19 +146,27 @@ void APlayerCharacter::StopMoving(const FInputActionValue& Value)
 }
 #pragma endregion
 
+#pragma region LOOK
 /**
- *  Lets the player look around
+ *  Lets the player look around, for keyboard and mouse
  */
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
-	// Moves the camera up and down
-	AddControllerPitchInput(Value.Get<FVector2D>().Y * Sensitivity * GetWorld()->GetDeltaSeconds());
-	// Moves the camera left and right
-	AddControllerYawInput(Value.Get<FVector2D>().X * Sensitivity * GetWorld()->GetDeltaSeconds());
+	AddControllerPitchInput(Value.Get<FVector2D>().Y * MouseSensitivity * GetWorld()->GetDeltaSeconds());
+	AddControllerYawInput(Value.Get<FVector2D>().X * MouseSensitivity * GetWorld()->GetDeltaSeconds());
 }
 
-#pragma region CROUCH
+/**
+ * Lets the player look around, for controller
+ */
+void APlayerCharacter::ControllerLook(const FInputActionValue& Value)
+{
+	AddControllerPitchInput(Value.Get<FVector2D>().Y * ControllerSensitivity * GetWorld()->GetDeltaSeconds());
+	AddControllerYawInput(Value.Get<FVector2D>().X * ControllerSensitivity * GetWorld()->GetDeltaSeconds());
+}
+#pragma endregion
 
+#pragma region CROUCH
 /**
  *  Makes the player crouch
  *
