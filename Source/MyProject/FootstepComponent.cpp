@@ -85,7 +85,10 @@ ESurfaceType UFootstepComponent::DetectSurfaceType()
 	
 	bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, Start, End, 
 		ECollisionChannel::ECC_Visibility, QueryParams);
+	
+#if WITH_EDITOR	
 	DrawDebugLine(GetWorld(), Start, End, bHit ? FColor::Green : FColor::Red, false, 0.5f);
+#endif	
 	if (bHit && Hit.PhysMaterial.IsValid())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Material hit: %s"), *Hit.PhysMaterial.Get()->GetName());

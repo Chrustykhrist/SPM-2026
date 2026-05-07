@@ -83,7 +83,8 @@ void ATubeActor::Tick(float DeltaTime)
 		if (CurrentFillLevel <= 0.0f)
 		{
 			CurrentFillLevel = 0.0f;
-			FluidMesh->SetVisibility(false);
+			this->Destroy();
+			//FluidMesh->SetVisibility(false);
 			SetActorTickEnabled(false);
 		}
 	}
