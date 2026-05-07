@@ -13,6 +13,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "InteractionComponent.h"
+#include "FootstepComponent.h"
 #include "Misc/LowLevelTestAdapter.h"
 #include "Camera/CameraComponent.h"
 // Sets default values
@@ -23,6 +24,7 @@ APlayerCharacter::APlayerCharacter()
 	
 	CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 	
+	FootstepComponent = CreateDefaultSubobject<UFootstepComponent>(TEXT("FootstepComponent"));
 	// InteractionComponent->SetupAttachment(RootComponent);
 }
 
@@ -130,6 +132,8 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(GetActorRightVector(), Value.Get<FVector2D>().X);
 	
 	if (!bCrouching) MakeNoise(WalkLoudnessMultiplier, this, GetActorLocation());
+	
+	FootstepComponent->SetIsMoving(true);
 }
 
 /**
@@ -138,6 +142,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 void APlayerCharacter::StopMoving(const FInputActionValue& Value)
 {
 	bMoving = false;
+	FootstepComponent->SetIsMoving(false);
 }
 #pragma endregion
 
@@ -167,9 +172,13 @@ void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 		return;
 	}
 	
-	bCrouching = true;
+	if (!bCrouching)
+	{
+		bCrouching = true;
+		FootstepComponent->SetMovementState(EMovementState::Sneaking);
+		Crouch();
+	}
 	
-	Crouch();
 }
 
 /**
@@ -185,7 +194,7 @@ void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 	}
 	
 	bCrouching = false;
-	
+	FootstepComponent->SetMovementState(EMovementState::Walking);
 	UnCrouch();
 }
 #pragma endregion
@@ -202,6 +211,10 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 	// Slows the player down depending on different conditions
 	if (Stamina > 0 && !bCrouching && bMoving)
 	{
+		if (FootstepComponent->GetCurrentMovementState() != EMovementState::Sprinting)
+		{
+			FootstepComponent->SetMovementState(EMovementState::Sprinting);
+		}
 		MakeNoise(SprintLoudnessMultiplier, this, GetActorLocation());
 		MovementComponent->MaxWalkSpeed = WalkSpeed + SpeedDecrease * Stamina;
 		Stamina -= GetWorld()->GetDeltaSeconds();
@@ -225,6 +238,7 @@ void APlayerCharacter::SlowDown(const FInputActionValue& Value)
 	MovementComponent->MaxWalkSpeed *= 0;
 	MovementComponent->MaxWalkSpeed = WalkSpeed;
 	bRunning = false;
+	FootstepComponent->SetMovementState(EMovementState::Walking);
 }
 #pragma endregion
 

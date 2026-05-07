@@ -33,7 +33,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	bool CheckForPowerKey();
-
+	
+	UFUNCTION(BlueprintCallable)
+	bool HasRequiredItem(FName ItemName, int RequiredAmount = 1);
+	
 	// Inventory of the collected items, Key : Tag, Value : Number of items with that tag
 	UPROPERTY()
 	TMap<FName, int> CollectedItems;

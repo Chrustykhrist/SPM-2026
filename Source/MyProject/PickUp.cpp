@@ -5,6 +5,7 @@
 
 #include "CustomPlayerState.h"
 #include "DiffUtils.h"
+#include "KeycardReader.h"
 #include "KeyPadComponent.h"
 
 // Sets default values for this component's properties
@@ -105,9 +106,16 @@ void UPickUp::PickUp()
 				KP->Pressed(ButtonHit.GetComponent()->ComponentTags[0]);
 
 			}
-		} else if(ButtonHit.GetActor()->Tags[0].IsEqual("PowerSwitch"))
+		} else if(ButtonHit.GetActor()->ActorHasTag("PowerSwitch"))
 		{
 			bPowerSwitchPushed = true;
+		}
+		
+		if (AKeycardReader* KeycardReader = Cast<AKeycardReader>(ButtonHit.GetActor()))
+		{
+			APlayerController* PC = GetWorld()->GetFirstPlayerController();
+			ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
+			KeycardReader->TryUnlock(PS);
 		}
 	}
 }
