@@ -5,6 +5,8 @@
 
 #include "BlindMonsterCharacter.h"
 #include "CustomPlayerState.h"
+#include "FootstepComponent.h"
+#include "PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 void AHorrorGameMode::PlayerDied()
@@ -29,15 +31,26 @@ void AHorrorGameMode::PlayerDied()
 	
 	GetWorldTimerManager().SetTimer(RestartTimerHandle, this, &AHorrorGameMode::GameOver, RestartDelay, false);
 	
-	// Needed for removal of visuals, does not work in GameOver method, not sure why
-	RemoveVisuals();
+	APlayerCharacter* PCH = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	
+	if (PCH->bIsCrouched)
+	{
+		PCH->UnCrouch();
+	}
+	
+	if (PCH->GetMoving())
+	{
+		PCH->GetFootstepComponent()->SetIsMoving(false);
+	}
 }
 
 /**
  * Respawns the player at the last gotten checkpoint
  */
-void AHorrorGameMode::GameOver() const
+void AHorrorGameMode::GameOver()
 {
+	RemoveVisuals();
+	
 	//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
@@ -53,8 +66,17 @@ void AHorrorGameMode::GameOver() const
 	GetWorld()->GetAuthGameMode()->RestartPlayer(PC);
 	
 	// Find the blind monster
-	AActor* MonsterActor = UGameplayStatics::GetActorOfClass(GetWorld(), ABlindMonsterCharacter::StaticClass());
-	ABlindMonsterCharacter* BlindMonster = Cast<ABlindMonsterCharacter>(MonsterActor);
+	//for (AActor* CurrentMonster )
+	TArray<AActor*> OutActors;
+	TArray<ABlindMonsterCharacter*> BlindMonsterActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABlindMonsterCharacter::StaticClass(), OutActors);
+	for (AActor* Actor : OutActors)
+	{
+		//ABlindMonsterCharacter* BlindMonster = Cast<ABlindMonsterCharacter>(Actor);
+		BlindMonsterActors.Add(Cast<ABlindMonsterCharacter>(Actor));
+	}
+	//AActor* MonsterActor = UGameplayStatics::GetActorOfClass(GetWorld(), ABlindMonsterCharacter::StaticClass());
+	//ABlindMonsterCharacter* BlindMonster = Cast<ABlindMonsterCharacter>(MonsterActor);
 	
 	ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
 	APawn* NewPawn = PC->GetPawn();
@@ -85,8 +107,12 @@ void AHorrorGameMode::GameOver() const
 	NewPawn->EnableInput(PC);
 	
 	// If we found blind monster reset its movement
-	if (BlindMonster)
+	if (!BlindMonsterActors.IsEmpty())
 	{
-		BlindMonster->ResetMovement();
+		for (ABlindMonsterCharacter* CurrentMonster : BlindMonsterActors)
+		{
+			CurrentMonster->ResetMovement();
+		}
+		//BlindMonster->ResetMovement();
 	}
 }

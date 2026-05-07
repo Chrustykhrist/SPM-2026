@@ -18,7 +18,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Game Rules")
 	void PlayerDied();
-	
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Death")
 	class USoundBase* DeathSound;
@@ -30,12 +30,14 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game Rules")
 	void RemoveVisuals();
 	
-	void GameOver() const;
+	void GameOver();
 	
 private:
 	UPROPERTY(EditAnywhere, Category = "Game Rules", meta = (AllowPrivateAccess = true))
 	float RestartDelay = 3.f;
 	
 	FTimerHandle RestartTimerHandle;
+	
+	
 
 };
