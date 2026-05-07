@@ -76,6 +76,10 @@ public:
 	void HidePauseScreen();
 
 	void SetHidingComponent(UHidingComponent* NewHidingComponent);
+	
+	bool GetMoving() { return bMoving; }
+	
+	UFootstepComponent* GetFootstepComponent() { return FootstepComponent; }
 
 private:
 #pragma region INPUT_METHODS	

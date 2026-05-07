@@ -5,6 +5,8 @@
 
 #include "BlindMonsterCharacter.h"
 #include "CustomPlayerState.h"
+#include "FootstepComponent.h"
+#include "PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 void AHorrorGameMode::PlayerDied()
@@ -29,15 +31,26 @@ void AHorrorGameMode::PlayerDied()
 	
 	GetWorldTimerManager().SetTimer(RestartTimerHandle, this, &AHorrorGameMode::GameOver, RestartDelay, false);
 	
-	// Needed for removal of visuals, does not work in GameOver method, not sure why
-	RemoveVisuals();
+	APlayerCharacter* PCH = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	
+	if (PCH->bIsCrouched)
+	{
+		PCH->UnCrouch();
+	}
+	
+	if (PCH->GetMoving())
+	{
+		PCH->GetFootstepComponent()->SetIsMoving(false);
+	}
 }
 
 /**
  * Respawns the player at the last gotten checkpoint
  */
-void AHorrorGameMode::GameOver() const
+void AHorrorGameMode::GameOver()
 {
+	RemoveVisuals();
+	
 	//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
