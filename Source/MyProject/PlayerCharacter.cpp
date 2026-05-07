@@ -200,10 +200,6 @@ void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 	{
 		return;
 	}
-	if (bIsCrouched)
-	{
-		return;
-	}
 	bCrouching = false;
 	FootstepComponent->SetMovementState(EMovementState::Walking);
 	UnCrouch();
