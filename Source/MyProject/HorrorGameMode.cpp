@@ -53,8 +53,17 @@ void AHorrorGameMode::GameOver() const
 	GetWorld()->GetAuthGameMode()->RestartPlayer(PC);
 	
 	// Find the blind monster
-	AActor* MonsterActor = UGameplayStatics::GetActorOfClass(GetWorld(), ABlindMonsterCharacter::StaticClass());
-	ABlindMonsterCharacter* BlindMonster = Cast<ABlindMonsterCharacter>(MonsterActor);
+	//for (AActor* CurrentMonster )
+	TArray<AActor*> OutActors;
+	TArray<ABlindMonsterCharacter*> BlindMonsterActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABlindMonsterCharacter::StaticClass(), OutActors);
+	for (AActor* Actor : OutActors)
+	{
+		//ABlindMonsterCharacter* BlindMonster = Cast<ABlindMonsterCharacter>(Actor);
+		BlindMonsterActors.Add(Cast<ABlindMonsterCharacter>(Actor));
+	}
+	//AActor* MonsterActor = UGameplayStatics::GetActorOfClass(GetWorld(), ABlindMonsterCharacter::StaticClass());
+	//ABlindMonsterCharacter* BlindMonster = Cast<ABlindMonsterCharacter>(MonsterActor);
 	
 	ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
 	APawn* NewPawn = PC->GetPawn();
@@ -85,8 +94,12 @@ void AHorrorGameMode::GameOver() const
 	NewPawn->EnableInput(PC);
 	
 	// If we found blind monster reset its movement
-	if (BlindMonster)
+	if (!BlindMonsterActors.IsEmpty())
 	{
-		BlindMonster->ResetMovement();
+		for (ABlindMonsterCharacter* CurrentMonster : BlindMonsterActors)
+		{
+			CurrentMonster->ResetMovement();
+		}
+		//BlindMonster->ResetMovement();
 	}
 }
