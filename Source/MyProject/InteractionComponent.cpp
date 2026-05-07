@@ -55,7 +55,9 @@ AActor* UInteractionComponent::FindInteractingActor() const
 	// 	return ActorHit.GetActor(); ECC_Visibility
 	// }
 	AActor* HitActor = ActorHit.GetActor();
+#if WITH_EDITOR	
 	DrawDebugSphere(GetWorld(), EndLocation, InteractionRadius, 12, FColor::Red, false, 2.0f);
+#endif	
 	if (bHit && HitActor)
 	{
 		if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))

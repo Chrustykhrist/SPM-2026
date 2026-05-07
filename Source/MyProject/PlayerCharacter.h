@@ -84,6 +84,7 @@ private:
 	void StopMoving(const FInputActionValue& Value);
 
 	void Look(const FInputActionValue& Value);
+	void ControllerLook(const FInputActionValue& Value);
 	
 	void PlayerCrouch(const FInputActionValue& Value);
 	void PlayerUnCrouch(const FInputActionValue& Value);
@@ -96,15 +97,11 @@ private:
 	void PauseGame(const FInputActionValue& Value);
 
 	void HideInLocker(const FInputActionValue& Value);
-
 	void HoldBreath(const FInputActionValue& Value);
-
 	void ReleaseBreath(const FInputActionValue& Value);
 	
 	void InteractBegin(const FInputActionValue& Value);
-	
 	void InteractHold(const FInputActionValue& Value);
-	
 	void InteractEnd(const FInputActionValue& Value);
 #pragma endregion	
 	UPROPERTY()
@@ -140,7 +137,10 @@ private:
 	float CrouchSpeed = 200;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	float Sensitivity = 50;
+	float MouseSensitivity = 50;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	float ControllerSensitivity = 100;
 	
 	// How many seconds the player can run
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
