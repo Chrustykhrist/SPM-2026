@@ -5,6 +5,7 @@
 
 #include "CustomPlayerState.h"
 #include "DiffUtils.h"
+#include "KeycardReader.h"
 #include "KeyPadComponent.h"
 
 // Sets default values for this component's properties
@@ -37,7 +38,7 @@ void UPickUp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 }
 
 /**
- * Checks if the player is able to pick up the item which the player is looking at and then puts the item in the inventory of the player if able
+ * Checks if the player is able to press or pick up the object in front of them
  */
 void UPickUp::PickUp()
 {
@@ -64,35 +65,39 @@ void UPickUp::PickUp()
 	
 	if (bGrabbable)
 	{
-		// Puts the item in the inventory and then removes it
+		// Puts the item in the inventory and then removes it from the world
 		APlayerController* PC = GetWorld()->GetFirstPlayerController();
 		ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
 
 		FName ItemName = ItemHit.GetActor()->Tags[0];
 
 		PS->CollectedItems[ItemName]++;
+
+		//UE_LOG(LogTemp, Display, TEXT("%s, %d"), *ItemHit.GetActor()->GetName(), PS->CollectedItems[ItemName]);
 		
 		ItemHit.GetActor()->Destroy();
 	}
 
 	if (bPushable)
 	{
-		// Saves the pressed buttons and then checks if it is correct
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->GetName());
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->ComponentTags[0].ToString());
+		// UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->GetName());
+		// UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->ComponentTags[0].ToString());
 
 		if (UKeyPadComponent* KP = Cast<UKeyPadComponent>(ButtonHit.GetActor()->GetComponentByClass(UKeyPadComponent::StaticClass())))
 		{
 			if (ButtonHit.GetComponent()->ComponentTags[0].IsEqual("Accept"))
 			{
+				// If the Accept button is press check if it is correct. Done im keypad
 				KP->Accepted();
 			}
 			else if (ButtonHit.GetComponent()->ComponentTags[0].IsEqual("Clear"))
 			{
+				// If the clear button is called, clears the list of pressed buttons. Done in keypad
 				KP->ClearPressed();
 			}
 			else
 			{
+				// if the amount pressed is 4 remove all the pressed buttons then add the pressed ones otherwise, just add the button
 				if (KP->PressedButtons.Num() == 4)
 				{
 					KP->ClearPressed();
@@ -101,7 +106,22 @@ void UPickUp::PickUp()
 				KP->Pressed(ButtonHit.GetComponent()->ComponentTags[0]);
 
 			}
+		} else if(ButtonHit.GetActor()->ActorHasTag("PowerSwitch"))
+		{
+			bPowerSwitchPushed = true;
+		}
+		
+		if (AKeycardReader* KeycardReader = Cast<AKeycardReader>(ButtonHit.GetActor()))
+		{
+			APlayerController* PC = GetWorld()->GetFirstPlayerController();
+			ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
+			KeycardReader->TryUnlock(PS);
 		}
 	}
+}
+
+bool UPickUp::GetPowerswitched()
+{
+	return bPowerSwitchPushed;
 }
 

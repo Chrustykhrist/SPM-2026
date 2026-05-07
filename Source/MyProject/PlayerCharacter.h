@@ -7,6 +7,7 @@
 #include "InputActionvalue.h"
 #include "PlayerCharacter.generated.h"
 
+class UFootstepComponent;
 class UInteractionComponent;
 class UHidingComponent;
 
@@ -83,6 +84,7 @@ private:
 	void StopMoving(const FInputActionValue& Value);
 
 	void Look(const FInputActionValue& Value);
+	void ControllerLook(const FInputActionValue& Value);
 	
 	void PlayerCrouch(const FInputActionValue& Value);
 	void PlayerUnCrouch(const FInputActionValue& Value);
@@ -95,15 +97,11 @@ private:
 	void PauseGame(const FInputActionValue& Value);
 
 	void HideInLocker(const FInputActionValue& Value);
-
 	void HoldBreath(const FInputActionValue& Value);
-
 	void ReleaseBreath(const FInputActionValue& Value);
 	
 	void InteractBegin(const FInputActionValue& Value);
-	
 	void InteractHold(const FInputActionValue& Value);
-	
 	void InteractEnd(const FInputActionValue& Value);
 #pragma endregion	
 	UPROPERTY()
@@ -139,7 +137,10 @@ private:
 	float CrouchSpeed = 200;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	float Sensitivity = 50;
+	float MouseSensitivity = 50;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	float ControllerSensitivity = 100;
 	
 	// How many seconds the player can run
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
@@ -155,14 +156,18 @@ private:
 	UHidingComponent* HidingComponent;
 	
 	UPROPERTY(EditAnywhere, Category="Sound")
-	float SprintLoudnessMultiplier = 0.4f;
+	float SprintLoudnessMultiplier = 0.65f;
 	
 	UPROPERTY(EditAnywhere, Category="Sound")
-	float WalkLoudnessMultiplier = 0.1f;
+	float WalkLoudnessMultiplier = 0.35f;
 	
 	//UPROPERTY(VisibleAnywhere)
 	//TObjectPtr<UInteractionComponent> InteractionComponent;
 	
 	float CurrentTurnDelta = 0.0f;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
+	UFootstepComponent* FootstepComponent;
+	
 #pragma endregion	
 };

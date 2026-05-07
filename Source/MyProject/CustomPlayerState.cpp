@@ -3,6 +3,8 @@
 
 #include "CustomPlayerState.h"
 
+#include <rapidjson/rapidjson.h>
+
 #include "GameFramework/GameModeBase.h"
 
 ACustomPlayerState::ACustomPlayerState()
@@ -10,6 +12,9 @@ ACustomPlayerState::ACustomPlayerState()
 	// Make places for the items that will be added
 	CollectedItems.Add(FName("Battery"), 0);
 	CollectedItems.Add(FName("Medicine"), 0);
+	CollectedItems.Add(FName("PowerKey"), 0);
+	CollectedItems.Add(FName("KeycardA"), 0);
+	CollectedItems.Add(FName("KeycardB"), 0);
 }
 
 void ACustomPlayerState::BeginPlay()
@@ -38,4 +43,30 @@ void ACustomPlayerState::SetCheckPointTransform(FTransform NewSpawnTransform)
 FTransform ACustomPlayerState::GetCheckPointTransform() const
 {
 	return SpawnTransform;
+}
+
+/**
+ * @return If we have the key or not
+ */
+bool ACustomPlayerState::CheckForPowerKey()
+{
+	if (CollectedItems[FName("PowerKey")] >= 1)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+/**
+ * @return If we have the required item or not, so this method could be reused for the other items as well
+ */
+bool ACustomPlayerState::HasRequiredItem(FName ItemName, int RequiredAmount)
+{
+	if (CollectedItems.Contains(ItemName))
+	{
+		return CollectedItems[ItemName] >= RequiredAmount;
+	}
+	
+	return false;
 }

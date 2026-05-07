@@ -13,6 +13,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "InteractionComponent.h"
+#include "FootstepComponent.h"
 #include "Misc/LowLevelTestAdapter.h"
 #include "Camera/CameraComponent.h"
 // Sets default values
@@ -23,6 +24,7 @@ APlayerCharacter::APlayerCharacter()
 	
 	CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 	
+	FootstepComponent = CreateDefaultSubobject<UFootstepComponent>(TEXT("FootstepComponent"));
 	// InteractionComponent->SetupAttachment(RootComponent);
 }
 
@@ -85,7 +87,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAMove, ETriggerEvent::Completed, this, &APlayerCharacter::StopMoving);
 		
 		// Looking
-		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::ControllerLook);
 		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		
 		// Crouching
@@ -130,6 +132,8 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(GetActorRightVector(), Value.Get<FVector2D>().X);
 	
 	if (!bCrouching) MakeNoise(WalkLoudnessMultiplier, this, GetActorLocation());
+	
+	FootstepComponent->SetIsMoving(true);
 }
 
 /**
@@ -138,22 +142,31 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 void APlayerCharacter::StopMoving(const FInputActionValue& Value)
 {
 	bMoving = false;
+	FootstepComponent->SetIsMoving(false);
 }
 #pragma endregion
 
+#pragma region LOOK
 /**
- *  Lets the player look around
+ *  Lets the player look around, for keyboard and mouse
  */
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
-	// Moves the camera up and down
-	AddControllerPitchInput(Value.Get<FVector2D>().Y * Sensitivity * GetWorld()->GetDeltaSeconds());
-	// Moves the camera left and right
-	AddControllerYawInput(Value.Get<FVector2D>().X * Sensitivity * GetWorld()->GetDeltaSeconds());
+	AddControllerPitchInput(Value.Get<FVector2D>().Y * MouseSensitivity * GetWorld()->GetDeltaSeconds());
+	AddControllerYawInput(Value.Get<FVector2D>().X * MouseSensitivity * GetWorld()->GetDeltaSeconds());
 }
 
-#pragma region CROUCH
+/**
+ * Lets the player look around, for controller
+ */
+void APlayerCharacter::ControllerLook(const FInputActionValue& Value)
+{
+	AddControllerPitchInput(Value.Get<FVector2D>().Y * ControllerSensitivity * GetWorld()->GetDeltaSeconds());
+	AddControllerYawInput(Value.Get<FVector2D>().X * ControllerSensitivity * GetWorld()->GetDeltaSeconds());
+}
+#pragma endregion
 
+#pragma region CROUCH
 /**
  *  Makes the player crouch
  *
@@ -167,9 +180,13 @@ void APlayerCharacter::PlayerCrouch(const FInputActionValue& Value)
 		return;
 	}
 	
-	bCrouching = true;
+	if (!bCrouching)
+	{
+		bCrouching = true;
+		FootstepComponent->SetMovementState(EMovementState::Sneaking);
+		Crouch();
+	}
 	
-	Crouch();
 }
 
 /**
@@ -185,7 +202,7 @@ void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 	}
 	
 	bCrouching = false;
-	
+	FootstepComponent->SetMovementState(EMovementState::Walking);
 	UnCrouch();
 }
 #pragma endregion
@@ -202,6 +219,10 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 	// Slows the player down depending on different conditions
 	if (Stamina > 0 && !bCrouching && bMoving)
 	{
+		if (FootstepComponent->GetCurrentMovementState() != EMovementState::Sprinting)
+		{
+			FootstepComponent->SetMovementState(EMovementState::Sprinting);
+		}
 		MakeNoise(SprintLoudnessMultiplier, this, GetActorLocation());
 		MovementComponent->MaxWalkSpeed = WalkSpeed + SpeedDecrease * Stamina;
 		Stamina -= GetWorld()->GetDeltaSeconds();
@@ -225,6 +246,7 @@ void APlayerCharacter::SlowDown(const FInputActionValue& Value)
 	MovementComponent->MaxWalkSpeed *= 0;
 	MovementComponent->MaxWalkSpeed = WalkSpeed;
 	bRunning = false;
+	FootstepComponent->SetMovementState(EMovementState::Walking);
 }
 #pragma endregion
 
@@ -236,9 +258,6 @@ void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
 	UPickUp* PickUp = Cast<UPickUp>(GetComponentByClass(UPickUp::StaticClass()));
 
 	PickUp->PickUp();
-
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
 }
 
 /**
