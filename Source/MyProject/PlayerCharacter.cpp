@@ -115,6 +115,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Started, this, &APlayerCharacter::InteractBegin);
 		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Completed, this, &APlayerCharacter::InteractEnd);
 		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
+		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
 	}
 
 }

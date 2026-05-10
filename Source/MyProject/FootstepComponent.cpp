@@ -52,12 +52,15 @@ void UFootstepComponent::SetMovementState(EMovementState NewMovementState)
 void UFootstepComponent::SetIsMoving(bool NewIsMoving)
 {
 	bIsMoving = NewIsMoving;
-	if (!bIsMoving) StepTimer = 0.0f;
+	//if (!bIsMoving) StepTimer = 0.0f;
+	if (PlayerCharacter->GetCharacterMovement()->Velocity == FVector::ZeroVector) StepTimer = 0.0f;
 }
 
 void UFootstepComponent::FootstepTick(float DeltaTime)
 {
-	if (!bIsMoving || !PlayerCharacter) return;
+	//if (!bIsMoving || !PlayerCharacter) return;
+	
+	if (PlayerCharacter->GetCharacterMovement()->Velocity == FVector::ZeroVector || !PlayerCharacter) return;
 	
 	StepTimer += DeltaTime;
 	
@@ -131,24 +134,47 @@ void UFootstepComponent::PlayFootstep(ESurfaceType SurfaceType, EMovementState M
 	
 	UE_LOG(LogTemp, Log, TEXT("FMOD EventTOPlay: %s"), *EventToPlay->GetName());
 	
-	FFMODEventInstance Instance = UFMODBlueprintStatics::PlayEventAtLocation(
-		GetWorld(),
+	// FFMODEventInstance Instance = UFMODBlueprintStatics::PlayEventAtLocation(
+	// 	GetWorld(),
+	// 	EventToPlay,
+	// 	FTransform(PlayerCharacter->GetActorLocation()),
+	// 	true);
+	
+	// if (MovementState == EMovementState::Walking && CharacterMovementComponent)
+	// {
+	// 	float Speed = CharacterMovementComponent->Velocity.Size();
+	// 	UFMODBlueprintStatics::EventInstanceSetParameter(
+	// 		Instance,
+	// 		VelocityParameterName,
+	// 		Speed);
+	// }
+	
+	// UFMODBlueprintStatics::EventInstanceSetParameter(
+	// 	Instance,
+	// 	SurfaceParameterName,
+	// 	SurfaceValue);
+	
+	// Make a UFMODAudioComp instead so it follows the mesh of the actor
+	// therefore make a spatial sound
+	USceneComponent* TargetToAttach = PlayerCharacter->GetMesh();
+	UFMODAudioComponent* Instance = UFMODBlueprintStatics::PlayEventAttached(
 		EventToPlay,
-		FTransform(PlayerCharacter->GetActorLocation()),
-		true);
+		TargetToAttach,
+		NAME_None,               
+		FVector::ZeroVector,    
+		EAttachLocation::SnapToTarget,
+		true,                    
+		true,                 
+		true);   
 	
-	UFMODBlueprintStatics::EventInstanceSetParameter(
-		Instance,
-		SurfaceParameterName,
-		SurfaceValue);
+	if (!Instance) return;
 	
+	Instance->SetParameter(SurfaceParameterName, SurfaceValue);
+
 	if (MovementState == EMovementState::Walking && CharacterMovementComponent)
 	{
 		float Speed = CharacterMovementComponent->Velocity.Size();
-		UFMODBlueprintStatics::EventInstanceSetParameter(
-			Instance,
-			VelocityParameterName,
-			Speed);
+		Instance->SetParameter(VelocityParameterName, Speed);
 	}
 	
 }

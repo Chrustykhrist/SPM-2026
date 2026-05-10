@@ -24,7 +24,7 @@ public:
 	bool TryUnlock(ACustomPlayerState* PS);
 	
 	UPROPERTY(EditAnywhere, Category = "Keycard")
-	AActor* LinkedDoor;
+	TArray<AActor*> LinkedDoor;
 	
 protected:
 	// Called when the game starts or when spawned
