@@ -37,16 +37,22 @@ bool AKeycardReader::TryUnlock(ACustomPlayerState* PS)
 	if (PS->HasRequiredItem(RequiredKeycard))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Player has required item"));
-		if (LinkedDoor)
+		if (!LinkedDoor.IsEmpty())
 		{
 			UE_LOG(LogTemp, Warning, TEXT("LinkedDoor"));
 			// Finds the blueprint function that unlocks door, you guys spelled it wrong...
-			UFunction* UnlockFunction = LinkedDoor->FindFunction(FName("UnlcokDoor"));
-			if (UnlockFunction)
+			// Finnds all the doors that is connected to the reader
+			UFunction* UnlockFunction = nullptr;
+			for (AActor* CurrentDoor : LinkedDoor)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Door is being unlocked"));
-				LinkedDoor->ProcessEvent(UnlockFunction, nullptr);
+				UnlockFunction = CurrentDoor->FindFunction(FName("UnlcokDoor"));
+				if (UnlockFunction)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Door is being unlocked"));
+					CurrentDoor->ProcessEvent(UnlockFunction, nullptr);
+				}
 			}
+			
 		}
 		return true;
 	}

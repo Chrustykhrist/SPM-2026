@@ -5,7 +5,7 @@
 #include "AIController.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
+#include "FootstepComponent.h"
 
 UBTS_SetMonsterStats::UBTS_SetMonsterStats()
 {
@@ -28,13 +28,31 @@ void UBTS_SetMonsterStats::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, u
 		
 		if (Monster)
 		{
-			
+			UFootstepComponent* MonsterFootstepComp = Monster->FindComponentByClass<UFootstepComponent>();
 			UCharacterMovementComponent* MonsterMovement = Monster->GetCharacterMovement();
 			
 			if (MonsterMovement)
 			{
 				MonsterMovement->MaxWalkSpeed = MonsterSpeed;
 				MonsterMovement->RotationRate.Yaw = MonsterRotationSpeed;
+				
+				if (MonsterFootstepComp)
+				{
+					if (MonsterSpeed <= 250.0f)
+					{
+						MonsterFootstepComp->SetMovementState(EMovementState::Sneaking); 
+					}
+					else if (MonsterSpeed <= 500.0f)
+					{
+						MonsterFootstepComp->SetMovementState(EMovementState::Walking); 
+					}
+					else
+					{
+						MonsterFootstepComp->SetMovementState(EMovementState::Sprinting); 
+					}
+					
+				}
+				
 				//UE_LOG(LogTemp, Warning, TEXT("Speed: %f and Rotation: %s"), MonsterMovement->MaxWalkSpeed, *MonsterMovement->RotationRate.ToString());
 			}
 			
