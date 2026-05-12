@@ -70,3 +70,11 @@ bool ACustomPlayerState::HasRequiredItem(FName ItemName, int RequiredAmount)
 	
 	return false;
 }
+
+void ACustomPlayerState::UseItem(FName ItemName, int AmountUsed)
+{
+	if (CollectedItems.Contains(ItemName))
+	{
+		CollectedItems[ItemName] -= AmountUsed;
+	}
+}

@@ -38,6 +38,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Blueprintable)
 	TArray<FName> GetNeededCode();
+	
+	UFUNCTION(BlueprintCallable, Blueprintable)
+	FString GetRecentlyPressed();
 
 	// What buttons have been pressed
 	UPROPERTY()

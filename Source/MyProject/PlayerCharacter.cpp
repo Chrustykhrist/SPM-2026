@@ -105,7 +105,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAPause, ETriggerEvent::Started, this, &APlayerCharacter::PauseGame);
 
 		// Hide
-		UEnhancedInput->BindAction(IAHide, ETriggerEvent::Started, this, &APlayerCharacter::HideInLocker);
+		//UEnhancedInput->BindAction(IAHide, ETriggerEvent::Started, this, &APlayerCharacter::HideInLocker);
 
 		// Hold breath
 		UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Triggered, this, &APlayerCharacter::HoldBreath);
@@ -126,6 +126,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
  */
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
+	if (!bMoving && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
+	{
+		FootstepComponent->SetMovementState(EMovementState::Walking);
+	}
+	
 	bMoving = true;
 	// Forward and backwards movement
 	AddMovementInput(GetActorForwardVector(), Value.Get<FVector2D>().Y);
@@ -202,8 +207,15 @@ void APlayerCharacter::PlayerUnCrouch(const FInputActionValue& Value)
 		return;
 	}
 	bCrouching = false;
-	FootstepComponent->SetMovementState(EMovementState::Walking);
 	UnCrouch();
+	
+	//GetCharacterMovement()->bWantsToCrouch = false;
+	
+	if (GetCharacterMovement()->bWantsToCrouch == false || GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Here"));
+		FootstepComponent->SetMovementState(EMovementState::Walking);
+	}
 }
 #pragma endregion
 
@@ -219,7 +231,7 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 	// Slows the player down depending on different conditions
 	if (Stamina > 0 && !bCrouching && bMoving)
 	{
-		if (FootstepComponent->GetCurrentMovementState() != EMovementState::Sprinting)
+		if (FootstepComponent->GetCurrentMovementState() != EMovementState::Sprinting && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
 		{
 			FootstepComponent->SetMovementState(EMovementState::Sprinting);
 		}
@@ -246,7 +258,10 @@ void APlayerCharacter::SlowDown(const FInputActionValue& Value)
 	MovementComponent->MaxWalkSpeed *= 0;
 	MovementComponent->MaxWalkSpeed = WalkSpeed;
 	bRunning = false;
-	FootstepComponent->SetMovementState(EMovementState::Walking);
+	if (GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
+	{
+		FootstepComponent->SetMovementState(EMovementState::Walking);
+	}
 }
 #pragma endregion
 
@@ -307,7 +322,7 @@ void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
 	
 	if (bHiding)
 	{
-		HidingComponent->GetOut();
+		//HidingComponent->GetOut();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		UnCrouch();
 		bHiding = false;
@@ -316,7 +331,7 @@ void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
 	{
 		
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		HidingComponent->Hide();
+		//HidingComponent->Hide();
 		bHiding = true;
 	}
 }

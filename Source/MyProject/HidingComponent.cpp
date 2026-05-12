@@ -19,18 +19,12 @@ void UHidingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	//Only updates tick if not hiding
-	if (!bHiding)
-	{
-		Player = GetPlayer();
-	}
 }
 
 /**
  * Moves the player inside the locker to hide them
  */
-void UHidingComponent::Hide()
+void UHidingComponent::Hide(AActor* Player)
 {
 
 	if (bHiding == true)
@@ -68,7 +62,7 @@ void UHidingComponent::Hide()
 /**
  * Puts the player back in the position they entered at
  */
-void UHidingComponent::GetOut()
+void UHidingComponent::GetOut(AActor* Player)
 {
 	APawn* PlayerPawn = Cast<APawn>(Player);
 
@@ -89,6 +83,8 @@ void UHidingComponent::GetOut()
  * makes sure that it is the player that has entered the box trigger
  * @return The player
  */
+
+/*
 AActor* UHidingComponent::GetPlayer() const
 {
 	// An array that will contain all the actors that are in the collider
@@ -115,3 +111,4 @@ AActor* UHidingComponent::GetPlayer() const
 	// Otherwise return null
 	return nullptr;
 }
+*/

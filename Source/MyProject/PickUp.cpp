@@ -103,6 +103,8 @@ void UPickUp::PickUp()
 				}
 				
 				KP->Pressed(ButtonHit.GetComponent()->ComponentTags[0]);
+				
+				RecentlyPressed = ButtonHit.GetComponent()->ComponentTags[0];
 
 			}
 		} else if(ButtonHit.GetActor()->ActorHasTag("PowerSwitch"))

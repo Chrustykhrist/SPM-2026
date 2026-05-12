@@ -22,13 +22,13 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	UFUNCTION(BlueprintCallable)
-	void Hide();
+	void Hide(AActor* Player);
 
 	UFUNCTION(BlueprintCallable)
-	void GetOut();
+	void GetOut(AActor* Player);
 
-	UFUNCTION()
-	AActor* GetPlayer() const;
+	//UFUNCTION()
+	//AActor* GetPlayer() const;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bHiding = false;
@@ -40,6 +40,6 @@ public:
 	FTransform EntryPosition;
 
 private:
-	UPROPERTY()
-	AActor* Player;
+	//UPROPERTY()
+	//AActor* Player;
 };

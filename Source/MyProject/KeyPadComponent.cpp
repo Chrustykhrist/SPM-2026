@@ -137,3 +137,13 @@ TArray<FName> UKeyPadComponent::GetNeededCode()
 	return NeededCode;
 }
 
+FString UKeyPadComponent::GetRecentlyPressed()
+{
+	FString Result = "";
+	for (const FName& Button : PressedButtons)
+	{
+		Result += Button.ToString();
+	}
+	return Result;
+}
+
