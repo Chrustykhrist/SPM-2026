@@ -75,6 +75,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Input")
 	void HidePauseScreen();
 
+	UFUNCTION(BlueprintCallable, Category = "Input")
 	void SetHidingComponent(UHidingComponent* NewHidingComponent);
 	
 	bool GetMoving() { return bMoving; }
@@ -125,6 +126,7 @@ private:
 
 	bool bHoldBreath = false;
 	
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	bool bHiding = false;
 #pragma endregion	
 	/*
