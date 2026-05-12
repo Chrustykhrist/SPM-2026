@@ -19,14 +19,18 @@ void UHidingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+	if (!bHiding)
+	{
+		Player = GetPlayer();
+	}
 }
 
 /**
  * Moves the player inside the locker to hide them
  */
-void UHidingComponent::Hide(AActor* Player)
+void UHidingComponent::Hide()
 {
-
 	if (bHiding == true)
 	{
 		return;
@@ -39,7 +43,7 @@ void UHidingComponent::Hide(AActor* Player)
 		UE_LOG(LogTemp, Error, TEXT("Player pawn is null"));
 		return;
 	}
-
+	
 	EntryPosition = PP->GetActorTransform();
 	
 	FVector FinalOffset = HideOffset;
@@ -55,14 +59,14 @@ void UHidingComponent::Hide(AActor* Player)
     
 	// Teleport player with offset
 	PP->SetActorLocationAndRotation(NewLocation, NewRotation);
-
+	
 	bHiding = true;
 }
 
 /**
  * Puts the player back in the position they entered at
  */
-void UHidingComponent::GetOut(AActor* Player)
+void UHidingComponent::GetOut()
 {
 	APawn* PlayerPawn = Cast<APawn>(Player);
 
@@ -84,7 +88,6 @@ void UHidingComponent::GetOut(AActor* Player)
  * @return The player
  */
 
-/*
 AActor* UHidingComponent::GetPlayer() const
 {
 	// An array that will contain all the actors that are in the collider
@@ -111,4 +114,4 @@ AActor* UHidingComponent::GetPlayer() const
 	// Otherwise return null
 	return nullptr;
 }
-*/
+

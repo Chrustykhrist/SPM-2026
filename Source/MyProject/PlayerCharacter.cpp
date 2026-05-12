@@ -105,7 +105,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAPause, ETriggerEvent::Started, this, &APlayerCharacter::PauseGame);
 
 		// Hide
-		//UEnhancedInput->BindAction(IAHide, ETriggerEvent::Started, this, &APlayerCharacter::HideInLocker);
+		UEnhancedInput->BindAction(IAHide, ETriggerEvent::Started, this, &APlayerCharacter::HideInLocker);
 
 		// Hold breath
 		UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Triggered, this, &APlayerCharacter::HoldBreath);
@@ -322,17 +322,16 @@ void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
 	
 	if (bHiding)
 	{
-		//HidingComponent->GetOut();
+		HidingComponent->GetOut();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		UnCrouch();
 		bHiding = false;
 	}
 	else
 	{
-		
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		//HidingComponent->Hide();
 		bHiding = true;
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		HidingComponent->Hide();
 	}
 }
 
@@ -345,7 +344,7 @@ void APlayerCharacter::HoldBreath(const FInputActionValue& Value)
 	{
 		return;
 	}
-
+	
 	if (HidingComponent->bHiding)
 	{
 		if (Stamina > 0)
