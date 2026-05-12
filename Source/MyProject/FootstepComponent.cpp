@@ -9,7 +9,9 @@
 #include "DrawDebugHelpers.h"
 #include "FMODBlueprintStatics.h"
 #include "FMODEvent.h"
+#include "PlayerCharacter.h"
 
+class APlayerCharacter;
 // Sets default values for this component's properties
 UFootstepComponent::UFootstepComponent()
 {
@@ -61,7 +63,8 @@ void UFootstepComponent::FootstepTick(float DeltaTime)
 	//if (!bIsMoving || !PlayerCharacter) return;
 	
 	if (PlayerCharacter->GetCharacterMovement()->Velocity == FVector::ZeroVector || !PlayerCharacter) return;
-	
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(PlayerCharacter))
+		if (!bIsMoving) return;
 	StepTimer += DeltaTime;
 	
 	float Interval = GetStepInterval(CurrentMovementState);

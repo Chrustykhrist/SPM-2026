@@ -326,9 +326,11 @@ void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		UnCrouch();
 		bHiding = false;
+		FootstepComponent->SetIsMoving(true);
 	}
 	else
 	{
+		FootstepComponent->SetIsMoving(false);
 		bHiding = true;
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		HidingComponent->Hide();
