@@ -18,8 +18,8 @@ public:
 	// Sets default values for this actor's properties
 	AValveActor();
 	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UStaticMeshComponent> ValveBaseMesh;
+	// UPROPERTY(VisibleAnywhere)
+	// TObjectPtr<UStaticMeshComponent> ValveBaseMesh;
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> ValveWheelMesh;

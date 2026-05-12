@@ -8,11 +8,12 @@ AValveActor::AValveActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	//PrimaryActorTick.bCanEverTick = true;
-	ValveBaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ValveBase"));
-	RootComponent = ValveBaseMesh;
+	// ValveBaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ValveBase"));
+	// RootComponent = ValveBaseMesh;
 	
 	ValveWheelMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ValveWheel"));
-	ValveWheelMesh->SetupAttachment(ValveBaseMesh);
+	RootComponent = ValveWheelMesh;
+	//ValveWheelMesh->SetupAttachment(ValveBaseMesh);
 	
 	ValveComponent = CreateDefaultSubobject<UValveComponent>(TEXT("ValveComponent"));
 	ValveComponent->ValveMesh = ValveWheelMesh;

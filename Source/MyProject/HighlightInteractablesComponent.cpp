@@ -34,7 +34,6 @@ void UHighlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 	if (Distance <= MaxDistance)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UHighlightComponent::Distance good"))
 		if (!bIsHighlighted)
 		{
 			EnableHighlight(true);
@@ -42,7 +41,6 @@ void UHighlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UHighlightComponent::Distance bad"))
 		if (bIsHighlighted)
 		{
 			EnableHighlight(false);
@@ -53,20 +51,16 @@ void UHighlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 void UHighlightComponent::EnableHighlight(bool bEnable)
 {
 	bIsHighlighted = bEnable;
-	UE_LOG(LogTemp, Warning, TEXT("UHighlightComponent::EnableHighlight"))
 	for (UMeshComponent* Mesh : MeshComponents)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UHighlightComponent::EnableHighlight Looking for meshes"))
 		if (Mesh)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("UHighlightComponent::EnableHighlight Mesh found"))
 			// Aktiverar/inaktiverar Custom Depth rendering
 			Mesh->SetRenderCustomDepth(bEnable);
 			
 			if (bEnable)
 			{
 				// Sätter stencil-värdet så att materialet kan läsa av det för kosmetiska skillnader
-				UE_LOG(LogTemp, Warning, TEXT("UHighlightComponent::EnableHighlight bEnable true"))
 				Mesh->SetCustomDepthStencilValue(CustomDepthStencilValue);
 			}
 		}
