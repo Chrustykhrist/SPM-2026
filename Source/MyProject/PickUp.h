@@ -30,6 +30,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool GetPowerswitched();
+	
+	UPROPERTY()
+	FName RecentlyPressed;
 
 private:
 	// The max distance allowed between the players eyes and the item. Measured in cm
