@@ -1,0 +1,37 @@
+{260e708a-d66c-4112-ad09-18519c77c911} bank:/Ambience
+{9df123f0-6705-0122-374a-d0dc50dbccd1} bank:/Ambience.assets
+{9194ca31-dd25-4777-8ba9-e732ebab0db8} bank:/Footsteps
+{2a6b994b-6c4c-0747-11ea-2fbf27070878} bank:/Footsteps.assets
+{e2f08d9d-0250-4a8b-a4fc-7b7dfeab4c90} bank:/Master
+{590fdee7-b339-0abb-3ebf-b3f032074950} bank:/Master.assets
+{7aedad49-732b-06c9-22b5-f1830f584a08} bank:/Master.strings
+{a5a5f477-173d-494e-bed4-8f531afb5d63} bank:/Music
+{1e5aa70d-a654-097e-2497-47ded65758a3} bank:/Music.assets
+{d4d9ffa4-eb96-403d-8d37-ff00667853b8} bank:/Sound FX
+{6f26acde-5aff-000d-1774-378daad45678} bank:/Sound FX.assets
+{4939156a-6c62-437e-83b5-ac8a2c90d1dd} bank:/UI
+{f2c64610-dd0b-034e-19f6-6407e03cd41d} bank:/UI.assets
+{cbfa65a9-079d-434d-ba45-149cb150ee31} bus:/
+{ce401367-e279-431b-a326-b6250a3c69ed} bus:/Reverb
+{2f1238e6-2441-409a-ac9c-d5b6acd9d549} event:/AdaptiveMusic
+{9dcf1c56-3416-4879-b803-10ee1b907563} event:/Ambience/Fluorescent Light Hum
+{446c4e6d-6227-4762-a644-4a793ce4592c} event:/Ambience/Gong Ambience
+{9c2519a4-a595-499a-9f4d-81a7dceb8a5c} event:/Ambience/IncubationPod
+{4483a7df-be5a-4c4d-86c6-302d3c43f98b} event:/Ambience/IncubationPodLowPass
+{998b3871-01f5-4596-ad1c-cf39da95d923} event:/Footsteps/FS_Sneak
+{857907de-1edd-4065-8853-1a703a106cf6} event:/Footsteps/FS_Sprint
+{1036ceee-e925-49b3-9029-4968967b6fab} event:/Footsteps/FS_Walk
+{841b546e-fea9-4589-bf07-2a76429226ba} event:/Footsteps/FS_Walk VelocityBased
+{414d8fa9-da26-4151-b5ef-7e5261d75370} event:/Footsteps/FS_WalkBackWards
+{71577b76-9cbe-42be-b59b-509bf081ef0b} event:/Sound Fx/Action Sheets/DoorClose
+{46b4f88e-19a1-479c-a068-f00c69c26a67} event:/Sound Fx/Action Sheets/DoorOpen
+{2ff0c3db-3b84-4772-847e-41138f3026e6} event:/Sound Fx/Action Sheets/KeyBoardTyping
+{62f3aad1-ab5a-4a00-aa70-958bff839c8f} event:/Sound Fx/Action Sheets/Monster Steps
+{75c8a4b1-b9f1-4691-a4fc-20a6d9fd35cd} event:/Sound Fx/Action Sheets/OutOfBreath
+{a7c69461-5ffb-44ed-9004-86934334a6fb} event:/Sound Fx/Action Sheets/PickUpTemp
+{dc065595-7eb4-497d-abf6-4eb04c42a8cb} event:/Sound Fx/Action Sheets/TorchFlickOn
+{73764134-3c89-431d-839f-037f584cab82} event:/Sound Fx/Action Sheets/Wake Up Scared
+{45e2db2b-943c-4f8f-91b0-3933476f304d} event:/Sound Fx/Timeline Sheets/Intro BreatheTEMP
+{acf8cabc-2b6e-4b9c-91fc-b22b4e000d57} parameter:/Combat
+{70944ed4-ffaa-4a42-8e79-cae322b0a4b9} parameter:/Surfaces
+{547d5f74-f7eb-44f4-b115-dee86ddae30e} parameter:/Velocity
