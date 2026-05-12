@@ -105,7 +105,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAPause, ETriggerEvent::Started, this, &APlayerCharacter::PauseGame);
 
 		// Hide
-		UEnhancedInput->BindAction(IAHide, ETriggerEvent::Started, this, &APlayerCharacter::HideInLocker);
+		//UEnhancedInput->BindAction(IAHide, ETriggerEvent::Started, this, &APlayerCharacter::HideInLocker);
 
 		// Hold breath
 		UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Triggered, this, &APlayerCharacter::HoldBreath);
@@ -322,7 +322,7 @@ void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
 	
 	if (bHiding)
 	{
-		HidingComponent->GetOut();
+		//HidingComponent->GetOut();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		UnCrouch();
 		bHiding = false;
@@ -331,7 +331,7 @@ void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
 	{
 		
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		HidingComponent->Hide();
+		//HidingComponent->Hide();
 		bHiding = true;
 	}
 }
