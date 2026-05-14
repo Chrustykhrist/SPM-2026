@@ -7,9 +7,12 @@
 #include "InputActionvalue.h"
 #include "PlayerCharacter.generated.h"
 
+#pragma region PREDECLARATION
 class UFootstepComponent;
 class UInteractionComponent;
 class UHidingComponent;
+class UCharacterMovementComponent;
+#pragma endregion
 
 UCLASS()
 class MYPROJECT_API APlayerCharacter : public ACharacter
@@ -69,19 +72,35 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+#pragma region PAUSE_SHOW	
 	UFUNCTION(BlueprintImplementableEvent, Category = "Input")
 	void ShowPauseScreen();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Input")
 	void HidePauseScreen();
-
+#pragma endregion
+	
+#pragma region GET/SET	
+	
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void SetHidingComponent(UHidingComponent* NewHidingComponent);
 	
-	bool GetMoving() { return bMoving; }
+	bool GetMoving() const { return bMoving; }
 	
 	UFootstepComponent* GetFootstepComponent() { return FootstepComponent; }
-
+	
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	bool GetPaused() const { return bPaused; }
+	
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void SetPaused(bool bNewPaused) { bPaused = bNewPaused; }
+	
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	bool IsOnPauseStartScreen() const { return bOnPauseStartScreen; }
+	
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void SetOnPauseStartScreen(bool bNewPauseStart) { bOnPauseStartScreen = bNewPauseStart; }
+#pragma endregion
 private:
 #pragma region INPUT_METHODS	
 	
@@ -110,7 +129,7 @@ private:
 	void InteractEnd(const FInputActionValue& Value);
 #pragma endregion	
 	UPROPERTY()
-	class UCharacterMovementComponent* MovementComponent;
+	UCharacterMovementComponent* MovementComponent;
 	
 	/*
 	 *  Booleans used to check what the player is currently doing
@@ -123,6 +142,8 @@ private:
 	bool bMoving = false;
 
 	bool bPaused = false;
+	
+	bool bOnPauseStartScreen = true;
 
 	bool bHoldBreath = false;
 	

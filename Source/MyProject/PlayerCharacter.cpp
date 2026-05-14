@@ -280,6 +280,11 @@ void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
  */
 void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 {
+	if (!bOnPauseStartScreen)
+	{
+		return;
+	}
+	
 	APlayerController* PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 	
 	if (bPaused)
@@ -301,10 +306,17 @@ void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 		ShowPauseScreen();
 
 		bPaused = true;
-
+		
+		bOnPauseStartScreen = true;
+		
 		PC->SetPause(bPaused);
 
 		PC->bShowMouseCursor = true;
+
+		FInputModeGameAndUI inputMode;
+		inputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		inputMode.SetHideCursorDuringCapture(false);
+		PC->SetInputMode(inputMode);
 	}
 }
 
