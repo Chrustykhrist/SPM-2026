@@ -280,9 +280,14 @@ void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
  */
 void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 {
+	if (!bPauseStartScreen)
+	{
+		return;
+	}
+	
 	APlayerController* PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 	
-	if (bPaused && bPauseStartScreen)
+	if (bPaused)
 	{
 		HidePauseScreen();
 
