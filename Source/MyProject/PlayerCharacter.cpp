@@ -308,7 +308,10 @@ void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 
 		PC->bShowMouseCursor = true;
 
-		PC->SetInputMode(FInputModeUIOnly());
+		FInputModeGameAndUI inputMode;
+		inputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		inputMode.SetHideCursorDuringCapture(false);
+		PC->SetInputMode(inputMode);
 	}
 }
 
