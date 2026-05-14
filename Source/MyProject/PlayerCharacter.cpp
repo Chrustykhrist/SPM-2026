@@ -280,7 +280,7 @@ void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
  */
 void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 {
-	if (!bPauseStartScreen)
+	if (!bOnPauseStartScreen)
 	{
 		return;
 	}
@@ -307,8 +307,8 @@ void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 
 		bPaused = true;
 		
-		bPauseStartScreen = true;
-
+		bOnPauseStartScreen = true;
+		
 		PC->SetPause(bPaused);
 
 		PC->bShowMouseCursor = true;

@@ -96,10 +96,10 @@ public:
 	void SetPaused(bool bNewPaused) { bPaused = bNewPaused; }
 	
 	UFUNCTION(BlueprintCallable, Category = "Input")
-	bool GetPauseStartScree() const { return bPauseStartScreen; }
+	bool IsOnPauseStartScreen() const { return bOnPauseStartScreen; }
 	
 	UFUNCTION(BlueprintCallable, Category = "Input")
-	void SetPauseStartScreen(bool bNewPauseStart) { bPauseStartScreen = bNewPauseStart; }
+	void SetOnPauseStartScreen(bool bNewPauseStart) { bOnPauseStartScreen = bNewPauseStart; }
 #pragma endregion
 private:
 #pragma region INPUT_METHODS	
@@ -143,7 +143,7 @@ private:
 
 	bool bPaused = false;
 	
-	bool bPauseStartScreen = true;
+	bool bOnPauseStartScreen = true;
 
 	bool bHoldBreath = false;
 	
