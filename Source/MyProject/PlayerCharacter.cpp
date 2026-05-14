@@ -282,7 +282,7 @@ void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 {
 	APlayerController* PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 	
-	if (bPaused)
+	if (bPaused && bPauseStartScreen)
 	{
 		HidePauseScreen();
 
@@ -301,10 +301,14 @@ void APlayerCharacter::PauseGame(const FInputActionValue& Value)
 		ShowPauseScreen();
 
 		bPaused = true;
+		
+		bPauseStartScreen = true;
 
 		PC->SetPause(bPaused);
 
 		PC->bShowMouseCursor = true;
+
+		PC->SetInputMode(FInputModeUIOnly());
 	}
 }
 
