@@ -75,13 +75,21 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Input")
 	void HidePauseScreen();
 
+#pragma region GET/SET	
+	
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void SetHidingComponent(UHidingComponent* NewHidingComponent);
 	
-	bool GetMoving() { return bMoving; }
+	bool GetMoving() const { return bMoving; }
 	
 	UFootstepComponent* GetFootstepComponent() { return FootstepComponent; }
-
+	
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	bool GetPaused() const { return bPaused; }
+	
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void SetPaused(bool bNewPaused) { bPaused = bNewPaused; }
+#pragma endregion
 private:
 #pragma region INPUT_METHODS	
 	
