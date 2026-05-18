@@ -6,6 +6,7 @@
 #include "CustomPlayerState.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "FlashlightComponent.h"
 #include "PickUp.h"
 #include "HidingComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -116,6 +117,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Completed, this, &APlayerCharacter::InteractEnd);
 		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
 		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
+		
+		// Flashlight
+		UEnhancedInput->BindAction(IAFlashlight, ETriggerEvent::Started, this, &APlayerCharacter::UseFlashlight);
 	}
 
 }
@@ -436,3 +440,20 @@ void APlayerCharacter::InteractEnd(const FInputActionValue& Value)
 }
 
 #pragma endregion	
+
+void APlayerCharacter::UseFlashlight(const FInputActionValue& Value)
+{
+	UFlashlightComponent* FL = Cast<UFlashlightComponent>(GetComponentByClass(UFlashlightComponent::StaticClass()));
+	
+	if (FL == nullptr) return;
+	
+	if (FL->GetState())
+	{
+		FL->TurnOff();
+		FL->SetState(false);
+	} else
+	{
+		FL->TurnOn();
+		FL->SetState(true);
+	}
+}

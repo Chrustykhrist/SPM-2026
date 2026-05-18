@@ -12,6 +12,8 @@ class UFootstepComponent;
 class UInteractionComponent;
 class UHidingComponent;
 class UCharacterMovementComponent;
+class UInputMappingContext;
+class UInputAction;
 #pragma endregion
 
 UCLASS()
@@ -33,10 +35,10 @@ protected:
 	 */
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputMappingContext* InputMappingContext;
+	UInputMappingContext* InputMappingContext;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputAction* IAMove;
+	UInputAction* IAMove;
 	
 	// Input to control camera movement with controller
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -63,6 +65,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IAHoldBreath;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IAFlashlight;
 #pragma endregion	
 
 public:	
@@ -127,6 +132,8 @@ private:
 	void InteractBegin(const FInputActionValue& Value);
 	void InteractHold(const FInputActionValue& Value);
 	void InteractEnd(const FInputActionValue& Value);
+	
+	void UseFlashlight(const FInputActionValue& Value);
 #pragma endregion	
 	UPROPERTY()
 	UCharacterMovementComponent* MovementComponent;
