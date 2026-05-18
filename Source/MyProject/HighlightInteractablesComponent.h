@@ -17,13 +17,12 @@ protected:
 
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	// Inställningar för kosmetika och avstånd, redigerbara i Blueprint
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Highlight | Settings")
 	float MaxDistance = 400.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Highlight | Settings")
-	int32 CustomDepthStencilValue = 1; // Kan användas i materialet för att byta färg (t.ex. 1 = Grön, 2 = Röd)
+	int32 CustomDepthStencilValue = 1; 
 
 private:
 	void EnableHighlight(bool bEnable);

@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "BlindMonsterCharacter.generated.h"
 
+class UHidingComponent;
+
 UCLASS()
 class MYPROJECT_API ABlindMonsterCharacter : public ACharacter
 {
@@ -33,11 +35,28 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Sight")
+	float SightDistance = 200.0f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Sight")
+	float SightAngle = 35.0f;
+	
 	UPROPERTY(VisibleAnywhere)
 	class UPawnSensingComponent* PawnSensingComponent;
+	
+	void CheckLineOfSight();
 	
 	UFUNCTION()
 	void OnHearNoise(APawn* OtherPawn, const FVector& Location, float Volume);
 	
 	void ResetMovement();
+	
+private:
+	bool bIsChasing = false;
+	
+	float CheckSightInterval = 1.0f;
+	
+	float CheckTimer = 0.f;
+	
+	UHidingComponent* HidingComp;
 };
