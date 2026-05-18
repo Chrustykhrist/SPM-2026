@@ -4,6 +4,7 @@
 #include "HidingComponent.h"
 
 #include "PlayerCharacter.h"
+#include "Camera/CameraActor.h"
 
 UHidingComponent::UHidingComponent()
 {
@@ -37,6 +38,8 @@ void UHidingComponent::Hide()
 	}
 	
 	ACharacter* PP = Cast<ACharacter>(Player);
+	
+	APlayerCharacter* PC = Cast<APlayerCharacter>(PP);
 
 	if (PP == nullptr)
 	{
@@ -48,14 +51,18 @@ void UHidingComponent::Hide()
 	
 	FVector FinalOffset = HideOffset;
 	
-	// Makes player invisible"
+	PP->GetActorForwardVector() = FVector::Zero();
+	PP->GetActorUpVector() = FVector::Zero();
+	
+	// Makes player invisible
 	PP->SetActorEnableCollision(false);
 
 	// Calculate the position
 	FVector NewLocation = GetOwner()->GetActorLocation() + HideOffset;
     
 	// Set rotation to the same as the locker
-	FRotator NewRotation = GetOwner()->GetActorRotation(); 
+	FRotator NewRotation = GetOwner()->GetActorRotation();
+	NewRotation.Yaw += 180.0f;
     
 	// Teleport player with offset
 	PP->SetActorLocationAndRotation(NewLocation, NewRotation);
