@@ -10,7 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/BoxComponent.h"
 #include "HidingComponent.h" 
-
+#include "PatrolRoute.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Kismet/GameplayStatics.h"
 // Sets default values
@@ -56,8 +56,12 @@ void ABlindMonsterCharacter::BeginPlay()
 	
 	Player = Cast<APlayerCharacter>(
 		UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	if (!Player) return;
-	HidingComp = Player->FindComponentByClass<UHidingComponent>();
+	if (Player)
+	{
+		HidingComp = Player->FindComponentByClass<UHidingComponent>();
+	}
+	
+	SelectClosestRouteToPlayer();
 }
 
 // Called every frame
@@ -104,6 +108,63 @@ void ABlindMonsterCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedCompo
 			GameMode->PlayerDied();
 		}
 	}
+}
+
+void ABlindMonsterCharacter::SelectClosestRouteToPlayer()
+{
+	if (PatrolRoutes.Num() == 0 || !Player) return;
+ 
+	FVector PlayerLocation = Player->GetActorLocation();
+ 
+	APatrolRoute* BestRoute      = nullptr;
+	float         BestDistanceSq = FLT_MAX;
+ 
+	for (APatrolRoute* Route : PatrolRoutes)
+	{
+		if (!Route || Route->Waypoints.Num() == 0) continue;
+ 
+		float DistSq = FVector::DistSquared(Route->GetWaypointsAverage(), PlayerLocation);
+		if (DistSq < BestDistanceSq)
+		{
+			BestDistanceSq = DistSq;
+			BestRoute      = Route;
+		}
+	}
+ 
+	if (!BestRoute) return;
+ 
+	// Byt bara rutt om den nya rutten är klart bättre (threshold förhindrar flimmer
+	// när spelaren befinner sig nära gränsen mellan två rutter)
+	if (ActivePatrolRoute != nullptr && BestRoute != ActivePatrolRoute)
+	{
+		float ActiveDistSq = FVector::DistSquared(ActivePatrolRoute->GetWaypointsAverage(), PlayerLocation);
+		float ThresholdSq  = RouteChangedThreshold * RouteChangedThreshold;
+ 
+		// Byt bara om den nya rutten är mer än threshold närmre
+		if (ActiveDistSq - BestDistanceSq < ThresholdSq)
+		{
+			return; // Inte tillräckligt stor skillnad – behåll aktiv rutt
+		}
+	}
+ 
+	if (BestRoute != ActivePatrolRoute)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Route changed to: %s"), *BestRoute->GetName());
+		ActivePatrolRoute    = BestRoute;
+		CurrentWaypointIndex = 0; // Börja om från waypoint 0 på den nya rutten
+	}
+}
+
+AActor* ABlindMonsterCharacter::GetNextWaypoint()
+{
+	if (!ActivePatrolRoute || ActivePatrolRoute->Waypoints.Num() == 0) return nullptr;
+ 
+	CurrentWaypointIndex = CurrentWaypointIndex % ActivePatrolRoute->Waypoints.Num();
+	AActor* Waypoint     = ActivePatrolRoute->Waypoints[CurrentWaypointIndex];
+ 
+	CurrentWaypointIndex = (CurrentWaypointIndex + 1) % ActivePatrolRoute->Waypoints.Num();
+ 
+	return Waypoint;
 }
 
 void ABlindMonsterCharacter::CheckLineOfSight()
