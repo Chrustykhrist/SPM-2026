@@ -112,7 +112,6 @@ void UKeyPadComponent::Accepted()
 	// If correct, allow the door to turn, otherwise do nothing
 	if (CorrectInput)
 	{
-		// TODO: Add unlock/open behaviour
 		UE_LOG(LogTemp, Display, TEXT("Correct"));
 		Turn = true;
 	}
