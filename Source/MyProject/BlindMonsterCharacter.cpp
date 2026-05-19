@@ -116,9 +116,9 @@ void ABlindMonsterCharacter::SelectClosestRouteToPlayer()
  
 	FVector PlayerLocation = Player->GetActorLocation();
  
-	APatrolRoute* BestRoute      = nullptr;
-	float         BestDistanceSq = FLT_MAX;
- 
+	APatrolRoute* BestRoute = nullptr;
+	
+	// BestDistanceSq is very big float as default first time, we asume the start value is infinite therefore any route should be better
 	for (APatrolRoute* Route : PatrolRoutes)
 	{
 		if (!Route || Route->Waypoints.Num() == 0) continue;
@@ -127,31 +127,30 @@ void ABlindMonsterCharacter::SelectClosestRouteToPlayer()
 		if (DistSq < BestDistanceSq)
 		{
 			BestDistanceSq = DistSq;
-			BestRoute      = Route;
+			BestRoute = Route;
 		}
 	}
  
 	if (!BestRoute) return;
- 
-	// Byt bara rutt om den nya rutten är klart bättre (threshold förhindrar flimmer
-	// när spelaren befinner sig nära gränsen mellan två rutter)
+	
+	// only change route if there is a clear winner with threshold to prevent fighting against two routes if the player is to close to two routes or more
 	if (ActivePatrolRoute != nullptr && BestRoute != ActivePatrolRoute)
 	{
 		float ActiveDistSq = FVector::DistSquared(ActivePatrolRoute->GetWaypointsAverage(), PlayerLocation);
 		float ThresholdSq  = RouteChangedThreshold * RouteChangedThreshold;
  
-		// Byt bara om den nya rutten är mer än threshold närmre
+		// only change route if new route passes the threshold
 		if (ActiveDistSq - BestDistanceSq < ThresholdSq)
 		{
-			return; // Inte tillräckligt stor skillnad – behåll aktiv rutt
+			return;
 		}
 	}
  
 	if (BestRoute != ActivePatrolRoute)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Route changed to: %s"), *BestRoute->GetName());
-		ActivePatrolRoute    = BestRoute;
-		CurrentWaypointIndex = 0; // Börja om från waypoint 0 på den nya rutten
+		ActivePatrolRoute = BestRoute;
+		CurrentWaypointIndex = 0;
 	}
 }
 
@@ -160,7 +159,7 @@ AActor* ABlindMonsterCharacter::GetNextWaypoint()
 	if (!ActivePatrolRoute || ActivePatrolRoute->Waypoints.Num() == 0) return nullptr;
  
 	CurrentWaypointIndex = CurrentWaypointIndex % ActivePatrolRoute->Waypoints.Num();
-	AActor* Waypoint     = ActivePatrolRoute->Waypoints[CurrentWaypointIndex];
+	AActor* Waypoint = ActivePatrolRoute->Waypoints[CurrentWaypointIndex];
  
 	CurrentWaypointIndex = (CurrentWaypointIndex + 1) % ActivePatrolRoute->Waypoints.Num();
  
@@ -170,71 +169,11 @@ AActor* ABlindMonsterCharacter::GetNextWaypoint()
 void ABlindMonsterCharacter::CheckLineOfSight()
 {
 	
-	//Player = Cast<APlayerCharacter>(
-		//UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	
 	if (!Player) return;
  
 	// ignore player if they are hiding
 	if (CheckIfHiding()) return;
-	// if (HidingComp && HidingComp->bHiding) 
-	// {
-	// 	// Maybe change to investigate near the place the player hid
-	// 	if (bIsChasing)
-	// 	{
-	// 		bIsChasing = false;
-	// 		// should probably cache the AIC
-	// 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
-	// 		if (AIC && AIC->GetBlackboardComponent())
-	// 		{
-	// 			UE_LOG(LogTemp, Warning, TEXT("Was chasing but now player is hiding"));
-	// 			AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
-	// 		}
-	// 	}
-	// 	return;
-	// }
- 
-	// distance check of player
-	// FVector ToPlayer = Player->GetActorLocation() - GetActorLocation();
-	// float Distance = ToPlayer.Size();
-	// if (Distance > SightDistance) 
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("player out of range distance player distance %f and SightDistance %f"), Distance, SightDistance);
-	// 	// if player leave sightdistance we stop chase
-	// 	if (bIsChasing)
-	// 	{
-	// 		bIsChasing = false;
-	// 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
-	// 		if (AIC && AIC->GetBlackboardComponent())
-	// 		{
-	// 			UE_LOG(LogTemp, Warning, TEXT("Was chasing but now player to far away"));
-	// 			AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
-	// 		}
-	// 	}
-	// 	return;
-	// }
- //
-	// // degree check with dot product
-	// float AngleDeg = FMath::RadiansToDegrees(
-	// 	FMath::Acos(
-	// 		FVector::DotProduct(GetActorForwardVector(), ToPlayer.GetSafeNormal())));
- //
-	// if (AngleDeg > SightAngle)
-	// {
-	// 	// the player is out of sight angle
-	// 	UE_LOG(LogTemp, Warning, TEXT("out of angle"));
-	// 	if (bIsChasing)
-	// 	{
-	// 		bIsChasing = false;
-	// 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
-	// 		if (AIC && AIC->GetBlackboardComponent())
-	// 		{
-	// 			UE_LOG(LogTemp, Warning, TEXT("Was chasing but now out of angle"));
-	// 			AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
-	// 		}
-	// 	}
-	// 	return;
-	// }
+	
 	
 	ToPlayer = Player->GetActorLocation() - GetActorLocation();
 	Distance = ToPlayer.Size();
@@ -270,10 +209,7 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
 		if (AIC && AIC->GetBlackboardComponent())
 		{
-			//PlayerVelocity = Player->GetVelocity().GetAbs();
 			UBlackboardComponent* BB = AIC->GetBlackboardComponent();
-			// takes the players pos and adds where they are going to be in 1 second based on current velocity
-			//BB->SetValueAsVector("TargetLocation", Player->GetActorLocation() + (PlayerVelocity * PredictionTime));
 			BB->SetValueAsObject("TargetActor", Player);
 			BB->SetValueAsBool("IsAlerted", true);
 			BB->SetValueAsBool("IsChasing", true);
@@ -288,9 +224,6 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
 		if (AIC && AIC->GetBlackboardComponent())
 		{
-			// PlayerVelocity = Player->GetVelocity().GetAbs();
-			// AIC->GetBlackboardComponent()->SetValueAsVector("TargetLocation", Player->GetActorLocation() + (PlayerVelocity * PredictionTime));
-			//AIC->GetBlackboardComponent()->SetValueAsVector("TargetLocation", Player->GetActorLocation());
 			AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", Player);
 			UE_LOG(LogTemp, Warning, TEXT("else were bIsChasing is true"));
 		}
@@ -302,7 +235,6 @@ void ABlindMonsterCharacter::OnHearNoise(APawn* OtherPawn, const FVector& Locati
 		if (OtherPawn != nullptr && OtherPawn != this && OtherPawn->IsPlayerControlled())
 		{
 			//Dont react to sound if player hide
-			//APlayerCharacter* Player = Cast<APlayerCharacter>(OtherPawn);
 			if (Player)
 			{
 				HidingComp = Player->FindComponentByClass<UHidingComponent>();

@@ -104,6 +104,8 @@ private:
 	
 	float AngleDeg;
 	
+	float BestDistanceSq = FLT_MAX;
+	
 	UHidingComponent* HidingComp;
 	
 	class APlayerCharacter* Player;
