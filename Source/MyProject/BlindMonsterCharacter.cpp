@@ -64,12 +64,13 @@ void ABlindMonsterCharacter::BeginPlay()
 void ABlindMonsterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	CheckLineOfSight();
-	// CheckTimer += DeltaTime;
-	// if (CheckTimer >= CheckSightInterval)
-	// {
-	// 	CheckLineOfSight();
-	// }
+	//CheckLineOfSight();
+	CheckTimer += DeltaTime;
+	if (CheckTimer >= CheckSightInterval)
+	{
+		CheckTimer = 0;
+		CheckLineOfSight();
+	}
 	
 }
 
@@ -111,69 +112,80 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 	//Player = Cast<APlayerCharacter>(
 		//UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	
-	CheckTimer = 0;
 	if (!Player) return;
  
 	// ignore player if they are hiding
-	
-	if (HidingComp && HidingComp->bHiding) 
-	{
-		// Maybe change to investigate near the place the player hid
-		if (bIsChasing)
-		{
-			bIsChasing = false;
-			// should probably cache the AIC
-			ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
-			if (AIC && AIC->GetBlackboardComponent())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Was chasing but now player is hiding"));
-				AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
-			}
-		}
-		return;
-	}
+	if (CheckIfHiding()) return;
+	// if (HidingComp && HidingComp->bHiding) 
+	// {
+	// 	// Maybe change to investigate near the place the player hid
+	// 	if (bIsChasing)
+	// 	{
+	// 		bIsChasing = false;
+	// 		// should probably cache the AIC
+	// 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
+	// 		if (AIC && AIC->GetBlackboardComponent())
+	// 		{
+	// 			UE_LOG(LogTemp, Warning, TEXT("Was chasing but now player is hiding"));
+	// 			AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
+	// 		}
+	// 	}
+	// 	return;
+	// }
  
 	// distance check of player
-	FVector ToPlayer = Player->GetActorLocation() - GetActorLocation();
-	float Distance = ToPlayer.Size();
-	if (Distance > SightDistance) 
-	{
-		UE_LOG(LogTemp, Warning, TEXT("player out of range distance player distance %f and SightDistance %f"), Distance, SightDistance);
-		// if player leave sightdistance we stop chase
-		if (bIsChasing)
-		{
-			bIsChasing = false;
-			ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
-			if (AIC && AIC->GetBlackboardComponent())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Was chasing but now player to far away"));
-				AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
-			}
-		}
-		return;
-	}
- 
+	// FVector ToPlayer = Player->GetActorLocation() - GetActorLocation();
+	// float Distance = ToPlayer.Size();
+	// if (Distance > SightDistance) 
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("player out of range distance player distance %f and SightDistance %f"), Distance, SightDistance);
+	// 	// if player leave sightdistance we stop chase
+	// 	if (bIsChasing)
+	// 	{
+	// 		bIsChasing = false;
+	// 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
+	// 		if (AIC && AIC->GetBlackboardComponent())
+	// 		{
+	// 			UE_LOG(LogTemp, Warning, TEXT("Was chasing but now player to far away"));
+	// 			AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
+	// 		}
+	// 	}
+	// 	return;
+	// }
+ //
+	// // degree check with dot product
+	// float AngleDeg = FMath::RadiansToDegrees(
+	// 	FMath::Acos(
+	// 		FVector::DotProduct(GetActorForwardVector(), ToPlayer.GetSafeNormal())));
+ //
+	// if (AngleDeg > SightAngle)
+	// {
+	// 	// the player is out of sight angle
+	// 	UE_LOG(LogTemp, Warning, TEXT("out of angle"));
+	// 	if (bIsChasing)
+	// 	{
+	// 		bIsChasing = false;
+	// 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
+	// 		if (AIC && AIC->GetBlackboardComponent())
+	// 		{
+	// 			UE_LOG(LogTemp, Warning, TEXT("Was chasing but now out of angle"));
+	// 			AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
+	// 		}
+	// 	}
+	// 	return;
+	// }
+	
+	ToPlayer = Player->GetActorLocation() - GetActorLocation();
+	Distance = ToPlayer.Size();
+	
+	if (CheckIfOutOfDistance()) return;
+	
 	// degree check with dot product
-	float AngleDeg = FMath::RadiansToDegrees(
+	AngleDeg = FMath::RadiansToDegrees(
 		FMath::Acos(
 			FVector::DotProduct(GetActorForwardVector(), ToPlayer.GetSafeNormal())));
- 
-	if (AngleDeg > SightAngle)
-	{
-		// the player is out of sight angle
-		UE_LOG(LogTemp, Warning, TEXT("out of angle"));
-		if (bIsChasing)
-		{
-			bIsChasing = false;
-			ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
-			if (AIC && AIC->GetBlackboardComponent())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Was chasing but now out of angle"));
-				AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
-			}
-		}
-		return;
-	}
+	
+	if (CheckIfOutOfSight()) return;
  
 	// raycast to see if anything is in the way, for example a wall
 	FHitResult Hit;
@@ -197,15 +209,16 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
 		if (AIC && AIC->GetBlackboardComponent())
 		{
-			PlayerVelocity = Player->GetVelocity();
+			//PlayerVelocity = Player->GetVelocity().GetAbs();
 			UBlackboardComponent* BB = AIC->GetBlackboardComponent();
 			// takes the players pos and adds where they are going to be in 1 second based on current velocity
-			BB->SetValueAsVector("TargetLocation", Player->GetActorLocation() + (PlayerVelocity * PredictionTime));
+			//BB->SetValueAsVector("TargetLocation", Player->GetActorLocation() + (PlayerVelocity * PredictionTime));
+			BB->SetValueAsObject("TargetActor", Player);
 			BB->SetValueAsBool("IsAlerted", true);
 			BB->SetValueAsBool("IsChasing", true);
  
 			UE_LOG(LogTemp, Warning, 
-				TEXT("Spelaren SEDD på avstånd %.1f cm, vinkel %.1f grader – intensiv chase!"),
+				TEXT("Player seen at distance %.1f cm, degree %.1f – intensive chase!"),
 				Distance, AngleDeg);
 		}
 	}
@@ -214,8 +227,10 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
 		if (AIC && AIC->GetBlackboardComponent())
 		{
-			PlayerVelocity = Player->GetVelocity();
-			AIC->GetBlackboardComponent()->SetValueAsVector("TargetLocation", Player->GetActorLocation() + (PlayerVelocity * PredictionTime));
+			// PlayerVelocity = Player->GetVelocity().GetAbs();
+			// AIC->GetBlackboardComponent()->SetValueAsVector("TargetLocation", Player->GetActorLocation() + (PlayerVelocity * PredictionTime));
+			//AIC->GetBlackboardComponent()->SetValueAsVector("TargetLocation", Player->GetActorLocation());
+			AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", Player);
 			UE_LOG(LogTemp, Warning, TEXT("else were bIsChasing is true"));
 		}
 	}
@@ -254,6 +269,75 @@ void ABlindMonsterCharacter::OnHearNoise(APawn* OtherPawn, const FVector& Locati
 				UE_LOG(LogTemp, Warning, TEXT("Spelare hördes vid: %s och med ljudstyrkan: %f"), *Location.ToString(), Volume);
 			}
 		}
+}
+
+bool ABlindMonsterCharacter::CheckIfHiding()
+{
+	if (HidingComp && HidingComp->bHiding) 
+	{
+		// Maybe change to investigate near the place the player hid
+		if (bIsChasing)
+		{
+			bIsChasing = false;
+			// should probably cache the AIC
+			ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
+			if (AIC && AIC->GetBlackboardComponent())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Was chasing but now player is hiding"));
+				AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
+			}
+		}
+		return true;
+	}
+	
+	return false;
+}
+
+bool ABlindMonsterCharacter::CheckIfOutOfDistance()
+{
+	// ToPlayer = Player->GetActorLocation() - GetActorLocation();
+	// Distance = ToPlayer.Size();
+	if (Distance > SightDistance) 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("player out of range distance player distance %f and SightDistance %f"), Distance, SightDistance);
+		// if player leave sightdistance we stop chase
+		if (bIsChasing)
+		{
+			bIsChasing = false;
+			ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
+			if (AIC && AIC->GetBlackboardComponent())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Was chasing but now player to far away"));
+				AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
+			}
+		}
+		return true;
+	}
+ 
+	return false;
+}
+
+bool ABlindMonsterCharacter::CheckIfOutOfSight()
+{
+	
+	if (AngleDeg > SightAngle)
+	{
+		// the player is out of sight angle
+		UE_LOG(LogTemp, Warning, TEXT("out of angle"));
+		if (bIsChasing)
+		{
+			bIsChasing = false;
+			ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
+			if (AIC && AIC->GetBlackboardComponent())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Was chasing but now out of angle"));
+				AIC->GetBlackboardComponent()->SetValueAsBool("IsChasing", false);
+			}
+		}
+		return true;
+	}
+	
+	return false;
 }
 
 void ABlindMonsterCharacter::ResetMovement()

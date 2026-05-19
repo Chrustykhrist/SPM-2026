@@ -41,12 +41,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Sight")
 	float SightAngle = 35.0f;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Sight")
-	float DistanceInfront = 200.0f;
-	
-	// how many seconds in the future should the monster predict
-	UPROPERTY(EditDefaultsOnly, Category = "Sight")
-	float PredictionTime = 1.0f;
+	// UPROPERTY(EditDefaultsOnly, Category = "Sight")
+	// float DistanceInfront = 200.0f;
+	//
+	// // how many seconds in the future should the monster predict
+	// UPROPERTY(EditDefaultsOnly, Category = "Sight")
+	// float PredictionTime = 1.0f;
 	
 	UPROPERTY(VisibleAnywhere)
 	class UPawnSensingComponent* PawnSensingComponent;
@@ -59,15 +59,28 @@ public:
 	void ResetMovement();
 	
 private:
+	
+	bool CheckIfHiding();
+	
+	bool CheckIfOutOfDistance();
+	
+	bool CheckIfOutOfSight();
+	
 	bool bIsChasing = false;
 	
-	float CheckSightInterval = 0.05f;
+	float CheckSightInterval = 0.2f;
 	
 	float CheckTimer = 0.f;
+	
+	float Distance;
+	
+	float AngleDeg;
 	
 	UHidingComponent* HidingComp;
 	
 	class APlayerCharacter* Player;
 	
 	FVector PlayerVelocity;
+	
+	FVector ToPlayer;
 };
