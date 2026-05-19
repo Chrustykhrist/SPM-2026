@@ -41,6 +41,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Sight")
 	float SightAngle = 35.0f;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "Sight")
+	float DistanceInfront = 200.0f;
+	
+	// how many seconds in the future should the monster predict
+	UPROPERTY(EditDefaultsOnly, Category = "Sight")
+	float PredictionTime = 1.0f;
+	
 	UPROPERTY(VisibleAnywhere)
 	class UPawnSensingComponent* PawnSensingComponent;
 	
@@ -54,9 +61,13 @@ public:
 private:
 	bool bIsChasing = false;
 	
-	float CheckSightInterval = 1.0f;
+	float CheckSightInterval = 0.05f;
 	
 	float CheckTimer = 0.f;
 	
 	UHidingComponent* HidingComp;
+	
+	class APlayerCharacter* Player;
+	
+	FVector PlayerVelocity;
 };

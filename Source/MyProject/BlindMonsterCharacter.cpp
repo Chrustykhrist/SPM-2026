@@ -54,7 +54,7 @@ void ABlindMonsterCharacter::BeginPlay()
 		PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	}
 	
-	APlayerCharacter* Player = Cast<APlayerCharacter>(
+	Player = Cast<APlayerCharacter>(
 		UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (!Player) return;
 	HidingComp = Player->FindComponentByClass<UHidingComponent>();
@@ -64,11 +64,12 @@ void ABlindMonsterCharacter::BeginPlay()
 void ABlindMonsterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	CheckTimer += DeltaTime;
-	if (CheckTimer >= CheckSightInterval)
-	{
-		CheckLineOfSight();
-	}
+	CheckLineOfSight();
+	// CheckTimer += DeltaTime;
+	// if (CheckTimer >= CheckSightInterval)
+	// {
+	// 	CheckLineOfSight();
+	// }
 	
 }
 
@@ -85,7 +86,7 @@ void ABlindMonsterCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedCompo
 	if (OtherActor && OtherActor->IsA(APlayerCharacter::StaticClass()))
 	{
 		//Check if player is in the locker
-		APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
+		//APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
 		if (Player)
 		{
 			HidingComp = Player->FindComponentByClass<UHidingComponent>();
@@ -107,8 +108,8 @@ void ABlindMonsterCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedCompo
 void ABlindMonsterCharacter::CheckLineOfSight()
 {
 	
-	APlayerCharacter* Player = Cast<APlayerCharacter>(
-		UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	//Player = Cast<APlayerCharacter>(
+		//UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	
 	CheckTimer = 0;
 	if (!Player) return;
@@ -121,6 +122,7 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 		if (bIsChasing)
 		{
 			bIsChasing = false;
+			// should probably cache the AIC
 			ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
 			if (AIC && AIC->GetBlackboardComponent())
 			{
@@ -195,8 +197,10 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
 		if (AIC && AIC->GetBlackboardComponent())
 		{
+			PlayerVelocity = Player->GetVelocity();
 			UBlackboardComponent* BB = AIC->GetBlackboardComponent();
-			BB->SetValueAsVector("TargetLocation", Player->GetActorLocation());
+			// takes the players pos and adds where they are going to be in 1 second based on current velocity
+			BB->SetValueAsVector("TargetLocation", Player->GetActorLocation() + (PlayerVelocity * PredictionTime));
 			BB->SetValueAsBool("IsAlerted", true);
 			BB->SetValueAsBool("IsChasing", true);
  
@@ -210,7 +214,8 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 		ABlindMonsterAIController* AIC = Cast<ABlindMonsterAIController>(GetController());
 		if (AIC && AIC->GetBlackboardComponent())
 		{
-			AIC->GetBlackboardComponent()->SetValueAsVector("TargetLocation", Player->GetActorLocation());
+			PlayerVelocity = Player->GetVelocity();
+			AIC->GetBlackboardComponent()->SetValueAsVector("TargetLocation", Player->GetActorLocation() + (PlayerVelocity * PredictionTime));
 			UE_LOG(LogTemp, Warning, TEXT("else were bIsChasing is true"));
 		}
 	}
@@ -221,7 +226,7 @@ void ABlindMonsterCharacter::OnHearNoise(APawn* OtherPawn, const FVector& Locati
 		if (OtherPawn != nullptr && OtherPawn != this && OtherPawn->IsPlayerControlled())
 		{
 			//Dont react to sound if player hide
-			APlayerCharacter* Player = Cast<APlayerCharacter>(OtherPawn);
+			//APlayerCharacter* Player = Cast<APlayerCharacter>(OtherPawn);
 			if (Player)
 			{
 				HidingComp = Player->FindComponentByClass<UHidingComponent>();
