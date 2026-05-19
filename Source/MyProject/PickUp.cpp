@@ -6,6 +6,7 @@
 #include "CustomPlayerState.h"
 #include "KeycardReader.h"
 #include "KeyPadComponent.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values for this component's properties
 UPickUp::UPickUp()
@@ -70,6 +71,19 @@ void UPickUp::PickUp()
 
 		FName ItemName = ItemHit.GetActor()->Tags[0];
 
+		if (PS->CollectedItems[ItemName] >= 3)
+		{
+			if (IsValid(NotifClass) && !IsValid(Notif))
+			{
+				Notif = CreateWidget(GetWorld(), NotifClass);
+			}
+			if (IsValid(Notif))
+			{
+				Notif->AddToViewport();
+			}
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPickUp::RemoveNotif, RestartDelay, false);
+			return;
+		}
 		PS->CollectedItems[ItemName]++;
 
 		//UE_LOG(LogTemp, Display, TEXT("%s, %d"), *ItemHit.GetActor()->GetName(), PS->CollectedItems[ItemName]);
@@ -124,5 +138,14 @@ void UPickUp::PickUp()
 bool UPickUp::GetPowerswitched()
 {
 	return bPowerSwitchPushed;
+}
+
+void UPickUp::RemoveNotif()
+{
+	if (IsValid(Notif))
+	{
+		Notif->RemoveFromParent();
+		Notif = nullptr;
+	}
 }
 

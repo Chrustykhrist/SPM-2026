@@ -399,12 +399,12 @@ void APlayerCharacter::InteractBegin(const FInputActionValue& Value)
 	UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(GetComponentByClass(UInteractionComponent::StaticClass()));
 	if (InteractionComponent)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("InteractBegin"));
+		//UE_LOG(LogTemp, Warning, TEXT("InteractBegin"));
 		InteractionComponent->BeginInteract();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Else Begin, Component: %s"), InteractionComponent ? *InteractionComponent->GetName() : TEXT("NULL"));
+		//UE_LOG(LogTemp, Warning, TEXT("Else Begin, Component: %s"), InteractionComponent ? *InteractionComponent->GetName() : TEXT("NULL"));
 	}
 	
 }
@@ -429,12 +429,12 @@ void APlayerCharacter::InteractEnd(const FInputActionValue& Value)
 	UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(GetComponentByClass(UInteractionComponent::StaticClass()));;
 	if (InteractionComponent && InteractionComponent->bIsInteracting)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("End"));
+		//UE_LOG(LogTemp, Warning, TEXT("End"));
 		InteractionComponent->EndInteract();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Else End"));
+		//UE_LOG(LogTemp, Warning, TEXT("Else End"));
 		// PickUpItem(Value);
 	}
 }

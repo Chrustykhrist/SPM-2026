@@ -6,6 +6,7 @@
 #include "Components/SceneComponent.h"
 #include "PickUp.generated.h"
 
+class UUserWidget;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYPROJECT_API UPickUp : public USceneComponent
@@ -33,8 +34,17 @@ public:
 	
 	UPROPERTY()
 	FName RecentlyPressed;
+	
+	UPROPERTY(EditAnywhere, Category="Display")
+	TSubclassOf<UUserWidget> NotifClass;
+	
+	UPROPERTY()
+	UUserWidget* Notif;
 
 private:
+	UFUNCTION()
+	void RemoveNotif();
+	
 	// The max distance allowed between the players eyes and the item. Measured in cm
 	UPROPERTY(EditAnywhere)
 	float MaxGrabDistance = 100;
@@ -54,4 +64,10 @@ private:
 	bool bPushable = false;
 	
 	bool bPowerSwitchPushed = false;
+	
+	UPROPERTY(EditAnywhere)
+	float RestartDelay = 1.5f;
+	
+	UPROPERTY()
+	FTimerHandle TimerHandle;
 };
