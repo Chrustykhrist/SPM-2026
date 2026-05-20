@@ -26,6 +26,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetPowerStatus(bool bPowerStatus) { bPowerIsOn = bPowerStatus; }
 	
+	UFUNCTION(BlueprintCallable)
+	void SaveInventory();
+	
 protected:
 	virtual void Init() override;
 	virtual void Shutdown() override;

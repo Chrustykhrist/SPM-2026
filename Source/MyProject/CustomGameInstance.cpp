@@ -39,3 +39,11 @@ TMap<FName, int> UCustomGameInstance::GetInventory()
 {
 	return Inventory;
 }
+
+void UCustomGameInstance::SaveInventory()
+{
+	ACustomPlayerState* PS = Cast<ACustomPlayerState>(UGameplayStatics::GetPlayerState(this, 0));
+	
+	const TMap<FName, int>& CopyMap = PS->GetCollectedItems();
+	Inventory.Append(CopyMap);
+}
