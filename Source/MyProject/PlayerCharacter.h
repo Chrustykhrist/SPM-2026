@@ -71,6 +71,12 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IAUseItem;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IASelectFirstItem;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IASelectSecondItem;
 #pragma endregion	
 
 public:	
@@ -186,7 +192,13 @@ private:
 	
 	// How many seconds the player can run
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
-	float Stamina = 10;
+	float Stamina;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	float MaxStamina = 15;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	float MaxNaturalRecovery = 5;
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	float RecoveryRate = 0.5;

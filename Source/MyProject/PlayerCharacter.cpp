@@ -58,7 +58,9 @@ void APlayerCharacter::BeginPlay()
 	// Setting the speed att which the player moves when crouched
 	MovementComponent->MaxWalkSpeedCrouched = CrouchSpeed;
 
-	SpeedDecrease = 250/Stamina;
+	SpeedDecrease = 250/MaxStamina;
+	
+	Stamina = MaxStamina;
 }
 
 // Called every frame
@@ -68,10 +70,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	// Check if the player has stopped running and/or is crouching, 
 	// if true recover the stamina of the player
-	if (!bRunning && !bHoldBreath && Stamina <= 10)
+	if (!bRunning && !bHoldBreath && Stamina <= MaxNaturalRecovery)
 	{
 		Stamina += GetWorld()->GetDeltaSeconds();
 	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("Stamina: %f"), Stamina);
 }
 
 // Called to bind functionality to input
@@ -121,7 +125,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		
 		// Flashlight
 		UEnhancedInput->BindAction(IAFlashlight, ETriggerEvent::Started, this, &APlayerCharacter::UseFlashlight);
+		
+		// Select and use items
 		UEnhancedInput->BindAction(IAUseItem, ETriggerEvent::Started, this, &APlayerCharacter::UseItem);
+		UEnhancedInput->BindAction(IASelectFirstItem, ETriggerEvent::Started, this, &APlayerCharacter::SwitchToFirstItem);
+		UEnhancedInput->BindAction(IASelectSecondItem, ETriggerEvent::Started, this, &APlayerCharacter::SwitchToSecondItem);
 	}
 
 }
@@ -488,17 +496,6 @@ void APlayerCharacter::UseItem(const FInputActionValue& Value)
 		return;
 	}
 	
-	if (FL == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("No Flashlight Component"));
-		return;
-	}
-	
-	if (PS->GetCollectedItems()[FName("Flashlight")] < 1)
-	{
-		return;
-	}
-	
 	if (SelectedItem == 0)
 	{
 		return;
@@ -506,6 +503,17 @@ void APlayerCharacter::UseItem(const FInputActionValue& Value)
 	
 	if (SelectedItem == 2)
 	{
+		if (FL == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("No Flashlight Component"));
+			return;
+		}
+		
+		if (PS->GetCollectedItems()[FName("Flashlight")] < 1)
+		{
+			return;
+		}
+		
 		if (PS->GetCollectedItems()[FName("Battery")] >= 1)
 		{
 			FL->Recharge();
@@ -515,6 +523,7 @@ void APlayerCharacter::UseItem(const FInputActionValue& Value)
 	{
 		if (PS->GetCollectedItems()[FName("Medicine")] >= 1)
 		{
+			Stamina = MaxStamina;
 			PS->GetCollectedItems()[FName("Medicine")]--;
 		}
 	}
