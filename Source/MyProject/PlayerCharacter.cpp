@@ -141,8 +141,14 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	// Left and right movement
 	AddMovementInput(GetActorRightVector(), Value.Get<FVector2D>().X);
 	
-	if (!bCrouching) MakeNoise(WalkLoudnessMultiplier, this, GetActorLocation());
-	
+	if (bCrouching)
+	{
+		MakeNoise(CrouchLoudnessMultiplier, this, GetActorLocation());
+	}
+	else
+	{
+		MakeNoise(WalkLoudnessMultiplier, this, GetActorLocation());
+	}
 	FootstepComponent->SetIsMoving(true);
 }
 

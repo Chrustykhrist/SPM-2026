@@ -195,6 +195,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="Sound")
 	float WalkLoudnessMultiplier = 0.35f;
 	
+	UPROPERTY(EditAnywhere, Category="Sound")
+	float CrouchLoudnessMultiplier = 0.15f;
+	
 	//UPROPERTY(VisibleAnywhere)
 	//TObjectPtr<UInteractionComponent> InteractionComponent;
 	
