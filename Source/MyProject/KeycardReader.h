@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Keycard")
 	bool TryUnlock(ACustomPlayerState* PS);
 	
+	UFUNCTION(BlueprintCallable, Category = "Keycard")
+	void OpenDoors();
+	
 	UPROPERTY(EditAnywhere, Category = "Keycard")
 	TArray<AActor*> LinkedDoor;
 	
@@ -34,4 +37,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+private:
+	TArray<float> DoorYaws;
+	TArray<float> DoorOffsets;
+	
+	bool bOpenDoors = false;
 };

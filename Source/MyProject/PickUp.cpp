@@ -77,6 +77,20 @@ void UPickUp::PickUp()
 
 		FName ItemName = ItemHit.GetActor()->Tags[0];
 
+		if (ItemName == FName("PowerKey") || PS->GetCollectedItems()[FName("PowerKey")] >= 1)
+		{
+			if (IsValid(NotifClass) && !IsValid(Notif))
+			{
+				Notif = CreateWidget(GetWorld(), NotifClass);
+			}
+			if (IsValid(Notif))
+			{
+				Notif->AddToViewport();
+			}
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPickUp::RemoveNotif, RestartDelay, false);
+			return;
+		}
+		
 		if (PS->CollectedItems[ItemName] >= 3)
 		{
 			if (IsValid(NotifClass) && !IsValid(Notif))
@@ -90,7 +104,16 @@ void UPickUp::PickUp()
 			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPickUp::RemoveNotif, RestartDelay, false);
 			return;
 		}
-		PS->CollectedItems[ItemName]++;
+		
+		if (!PS->GetCollectedItems().Contains(ItemName))
+		{
+			UE_LOG(LogTemp, Error, TEXT("Item Not Found, Working on making it dynamic"));
+			return;
+			//PS->CollectedItems.Add(FName(ItemName), 1);
+		} else
+		{
+			PS->CollectedItems[ItemName]++;
+		}
 
 		//UE_LOG(LogTemp, Display, TEXT("%s, %d"), *ItemHit.GetActor()->GetName(), PS->CollectedItems[ItemName]);
 		
@@ -134,9 +157,11 @@ void UPickUp::PickUp()
 		
 		if (AKeycardReader* KeycardReader = Cast<AKeycardReader>(ButtonHit.GetActor()))
 		{
-			APlayerController* PC = GetWorld()->GetFirstPlayerController();
+			/*APlayerController* PC = GetWorld()->GetFirstPlayerController();
 			ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
-			KeycardReader->TryUnlock(PS);
+			KeycardReader->TryUnlock(PS);*/
+			
+			KeycardReader->OpenDoors();
 		}
 	}
 }

@@ -74,8 +74,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 	{
 		Stamina += GetWorld()->GetDeltaSeconds();
 	}
-	
-	UE_LOG(LogTemp, Warning, TEXT("Stamina: %f"), Stamina);
 }
 
 // Called to bind functionality to input

@@ -18,14 +18,31 @@ void AKeycardReader::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	for (int i = 0; i < LinkedDoor.Num(); i++)
+	{
+		DoorYaws.Add(LinkedDoor[i]->GetActorRotation().Yaw);
+		DoorOffsets.Add(0.0f);
+	}
+	
 }
 
 // Called every frame
 void AKeycardReader::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
+	
+	if (bOpenDoors)
+	{
+		for (int i = 0; i < LinkedDoor.Num(); i++)
+		{
+			FRotator TargetRotation = FRotator(0, DoorYaws[i] + DoorOffsets[i], 0);
+			LinkedDoor[i]->SetActorRotation(FMath::RInterpConstantTo(LinkedDoor[i]->GetActorRotation(), TargetRotation, DeltaTime, 30));
+		}
+	}
+	
 }
+
 /**
  *Tries to unlock the door by finding the playerstate and finding the unlock door funktion inside the blueprint
  *which requires Requiredkeycard, default keycard now is KeycardA (can change in instance editor)
@@ -58,4 +75,24 @@ bool AKeycardReader::TryUnlock(ACustomPlayerState* PS)
 	}
 	UE_LOG(LogTemp, Warning, TEXT("KeycardReader::TryUnlock() failed"));
 	return false;
+}
+
+void AKeycardReader::OpenDoors()
+{
+	APawn* Pawn = Cast<APawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	
+	if (Pawn == nullptr) return;
+	
+	FVector PawnLocation = Pawn->GetActorLocation();
+	
+	for (int i = 0; i < LinkedDoor.Num(); i++)
+	{
+		FVector DoorForward = FRotator(0, DoorYaws[i], 0).Vector();
+		FVector ToDoor = (LinkedDoor[i]->GetActorLocation() - PawnLocation).GetSafeNormal();
+		
+		float Dot = FVector::DotProduct(DoorForward, ToDoor);
+		DoorOffsets[i] = (Dot >= 0.0f) ? 90.0f : -90.0f;
+	}
+	
+	bOpenDoors = true;
 }
