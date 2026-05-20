@@ -3,7 +3,10 @@
 
 #include "HidingComponent.h"
 
+#include "HorrorPlayerController.h"
 #include "PlayerCharacter.h"
+#include "Camera/CameraActor.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UHidingComponent::UHidingComponent()
 {
@@ -37,7 +40,7 @@ void UHidingComponent::Hide()
 	}
 	
 	ACharacter* PP = Cast<ACharacter>(Player);
-
+	
 	if (PP == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Player pawn is null"));
@@ -48,17 +51,29 @@ void UHidingComponent::Hide()
 	
 	FVector FinalOffset = HideOffset;
 	
-	// Makes player invisible"
-	PP->SetActorEnableCollision(false);
-
 	// Calculate the position
 	FVector NewLocation = GetOwner()->GetActorLocation() + HideOffset;
     
 	// Set rotation to the same as the locker
-	FRotator NewRotation = GetOwner()->GetActorRotation(); 
+	FRotator NewRotation = GetOwner()->GetActorRotation();
+	
+	if (UCharacterMovementComponent* CMC = Cast<UCharacterMovementComponent>(PP->GetMovementComponent()))
+	{
+		CMC->StopMovementImmediately();
+		CMC->GravityScale = 0.0f;
+		CMC->SetMovementMode(MOVE_None);
+	}
+	
+	// Makes player invisible
+	PP->SetActorEnableCollision(false);
     
 	// Teleport player with offset
 	PP->SetActorLocationAndRotation(NewLocation, NewRotation);
+	
+	if (AHorrorPlayerController* PC = Cast<AHorrorPlayerController>(PP->GetController()))
+	{
+		PC->SetControlRotation(NewRotation);
+	}
 	
 	bHiding = true;
 }
@@ -74,6 +89,14 @@ void UHidingComponent::GetOut()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Player pawn is null"));
 		return;
+	}
+	
+	ACharacter* PP = Cast<ACharacter>(Player);
+	
+	if (UCharacterMovementComponent* CMC = Cast<UCharacterMovementComponent>(PP->GetMovementComponent()))
+	{
+		CMC->GravityScale = 1.0f;
+		CMC->SetMovementMode(MOVE_Walking);
 	}
 
 	PlayerPawn->SetActorTransform(EntryPosition);

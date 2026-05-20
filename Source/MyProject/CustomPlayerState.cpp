@@ -5,6 +5,7 @@
 
 #include <rapidjson/rapidjson.h>
 
+#include "CustomGameInstance.h"
 #include "GameFramework/GameModeBase.h"
 
 ACustomPlayerState::ACustomPlayerState()
@@ -15,6 +16,7 @@ ACustomPlayerState::ACustomPlayerState()
 	CollectedItems.Add(FName("PowerKey"), 0);
 	CollectedItems.Add(FName("KeycardA"), 0);
 	CollectedItems.Add(FName("KeycardB"), 0);
+	CollectedItems.Add(FName("Flashlight"), 0);
 }
 
 void ACustomPlayerState::BeginPlay()
@@ -25,6 +27,11 @@ void ACustomPlayerState::BeginPlay()
 	FVector Start = GetWorld()->GetAuthGameMode()->FindPlayerStart(GetWorld()->GetFirstPlayerController())->GetActorLocation();
 	
 	SpawnTransform.SetLocation(Start);
+	
+	UCustomGameInstance* GI = Cast<UCustomGameInstance>(GetGameInstance());
+	
+	const TMap<FName, int>& Items = GI->GetInventory();
+	CollectedItems.Append(Items);
 }
 
 /**
@@ -77,4 +84,9 @@ void ACustomPlayerState::UseItem(FName ItemName, int AmountUsed)
 	{
 		CollectedItems[ItemName] -= AmountUsed;
 	}
+}
+
+TMap<FName, int> ACustomPlayerState::GetCollectedItems()
+{
+	return CollectedItems;
 }

@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UseItem(FName ItemName, int AmountUsed = 1);
 	
+	UFUNCTION()
+	TMap<FName, int> GetCollectedItems();
+	
 	// Inventory of the collected items, Key : Tag, Value : Number of items with that tag
 	UPROPERTY()
 	TMap<FName, int> CollectedItems;

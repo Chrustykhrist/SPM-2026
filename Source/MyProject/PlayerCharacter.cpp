@@ -6,6 +6,7 @@
 #include "CustomPlayerState.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "FlashlightComponent.h"
 #include "PickUp.h"
 #include "HidingComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -16,6 +17,7 @@
 #include "FootstepComponent.h"
 #include "Misc/LowLevelTestAdapter.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/GameplayStatics.h"
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
@@ -56,7 +58,9 @@ void APlayerCharacter::BeginPlay()
 	// Setting the speed att which the player moves when crouched
 	MovementComponent->MaxWalkSpeedCrouched = CrouchSpeed;
 
-	SpeedDecrease = 250/Stamina;
+	SpeedDecrease = 250/MaxStamina;
+	
+	Stamina = MaxStamina;
 }
 
 // Called every frame
@@ -66,10 +70,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	// Check if the player has stopped running and/or is crouching, 
 	// if true recover the stamina of the player
-	if (!bRunning && !bHoldBreath && Stamina <= 10)
+	if (!bRunning && !bHoldBreath && Stamina <= MaxNaturalRecovery)
 	{
 		Stamina += GetWorld()->GetDeltaSeconds();
 	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("Stamina: %f"), Stamina);
 }
 
 // Called to bind functionality to input
@@ -116,6 +122,14 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Completed, this, &APlayerCharacter::InteractEnd);
 		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
 		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
+		
+		// Flashlight
+		UEnhancedInput->BindAction(IAFlashlight, ETriggerEvent::Started, this, &APlayerCharacter::UseFlashlight);
+		
+		// Select and use items
+		UEnhancedInput->BindAction(IAUseItem, ETriggerEvent::Started, this, &APlayerCharacter::UseItem);
+		UEnhancedInput->BindAction(IASelectFirstItem, ETriggerEvent::Started, this, &APlayerCharacter::SwitchToFirstItem);
+		UEnhancedInput->BindAction(IASelectSecondItem, ETriggerEvent::Started, this, &APlayerCharacter::SwitchToSecondItem);
 	}
 
 }
@@ -137,8 +151,14 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	// Left and right movement
 	AddMovementInput(GetActorRightVector(), Value.Get<FVector2D>().X);
 	
-	if (!bCrouching) MakeNoise(WalkLoudnessMultiplier, this, GetActorLocation());
-	
+	if (bCrouching)
+	{
+		MakeNoise(CrouchLoudnessMultiplier, this, GetActorLocation());
+	}
+	else
+	{
+		MakeNoise(WalkLoudnessMultiplier, this, GetActorLocation());
+	}
 	FootstepComponent->SetIsMoving(true);
 }
 
@@ -395,12 +415,12 @@ void APlayerCharacter::InteractBegin(const FInputActionValue& Value)
 	UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(GetComponentByClass(UInteractionComponent::StaticClass()));
 	if (InteractionComponent)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("InteractBegin"));
+		//UE_LOG(LogTemp, Warning, TEXT("InteractBegin"));
 		InteractionComponent->BeginInteract();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Else Begin, Component: %s"), InteractionComponent ? *InteractionComponent->GetName() : TEXT("NULL"));
+		//UE_LOG(LogTemp, Warning, TEXT("Else Begin, Component: %s"), InteractionComponent ? *InteractionComponent->GetName() : TEXT("NULL"));
 	}
 	
 }
@@ -425,14 +445,116 @@ void APlayerCharacter::InteractEnd(const FInputActionValue& Value)
 	UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(GetComponentByClass(UInteractionComponent::StaticClass()));;
 	if (InteractionComponent && InteractionComponent->bIsInteracting)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("End"));
+		//UE_LOG(LogTemp, Warning, TEXT("End"));
 		InteractionComponent->EndInteract();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Else End"));
+		//UE_LOG(LogTemp, Warning, TEXT("Else End"));
 		// PickUpItem(Value);
 	}
 }
 
 #pragma endregion	
+
+#pragma region ITEM_USE
+void APlayerCharacter::UseFlashlight(const FInputActionValue& Value)
+{
+	UFlashlightComponent* FL = Cast<UFlashlightComponent>(GetComponentByClass(UFlashlightComponent::StaticClass()));
+	
+	if (FL == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Flashlight Component"));
+		return;
+	}
+	
+	ACustomPlayerState* PS = Cast<ACustomPlayerState>(UGameplayStatics::GetPlayerState(this, 0));
+	
+	if (PS == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Player State Found"));
+		return;
+	}
+	
+	if (PS->GetCollectedItems()[FName("Flashlight")] < 1)
+	{
+		return;
+	}
+	
+	if (FL->GetState())
+	{
+		FL->TurnOff();
+	} else
+	{
+		FL->TurnOn();
+	}
+}
+
+void APlayerCharacter::UseItem(const FInputActionValue& Value)
+{
+	UFlashlightComponent* FL = Cast<UFlashlightComponent>(GetComponentByClass(UFlashlightComponent::StaticClass()));
+	
+	ACustomPlayerState* PS = Cast<ACustomPlayerState>(UGameplayStatics::GetPlayerState(this, 0));
+	
+	if (PS == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Player State Found"));
+		return;
+	}
+	
+	if (SelectedItem == 0)
+	{
+		return;
+	}
+	
+	if (SelectedItem == 2)
+	{
+		if (FL == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("No Flashlight Component"));
+			return;
+		}
+		
+		if (PS->GetCollectedItems()[FName("Flashlight")] < 1)
+		{
+			return;
+		}
+		
+		if (PS->GetCollectedItems()[FName("Battery")] >= 1)
+		{
+			FL->Recharge();
+			PS->GetCollectedItems()[FName("Battery")]--;
+		}
+	} else if (SelectedItem == 1)
+	{
+		if (PS->GetCollectedItems()[FName("Medicine")] >= 1)
+		{
+			Stamina = MaxStamina;
+			PS->GetCollectedItems()[FName("Medicine")]--;
+		}
+	}
+}
+
+void APlayerCharacter::SwitchToFirstItem(const FInputActionValue& Value)
+{
+	if (SelectedItem == 0 || SelectedItem == 2)
+	{
+		SelectedItem = 1;
+	} else if (SelectedItem == 1)
+	{
+		SelectedItem = 0;
+	}
+}
+
+void APlayerCharacter::SwitchToSecondItem(const FInputActionValue& Value)
+{
+	if (SelectedItem == 0 || SelectedItem == 1)
+	{
+		SelectedItem = 2;
+	} else if (SelectedItem == 2)
+	{
+		SelectedItem = 0;
+	}
+}
+
+#pragma endregion

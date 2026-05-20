@@ -12,6 +12,8 @@ class UFootstepComponent;
 class UInteractionComponent;
 class UHidingComponent;
 class UCharacterMovementComponent;
+class UInputMappingContext;
+class UInputAction;
 #pragma endregion
 
 UCLASS()
@@ -33,10 +35,10 @@ protected:
 	 */
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputMappingContext* InputMappingContext;
+	UInputMappingContext* InputMappingContext;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputAction* IAMove;
+	UInputAction* IAMove;
 	
 	// Input to control camera movement with controller
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -63,6 +65,18 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IAHoldBreath;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IAFlashlight;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IAUseItem;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IASelectFirstItem;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IASelectSecondItem;
 #pragma endregion	
 
 public:	
@@ -127,6 +141,13 @@ private:
 	void InteractBegin(const FInputActionValue& Value);
 	void InteractHold(const FInputActionValue& Value);
 	void InteractEnd(const FInputActionValue& Value);
+	
+	void UseFlashlight(const FInputActionValue& Value);
+	
+	void UseItem(const FInputActionValue& Value);
+	
+	void SwitchToFirstItem(const FInputActionValue& Value);
+	void SwitchToSecondItem(const FInputActionValue& Value);
 #pragma endregion	
 	UPROPERTY()
 	UCharacterMovementComponent* MovementComponent;
@@ -171,7 +192,13 @@ private:
 	
 	// How many seconds the player can run
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
-	float Stamina = 10;
+	float Stamina;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	float MaxStamina = 15;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	float MaxNaturalRecovery = 5;
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	float RecoveryRate = 0.5;
@@ -188,6 +215,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="Sound")
 	float WalkLoudnessMultiplier = 0.35f;
 	
+	UPROPERTY(EditAnywhere, Category="Sound")
+	float CrouchLoudnessMultiplier = 0.15f;
+	
 	//UPROPERTY(VisibleAnywhere)
 	//TObjectPtr<UInteractionComponent> InteractionComponent;
 	
@@ -195,6 +225,9 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
 	UFootstepComponent* FootstepComponent;
+	
+	UPROPERTY()
+	int SelectedItem = 0;
 	
 #pragma endregion	
 };
