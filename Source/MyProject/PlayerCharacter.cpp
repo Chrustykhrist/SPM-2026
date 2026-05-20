@@ -17,6 +17,7 @@
 #include "FootstepComponent.h"
 #include "Misc/LowLevelTestAdapter.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/GameplayStatics.h"
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
@@ -445,15 +446,30 @@ void APlayerCharacter::UseFlashlight(const FInputActionValue& Value)
 {
 	UFlashlightComponent* FL = Cast<UFlashlightComponent>(GetComponentByClass(UFlashlightComponent::StaticClass()));
 	
-	if (FL == nullptr) return;
+	if (FL == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Flashlight Component"));
+		return;
+	}
+	
+	ACustomPlayerState* PS = Cast<ACustomPlayerState>(UGameplayStatics::GetPlayerState(this, 0));
+	
+	if (PS == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Player State Found"));
+		return;
+	}
+	
+	if (PS->GetCollectedItems()[FName("Flashlight")] < 1)
+	{
+		return;
+	}
 	
 	if (FL->GetState())
 	{
 		FL->TurnOff();
-		FL->SetState(false);
 	} else
 	{
 		FL->TurnOn();
-		FL->SetState(true);
 	}
 }

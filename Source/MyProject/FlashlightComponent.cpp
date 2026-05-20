@@ -38,6 +38,17 @@ void UFlashlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (FlashlightDuration <= 0.0f)
+	{
+		TurnOff();
+	}
+	
+	if (GetState() == true)
+	{
+		FlashlightDuration -= DeltaTime;
+		UE_LOG(LogTemp, Warning, TEXT("Flashlight duration: %f"), FlashlightDuration);
+	}
+	
 	// ...
 }
 
@@ -45,11 +56,13 @@ void UFlashlightComponent::TurnOn()
 {
 	Flashlight->SetActive(true);
 	Flashlight->SetVisibility(true);
+	SetState(true);
 }
 
 void UFlashlightComponent::TurnOff()
 {
 	Flashlight->SetActive(false);
 	Flashlight->SetVisibility(false);
+	SetState(false);
 }
 

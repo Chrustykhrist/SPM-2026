@@ -16,6 +16,7 @@ ACustomPlayerState::ACustomPlayerState()
 	CollectedItems.Add(FName("PowerKey"), 0);
 	CollectedItems.Add(FName("KeycardA"), 0);
 	CollectedItems.Add(FName("KeycardB"), 0);
+	CollectedItems.Add(FName("Flashlight"), 0);
 }
 
 void ACustomPlayerState::BeginPlay()

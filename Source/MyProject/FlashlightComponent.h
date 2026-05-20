@@ -30,13 +30,26 @@ public:
 	UFUNCTION()
 	void TurnOff();
 	
+#pragma region GET/SET	
+	UFUNCTION(BlueprintCallable)
 	bool GetState() const { return bState; }
 	
+	UFUNCTION(BlueprintCallable)
 	void SetState(bool NewState) { bState = NewState; }
-
+	
+	UFUNCTION(BlueprintCallable)
+	float GetFlashlightDuration() const { return FlashlightDuration; }
+	
+	UFUNCTION(BlueprintCallable)
+	void SetFlashlightDuration(float NewDuration) { FlashlightDuration = NewDuration; }
+#pragma endregion
+	
 private:
 	bool bState = false;
 	
 	UPROPERTY()
 	USpotLightComponent* Flashlight;
+	
+	UPROPERTY()
+	float FlashlightDuration = 5.0f;
 };

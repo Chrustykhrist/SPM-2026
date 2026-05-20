@@ -65,6 +65,12 @@ void UPickUp::PickUp()
 	
 	if (bGrabbable)
 	{
+		if (ItemHit.GetActor()->Tags.Num() == 0)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Item Hit Has No Tag"));
+			return;
+		}
+		
 		// Puts the item in the inventory and then removes it from the world
 		APlayerController* PC = GetWorld()->GetFirstPlayerController();
 		ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
