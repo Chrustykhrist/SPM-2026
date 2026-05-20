@@ -40,15 +40,19 @@ void UFlashlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (FlashlightDuration <= 0.0f)
+	/*if (FlashlightDuration <= 0.0f)
 	{
 		TurnOff();
-	}
+	}*/
 	
 	if (GetState() == true && FlashlightDuration > 0.0f)
 	{
 		FlashlightDuration -= DeltaTime;
-		UE_LOG(LogTemp, Warning, TEXT("Flashlight duration: %f"), FlashlightDuration);
+		//UE_LOG(LogTemp, Warning, TEXT("Flashlight duration: %f"), FlashlightDuration);
+		
+		//Flashlight->AttenuationRadius -= DeteriorationRate * DeltaTime;
+		
+		Flashlight->Intensity -= IntensityDeteriotationRate * DeltaTime;
 	}
 	
 	// ...

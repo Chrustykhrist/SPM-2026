@@ -58,4 +58,10 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	float MaxFlashlightDuration = 10.0f;
+	
+	UPROPERTY(EditAnywhere)
+	float AttenuationDeteriorationRate = 30.0f;
+	
+	UPROPERTY(EditAnywhere)
+	float IntensityDeteriotationRate = 0.3f;
 };

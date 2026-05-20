@@ -97,7 +97,7 @@ ESurfaceType UFootstepComponent::DetectSurfaceType()
 #endif	
 	if (bHit && Hit.PhysMaterial.IsValid())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Material hit: %s"), *Hit.PhysMaterial.Get()->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("Material hit: %s"), *Hit.PhysMaterial.Get()->GetName());
 		UPhysicalMaterial* HitMaterial = Hit.PhysMaterial.Get();
 		
 		if (ConcreteMaterial && HitMaterial == ConcreteMaterial)
@@ -135,7 +135,7 @@ void UFootstepComponent::PlayFootstep(ESurfaceType SurfaceType, EMovementState M
 		default: SurfaceValue = 0.0f; break;
 	}
 	
-	UE_LOG(LogTemp, Log, TEXT("FMOD EventTOPlay: %s"), *EventToPlay->GetName());
+	//UE_LOG(LogTemp, Log, TEXT("FMOD EventTOPlay: %s"), *EventToPlay->GetName());
 	
 	// FFMODEventInstance Instance = UFMODBlueprintStatics::PlayEventAtLocation(
 	// 	GetWorld(),
