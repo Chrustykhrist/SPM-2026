@@ -68,6 +68,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IAFlashlight;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IARecharge;
 #pragma endregion	
 
 public:	
@@ -134,6 +137,8 @@ private:
 	void InteractEnd(const FInputActionValue& Value);
 	
 	void UseFlashlight(const FInputActionValue& Value);
+	
+	void Recharge(const FInputActionValue& Value);
 #pragma endregion	
 	UPROPERTY()
 	UCharacterMovementComponent* MovementComponent;

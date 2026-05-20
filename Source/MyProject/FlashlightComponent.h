@@ -44,6 +44,9 @@ public:
 	void SetFlashlightDuration(float NewDuration) { FlashlightDuration = NewDuration; }
 #pragma endregion
 	
+	UFUNCTION()
+	void Recharge();
+	
 private:
 	bool bState = false;
 	
@@ -51,5 +54,8 @@ private:
 	USpotLightComponent* Flashlight;
 	
 	UPROPERTY()
-	float FlashlightDuration = 5.0f;
+	float FlashlightDuration;
+	
+	UPROPERTY(EditAnywhere)
+	float MaxFlashlightDuration = 10.0f;
 };

@@ -121,6 +121,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		
 		// Flashlight
 		UEnhancedInput->BindAction(IAFlashlight, ETriggerEvent::Started, this, &APlayerCharacter::UseFlashlight);
+		UEnhancedInput->BindAction(IARecharge, ETriggerEvent::Started, this, &APlayerCharacter::Recharge);
 	}
 
 }
@@ -442,6 +443,7 @@ void APlayerCharacter::InteractEnd(const FInputActionValue& Value)
 
 #pragma endregion	
 
+#pragma region FLASHLIGHT
 void APlayerCharacter::UseFlashlight(const FInputActionValue& Value)
 {
 	UFlashlightComponent* FL = Cast<UFlashlightComponent>(GetComponentByClass(UFlashlightComponent::StaticClass()));
@@ -473,3 +475,35 @@ void APlayerCharacter::UseFlashlight(const FInputActionValue& Value)
 		FL->TurnOn();
 	}
 }
+
+void APlayerCharacter::Recharge(const FInputActionValue& Value)
+{
+	UFlashlightComponent* FL = Cast<UFlashlightComponent>(GetComponentByClass(UFlashlightComponent::StaticClass()));
+	
+	ACustomPlayerState* PS = Cast<ACustomPlayerState>(UGameplayStatics::GetPlayerState(this, 0));
+	
+	if (PS == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Player State Found"));
+		return;
+	}
+	
+	if (FL == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Flashlight Component"));
+		return;
+	}
+	
+	if (PS->GetCollectedItems()[FName("Flashlight")] < 1)
+	{
+		return;
+	}
+	
+	if (PS->GetCollectedItems()[FName("Battery")] >= 1)
+	{
+		FL->Recharge();
+		PS->GetCollectedItems()[FName("Battery")]--;
+	}
+}
+
+#pragma endregion

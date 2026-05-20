@@ -21,6 +21,8 @@ void UFlashlightComponent::BeginPlay()
 
 	// ...
 	
+	Recharge();
+	
 	Flashlight = Cast<USpotLightComponent>(GetOwner()->GetComponentByClass(USpotLightComponent::StaticClass()));
 	
 	if (Flashlight == nullptr)
@@ -43,7 +45,7 @@ void UFlashlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 		TurnOff();
 	}
 	
-	if (GetState() == true)
+	if (GetState() == true && FlashlightDuration > 0.0f)
 	{
 		FlashlightDuration -= DeltaTime;
 		UE_LOG(LogTemp, Warning, TEXT("Flashlight duration: %f"), FlashlightDuration);
@@ -57,6 +59,7 @@ void UFlashlightComponent::TurnOn()
 	Flashlight->SetActive(true);
 	Flashlight->SetVisibility(true);
 	SetState(true);
+
 }
 
 void UFlashlightComponent::TurnOff()
@@ -64,5 +67,10 @@ void UFlashlightComponent::TurnOff()
 	Flashlight->SetActive(false);
 	Flashlight->SetVisibility(false);
 	SetState(false);
+}
+
+void UFlashlightComponent::Recharge()
+{
+	FlashlightDuration = MaxFlashlightDuration;
 }
 
