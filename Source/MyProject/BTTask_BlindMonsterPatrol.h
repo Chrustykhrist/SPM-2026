@@ -19,12 +19,15 @@ public:
 	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	
+	// UPROPERTY(EditAnywhere, Category = "Patrol")
+	// bool bUseRandomPatrol = true;
+	
+	// UPROPERTY(EditAnywhere, Category = "Patrol", meta = (EditCondition = "!bUseRandomPatrol"))
+	// TArray<FVector> SpecificPatrolPoints;
+	
+	// UPROPERTY(EditAnywhere, Category = "Patrol", meta = (EditCondition = "bUseRandomPatrol"))
+	// float SearchRadius = 5000.0f;
+	
 	UPROPERTY(EditAnywhere, Category = "Patrol")
-	bool bUseRandomPatrol = true;
-	
-	UPROPERTY(EditAnywhere, Category = "Patrol", meta = (EditCondition = "!bUseRandomPatrol"))
-	TArray<FVector> SpecificPatrolPoints;
-	
-	UPROPERTY(EditAnywhere, Category = "Patrol", meta = (EditCondition = "bUseRandomPatrol"))
 	float SearchRadius = 5000.0f;
 };

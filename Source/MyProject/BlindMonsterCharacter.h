@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "BlindMonsterCharacter.generated.h"
 
+class APatrolRoute;
 class UHidingComponent;
 
 UCLASS()
@@ -34,12 +35,43 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
+	// Patrol route
+	// What route should the monster follow as standard
+	UPROPERTY(EditInstanceOnly, Category = "Patrol")
+	TArray<APatrolRoute*> PatrolRoutes;
+	
+	// // altertenative route that the monster can take if the player is in certain zone
+	// UPROPERTY(EditInstanceOnly, Category = "Patrol")
+	// APatrolRoute* AlterPatrolRoute;
+	
+	// index for current waypoint
+	UPROPERTY(BlueprintReadOnly, Category = "Patrol")
+	int CurrentWaypointIndex = 0;
+	
+	// Gets the closest route to the player that the monster should use
+	void SelectClosestRouteToPlayer();
+	
+	// gets the next waypoint in line
+	AActor* GetNextWaypoint();
+	
+	// Patrol route
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Sight")
 	float SightDistance = 200.0f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Sight")
 	float SightAngle = 35.0f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Patrol")
+	float RouteChangedThreshold = 300.0f;
+	
+	// UPROPERTY(EditDefaultsOnly, Category = "Sight")
+	// float DistanceInfront = 200.0f;
+	//
+	// // how many seconds in the future should the monster predict
+	// UPROPERTY(EditDefaultsOnly, Category = "Sight")
+	// float PredictionTime = 1.0f;
 	
 	UPROPERTY(VisibleAnywhere)
 	class UPawnSensingComponent* PawnSensingComponent;
@@ -52,11 +84,33 @@ public:
 	void ResetMovement();
 	
 private:
+	
+	bool CheckIfHiding();
+	
+	bool CheckIfOutOfDistance();
+	
+	bool CheckIfOutOfSight();
+	
+	UPROPERTY()
+	APatrolRoute* ActivePatrolRoute = nullptr;
+	
 	bool bIsChasing = false;
 	
-	float CheckSightInterval = 1.0f;
+	float CheckSightInterval = 0.2f;
 	
 	float CheckTimer = 0.f;
 	
+	float Distance;
+	
+	float AngleDeg;
+	
+	float BestDistanceSq = FLT_MAX;
+	
 	UHidingComponent* HidingComp;
+	
+	class APlayerCharacter* Player;
+	
+	FVector PlayerVelocity;
+	
+	FVector ToPlayer;
 };
