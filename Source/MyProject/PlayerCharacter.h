@@ -70,7 +70,7 @@ protected:
 	UInputAction* IAFlashlight;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* IARecharge;
+	UInputAction* IAUseItem;
 #pragma endregion	
 
 public:	
@@ -138,7 +138,10 @@ private:
 	
 	void UseFlashlight(const FInputActionValue& Value);
 	
-	void Recharge(const FInputActionValue& Value);
+	void UseItem(const FInputActionValue& Value);
+	
+	void SwitchToFirstItem(const FInputActionValue& Value);
+	void SwitchToSecondItem(const FInputActionValue& Value);
 #pragma endregion	
 	UPROPERTY()
 	UCharacterMovementComponent* MovementComponent;
@@ -207,6 +210,9 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
 	UFootstepComponent* FootstepComponent;
+	
+	UPROPERTY()
+	int SelectedItem = 0;
 	
 #pragma endregion	
 };

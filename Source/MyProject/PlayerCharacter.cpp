@@ -121,7 +121,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		
 		// Flashlight
 		UEnhancedInput->BindAction(IAFlashlight, ETriggerEvent::Started, this, &APlayerCharacter::UseFlashlight);
-		UEnhancedInput->BindAction(IARecharge, ETriggerEvent::Started, this, &APlayerCharacter::Recharge);
+		UEnhancedInput->BindAction(IAUseItem, ETriggerEvent::Started, this, &APlayerCharacter::UseItem);
 	}
 
 }
@@ -443,7 +443,7 @@ void APlayerCharacter::InteractEnd(const FInputActionValue& Value)
 
 #pragma endregion	
 
-#pragma region FLASHLIGHT
+#pragma region ITEM_USE
 void APlayerCharacter::UseFlashlight(const FInputActionValue& Value)
 {
 	UFlashlightComponent* FL = Cast<UFlashlightComponent>(GetComponentByClass(UFlashlightComponent::StaticClass()));
@@ -476,7 +476,7 @@ void APlayerCharacter::UseFlashlight(const FInputActionValue& Value)
 	}
 }
 
-void APlayerCharacter::Recharge(const FInputActionValue& Value)
+void APlayerCharacter::UseItem(const FInputActionValue& Value)
 {
 	UFlashlightComponent* FL = Cast<UFlashlightComponent>(GetComponentByClass(UFlashlightComponent::StaticClass()));
 	
@@ -499,10 +499,46 @@ void APlayerCharacter::Recharge(const FInputActionValue& Value)
 		return;
 	}
 	
-	if (PS->GetCollectedItems()[FName("Battery")] >= 1)
+	if (SelectedItem == 0)
 	{
-		FL->Recharge();
-		PS->GetCollectedItems()[FName("Battery")]--;
+		return;
+	}
+	
+	if (SelectedItem == 2)
+	{
+		if (PS->GetCollectedItems()[FName("Battery")] >= 1)
+		{
+			FL->Recharge();
+			PS->GetCollectedItems()[FName("Battery")]--;
+		}
+	} else if (SelectedItem == 1)
+	{
+		if (PS->GetCollectedItems()[FName("Medicine")] >= 1)
+		{
+			PS->GetCollectedItems()[FName("Medicine")]--;
+		}
+	}
+}
+
+void APlayerCharacter::SwitchToFirstItem(const FInputActionValue& Value)
+{
+	if (SelectedItem == 0 || SelectedItem == 2)
+	{
+		SelectedItem = 1;
+	} else if (SelectedItem == 1)
+	{
+		SelectedItem = 0;
+	}
+}
+
+void APlayerCharacter::SwitchToSecondItem(const FInputActionValue& Value)
+{
+	if (SelectedItem == 0 || SelectedItem == 1)
+	{
+		SelectedItem = 2;
+	} else if (SelectedItem == 2)
+	{
+		SelectedItem = 0;
 	}
 }
 
