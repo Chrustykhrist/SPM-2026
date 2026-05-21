@@ -77,7 +77,7 @@ void UPickUp::PickUp()
 
 		FName ItemName = ItemHit.GetActor()->Tags[0];
 
-		if (ItemName == FName("PowerKey") || PS->GetCollectedItems()[FName("PowerKey")] >= 1)
+		if (ItemName == FName("PowerKey") && PS->GetCollectedItems()[FName("PowerKey")] >= 1)
 		{
 			if (IsValid(NotifClass) && !IsValid(Notif))
 			{
