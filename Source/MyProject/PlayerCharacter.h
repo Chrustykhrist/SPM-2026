@@ -115,6 +115,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void SetOnPauseStartScreen(bool bNewPauseStart) { bOnPauseStartScreen = bNewPauseStart; }
 #pragma endregion
+	
+	UFUNCTION()
+	void ResetPlayer();
 private:
 #pragma region INPUT_METHODS	
 	

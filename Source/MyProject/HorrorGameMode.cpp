@@ -44,6 +44,8 @@ void AHorrorGameMode::PlayerDied()
 	{
 		PCH->GetFootstepComponent()->SetIsMoving(false);
 	}
+	
+	PCH->ResetPlayer();
 }
 
 /**
@@ -114,6 +116,7 @@ void AHorrorGameMode::GameOver()
 		for (ABlindMonsterCharacter* CurrentMonster : BlindMonsterActors)
 		{
 			CurrentMonster->ResetMovement();
+			CurrentMonster->Respawn();
 		}
 		//BlindMonster->ResetMovement();
 	}

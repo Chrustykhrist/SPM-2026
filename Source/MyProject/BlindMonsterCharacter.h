@@ -83,6 +83,9 @@ public:
 	
 	void ResetMovement();
 	
+	UFUNCTION()
+	void Respawn();
+	
 private:
 	
 	bool CheckIfHiding();
@@ -113,4 +116,6 @@ private:
 	FVector PlayerVelocity;
 	
 	FVector ToPlayer;
+	
+	FTransform SpawnLocation;
 };

@@ -112,8 +112,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAHide, ETriggerEvent::Started, this, &APlayerCharacter::HideInLocker);
 
 		// Hold breath
-		UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Triggered, this, &APlayerCharacter::HoldBreath);
-		UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Completed, this, &APlayerCharacter::ReleaseBreath);
+		//UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Triggered, this, &APlayerCharacter::HoldBreath);
+		//UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Completed, this, &APlayerCharacter::ReleaseBreath);
 		
 		// Interaction valves
 		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Started, this, &APlayerCharacter::InteractBegin);
@@ -131,8 +131,21 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 
 }
-#pragma region MOVE
 
+void APlayerCharacter::ResetPlayer()
+{
+	bRunning = false;
+	
+	bCrouching = false;
+	
+	bMoving = false;
+	
+	bHoldBreath = false;
+	
+	bHiding = false;
+}
+
+#pragma region MOVE
 /**
  *  Moves the player
  */

@@ -62,6 +62,8 @@ void ABlindMonsterCharacter::BeginPlay()
 	}
 	
 	SelectClosestRouteToPlayer();
+	
+	SpawnLocation = GetActorTransform();
 }
 
 // Called every frame
@@ -345,5 +347,10 @@ void ABlindMonsterCharacter::ResetMovement()
 			AIController->GetBlackboardComponent()->SetValueAsBool("IsAlerted", false);
 		}
 	}
+}
+
+void ABlindMonsterCharacter::Respawn()
+{
+	SetActorTransform(SpawnLocation);
 }
 
