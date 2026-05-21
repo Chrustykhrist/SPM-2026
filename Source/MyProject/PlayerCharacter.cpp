@@ -125,7 +125,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAFlashlight, ETriggerEvent::Started, this, &APlayerCharacter::UseFlashlight);
 		
 		// Select and use items
-		UEnhancedInput->BindAction(IAUseItem, ETriggerEvent::Started, this, &APlayerCharacter::UseItem);
+		//UEnhancedInput->BindAction(IAUseItem, ETriggerEvent::Started, this, &APlayerCharacter::UseItem);
 		UEnhancedInput->BindAction(IASelectFirstItem, ETriggerEvent::Started, this, &APlayerCharacter::SwitchToFirstItem);
 		UEnhancedInput->BindAction(IASelectSecondItem, ETriggerEvent::Started, this, &APlayerCharacter::SwitchToSecondItem);
 	}
@@ -535,23 +535,52 @@ void APlayerCharacter::UseItem(const FInputActionValue& Value)
 
 void APlayerCharacter::SwitchToFirstItem(const FInputActionValue& Value)
 {
-	if (SelectedItem == 0 || SelectedItem == 2)
+	/*if (SelectedItem == 0 || SelectedItem == 2)
 	{
 		SelectedItem = 1;
 	} else if (SelectedItem == 1)
 	{
 		SelectedItem = 0;
+	}*/
+	
+	ACustomPlayerState* PS = Cast<ACustomPlayerState>(UGameplayStatics::GetPlayerState(this, 0));
+	
+	if (PS->GetCollectedItems()[FName("Medicine")] >= 1)
+	{
+		Stamina = MaxStamina;
+		PS->CollectedItems[FName("Medicine")]--;
 	}
 }
 
 void APlayerCharacter::SwitchToSecondItem(const FInputActionValue& Value)
 {
-	if (SelectedItem == 0 || SelectedItem == 1)
+	/*if (SelectedItem == 0 || SelectedItem == 1)
 	{
 		SelectedItem = 2;
 	} else if (SelectedItem == 2)
 	{
 		SelectedItem = 0;
+	}*/
+	
+	UFlashlightComponent* FL = Cast<UFlashlightComponent>(GetComponentByClass(UFlashlightComponent::StaticClass()));
+	
+	ACustomPlayerState* PS = Cast<ACustomPlayerState>(UGameplayStatics::GetPlayerState(this, 0));
+	
+	if (FL == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Flashlight Component"));
+		return;
+	}
+		
+	if (PS->GetCollectedItems()[FName("Flashlight")] < 1)
+	{
+		return;
+	}
+		
+	if (PS->GetCollectedItems()[FName("Battery")] >= 1)
+	{
+		FL->Recharge();
+		PS->CollectedItems[FName("Battery")]--;
 	}
 }
 

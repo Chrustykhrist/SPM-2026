@@ -81,7 +81,7 @@ void AKeycardReader::OpenDoors()
 {
 	ACustomPlayerState* PS = Cast<ACustomPlayerState>(GetWorld()->GetFirstPlayerController()->GetPlayerState<ACustomPlayerState>());
 	
-	if (!PS->HasRequiredItem(RequiredKeycard)) return;
+	if (!PS || !PS->HasRequiredItem(RequiredKeycard)) return;
 	
 	PS->CollectedItems[RequiredKeycard]--;
 	
