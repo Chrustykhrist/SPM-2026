@@ -21,17 +21,14 @@ void UFlashlightComponent::BeginPlay()
 
 	// ...
 	
-	Recharge();
-	
 	Flashlight = Cast<USpotLightComponent>(GetOwner()->GetComponentByClass(USpotLightComponent::StaticClass()));
+	
+	Recharge();
 	
 	if (Flashlight == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UFlashlightComponent was not found"));
 	}
-	
-	Intensity = Flashlight->Intensity;
-	Attenuation = Flashlight->AttenuationRadius;
 	
 	Flashlight->SetActive(false);
 	Flashlight->SetVisibility(false);
@@ -79,8 +76,8 @@ void UFlashlightComponent::TurnOff()
 void UFlashlightComponent::Recharge()
 {
 	FlashlightDuration = MaxFlashlightDuration;
-	Flashlight->AttenuationRadius = Attenuation;
-	Flashlight->Intensity = Intensity;
+	Flashlight->SetAttenuationRadius(Attenuation);
+	Flashlight->SetIntensity(Intensity);
 	
 }
 

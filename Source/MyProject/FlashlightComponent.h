@@ -66,8 +66,8 @@ private:
 	float IntensityDeteriorationRate = 0.3f;
 	
 	UPROPERTY()
-	float Intensity;
+	float Intensity = 10;
 	
 	UPROPERTY()
-	float Attenuation;
+	float Attenuation = 1000;
 };
