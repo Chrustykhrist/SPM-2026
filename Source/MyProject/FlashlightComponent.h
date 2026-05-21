@@ -63,5 +63,5 @@ private:
 	float AttenuationDeteriorationRate = 30.0f;
 	
 	UPROPERTY(EditAnywhere)
-	float IntensityDeteriotationRate = 0.3f;
+	float IntensityDeteriorationRate = 0.3f;
 };

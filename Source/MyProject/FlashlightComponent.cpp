@@ -50,9 +50,9 @@ void UFlashlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 		FlashlightDuration -= DeltaTime;
 		//UE_LOG(LogTemp, Warning, TEXT("Flashlight duration: %f"), FlashlightDuration);
 		
-		//Flashlight->AttenuationRadius -= DeteriorationRate * DeltaTime;
+		Flashlight->AttenuationRadius -= AttenuationDeteriorationRate * DeltaTime;
 		
-		Flashlight->Intensity -= IntensityDeteriotationRate * DeltaTime;
+		Flashlight->Intensity -= IntensityDeteriorationRate * DeltaTime;
 	}
 	
 	// ...

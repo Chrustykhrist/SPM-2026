@@ -63,6 +63,9 @@ void UPickUp::PickUp()
 	bGrabbable = GetWorld()->SweepSingleByChannel(ItemHit, PlayerPos, GrabVector, FQuat::Identity, ECC_GameTraceChannel2, GrabVolume);
 	bPushable = GetWorld()->LineTraceSingleByChannel(ButtonHit, PlayerPos, PushVector, ECC_GameTraceChannel3);
 	
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
+	
 	if (bGrabbable)
 	{
 		if (ItemHit.GetActor()->Tags.Num() == 0)
@@ -72,9 +75,6 @@ void UPickUp::PickUp()
 		}
 		
 		// Puts the item in the inventory and then removes it from the world
-		APlayerController* PC = GetWorld()->GetFirstPlayerController();
-		ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
-
 		FName ItemName = ItemHit.GetActor()->Tags[0];
 
 		if (ItemName == FName("PowerKey") && PS->GetCollectedItems()[FName("PowerKey")] >= 1)

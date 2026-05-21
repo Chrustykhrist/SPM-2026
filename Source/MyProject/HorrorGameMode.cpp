@@ -33,6 +33,8 @@ void AHorrorGameMode::PlayerDied()
 	
 	APlayerCharacter* PCH = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	
+	PCH->SetOnPauseStartScreen(false);
+	
 	if (PCH->bIsCrouched)
 	{
 		PCH->UnCrouch();

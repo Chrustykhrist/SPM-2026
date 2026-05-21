@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UseItem(FName ItemName, int AmountUsed = 1);
 	
+	UFUNCTION(BlueprintCallable)
+	int GetItemCount(FName ItemName);
+	
 	UFUNCTION()
 	TMap<FName, int> GetCollectedItems();
 	

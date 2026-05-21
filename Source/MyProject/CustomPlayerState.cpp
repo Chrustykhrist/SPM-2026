@@ -16,6 +16,9 @@ ACustomPlayerState::ACustomPlayerState()
 	CollectedItems.Add(FName("PowerKey"), 0);
 	CollectedItems.Add(FName("KeycardA"), 0);
 	CollectedItems.Add(FName("KeycardB"), 0);
+	CollectedItems.Add(FName("KeycardC"), 0);
+	CollectedItems.Add(FName("KeycardD"), 0);
+	CollectedItems.Add(FName("KeycardE"), 0);
 	CollectedItems.Add(FName("Flashlight"), 0);
 }
 
@@ -84,6 +87,15 @@ void ACustomPlayerState::UseItem(FName ItemName, int AmountUsed)
 	{
 		CollectedItems[ItemName] -= AmountUsed;
 	}
+}
+
+int ACustomPlayerState::GetItemCount(FName ItemName)
+{
+	if (!CollectedItems.Contains(ItemName)) return 0;
+	
+	UE_LOG(LogTemp, Warning, TEXT("Item Count: %d"), CollectedItems[ItemName]);
+	
+	return CollectedItems[ItemName];
 }
 
 TMap<FName, int> ACustomPlayerState::GetCollectedItems()

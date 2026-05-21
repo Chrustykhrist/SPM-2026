@@ -521,14 +521,14 @@ void APlayerCharacter::UseItem(const FInputActionValue& Value)
 		if (PS->GetCollectedItems()[FName("Battery")] >= 1)
 		{
 			FL->Recharge();
-			PS->GetCollectedItems()[FName("Battery")]--;
+			PS->CollectedItems[FName("Battery")]--;
 		}
 	} else if (SelectedItem == 1)
 	{
 		if (PS->GetCollectedItems()[FName("Medicine")] >= 1)
 		{
 			Stamina = MaxStamina;
-			PS->GetCollectedItems()[FName("Medicine")]--;
+			PS->CollectedItems[FName("Medicine")]--;
 		}
 	}
 }

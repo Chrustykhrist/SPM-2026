@@ -79,6 +79,12 @@ bool AKeycardReader::TryUnlock(ACustomPlayerState* PS)
 
 void AKeycardReader::OpenDoors()
 {
+	ACustomPlayerState* PS = Cast<ACustomPlayerState>(GetWorld()->GetFirstPlayerController()->GetPlayerState<ACustomPlayerState>());
+	
+	if (!PS->HasRequiredItem(RequiredKeycard)) return;
+	
+	PS->CollectedItems[RequiredKeycard]--;
+	
 	APawn* Pawn = Cast<APawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	
 	if (Pawn == nullptr) return;
