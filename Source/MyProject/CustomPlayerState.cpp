@@ -147,6 +147,17 @@ void ACustomPlayerState::UseItem(FName ItemName, int AmountUsed)
       CollectedItems[ItemName] -= AmountUsed;
    }
 }
+
+int ACustomPlayerState::GetItemCount(FName ItemName)
+{
+   if (!CollectedItems.Contains(ItemName)) return 0;
+  
+   UE_LOG(LogTemp, Warning, TEXT("Item Count: %d"), CollectedItems[ItemName]);
+  
+   return CollectedItems[ItemName];
+}
+
+
 // puts all the latest checkpoints and items into save file
 void ACustomPlayerState::PopulateSaveData(FMasterSaveData& SaveData) const
 {

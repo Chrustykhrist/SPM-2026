@@ -57,6 +57,9 @@ public:
   
    void RestoreWorldState();
   
+   UFUNCTION(BlueprintCallable)
+   int GetItemCount(FName ItemName);
+   
    UFUNCTION()
    TMap<FName, int> GetCollectedItems();
   
