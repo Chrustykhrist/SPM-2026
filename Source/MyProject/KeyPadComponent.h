@@ -1,10 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
 #pragma once
+
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "KeyPadComponent.generated.h"
+
+
+
+
+class ACustomPlayerState;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -12,53 +19,69 @@ class MYPROJECT_API UKeyPadComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+
+public:
 	// Sets default values for this component's properties
 	UKeyPadComponent();
+
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
+
+public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 
 	// Adds the number that was pressed on the in-game keypad
 	UFUNCTION()
 	void Pressed(FName number);
 
+
 	// Called when the correct numbers are inputed
 	UFUNCTION()
 	void Accepted();
 
+
 	// Remove all the pressed buttons form the array of pressed buttons.
 	UFUNCTION()
 	void ClearPressed();
-	
+  
 	UFUNCTION(BlueprintCallable, Blueprintable)
 	TArray<FName> GetNeededCode();
-	
+  
 	UFUNCTION(BlueprintCallable, Blueprintable)
 	FString GetRecentlyPressed();
+
 
 	// What buttons have been pressed
 	UPROPERTY()
 	TArray<FName> PressedButtons;
 
+
 	// The code that needs to be inputted
 	UPROPERTY(meta=(BlueprintCallable))
 	TArray<FName> NeededCode;
+
 
 	// The list of doors that are to open
 	UPROPERTY(EditAnywhere, Category="Doors")
 	TArray<AActor*> Doors;
 
+
 	// True if correct buttons in correct sequence, otherwise false
 	bool CorrectInput = true;
 
+
 	// True if doors should turn
 	bool Turn = false;
+  
+	void RestoreState(ACustomPlayerState* PS);
+
+
+
 
 private:
 	// Array of all the doors yaws

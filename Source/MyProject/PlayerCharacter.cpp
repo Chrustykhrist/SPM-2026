@@ -429,11 +429,6 @@ void APlayerCharacter::InteractBegin(const FInputActionValue& Value)
 		//UE_LOG(LogTemp, Warning, TEXT("InteractBegin"));
 		InteractionComponent->BeginInteract();
 	}
-	else
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Else Begin, Component: %s"), InteractionComponent ? *InteractionComponent->GetName() : TEXT("NULL"));
-	}
-	
 }
 
 void APlayerCharacter::InteractHold(const FInputActionValue& Value)
@@ -444,11 +439,6 @@ void APlayerCharacter::InteractHold(const FInputActionValue& Value)
 		//UE_LOG(LogTemp, Warning, TEXT("Hold"));
 		InteractionComponent->InteractHeld(Value.Get<FVector2D>().X);
 	}
-	else
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("else hold"));
-		Look(Value);
-	}
 }
 
 void APlayerCharacter::InteractEnd(const FInputActionValue& Value)
@@ -458,11 +448,6 @@ void APlayerCharacter::InteractEnd(const FInputActionValue& Value)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("End"));
 		InteractionComponent->EndInteract();
-	}
-	else
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Else End"));
-		// PickUpItem(Value);
 	}
 }
 

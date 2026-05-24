@@ -1,143 +1,222 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+
+
 #include "InteractionComponent.h"
 #include "Interactable.h"
 #include "DrawDebugHelpers.h"
 // Sets default values for this component's properties
 UInteractionComponent::UInteractionComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+   // Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
+   // off to improve performance if you don't need them.
+   PrimaryComponentTick.bCanEverTick = false;
 
-	// ...
+
+   // ...
 }
+
+
 
 
 // Called when the game starts
 void UInteractionComponent::BeginPlay()
 {
-	Super::BeginPlay();
+   Super::BeginPlay();
 
-	// ...
-	
+
+   // ...
+  
 }
+
+
 
 
 // Called every frame
 void UInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+   Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+
+   // ...
 }
+
 
 AActor* UInteractionComponent::FindInteractingActor() const
 {
-	FVector StartLocation = GetComponentLocation();
-	FVector EndLocation = StartLocation + GetForwardVector() * MaxInteractionDistance;
-	
-	FHitResult ActorHit;
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(InteractionRadius);
-	
-	//bool bHit = GetWorld()->SweepSingleByChannel(ActorHit, StartLocation, 
-		//EndLocation, FQuat::Identity, ECC_GameTraceChannel13, Sphere);
-	
-	// Going to change the TraceChannel to 13 or something but will do that later
-	// when i know no one else changes the project setting since there will be annoying conflicts
-	bool bHit = GetWorld()->SweepSingleByChannel(ActorHit, StartLocation, 
-		EndLocation, FQuat::Identity, ECC_Visibility, Sphere);
-	
-	// if (bHit && ActorHit.GetActor() && 
-	// 	ActorHit.GetActor()->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
-	// {
-	// 	return ActorHit.GetActor(); ECC_Visibility
-	// }
-	AActor* HitActor = ActorHit.GetActor();
-#if WITH_EDITOR	
-	DrawDebugSphere(GetWorld(), EndLocation, InteractionRadius, 12, FColor::Red, false, 2.0f);
-#endif	
-	if (bHit && HitActor)
-	{
-		if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
-		{
-			return HitActor;
-		}
-        
-		//UE_LOG(LogTemp, Warning, TEXT("Hit %s but it has no interactable interface"), *HitActor->GetName());
-	}
-	else 
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("FindInteractingActor did not hit anything."));
-	}
-	
-	return nullptr;
+   FVector StartLocation = GetComponentLocation();
+   FVector EndLocation = StartLocation + GetForwardVector() * MaxInteractionDistance;
+  
+   FHitResult ActorHit;
+   FCollisionShape Sphere = FCollisionShape::MakeSphere(InteractionRadius);
+  
+   //bool bHit = GetWorld()->SweepSingleByChannel(ActorHit, StartLocation,
+      //EndLocation, FQuat::Identity, ECC_GameTraceChannel13, Sphere);
+  
+   // Going to change the TraceChannel to 13 or something but will do that later
+   // when i know no one else changes the project setting since there will be annoying conflicts
+   bool bHit = GetWorld()->SweepSingleByChannel(ActorHit, StartLocation,
+      EndLocation, FQuat::Identity, ECC_Visibility, Sphere);
+  
+   // if (bHit && ActorHit.GetActor() &&
+   //     ActorHit.GetActor()->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+   // {
+   //     return ActorHit.GetActor(); ECC_Visibility
+   // }
+   AActor* HitActor = ActorHit.GetActor();
+#if WITH_EDITOR
+   DrawDebugSphere(GetWorld(), EndLocation, InteractionRadius, 12, FColor::Red, false, 2.0f);
+#endif 
+   if (bHit && HitActor)
+   {
+      if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+      {
+         return HitActor;
+      }
+      
+      //UE_LOG(LogTemp, Warning, TEXT("Hit %s but it has no interactable interface"), *HitActor->GetName());
+   }
+   else
+   {
+      //UE_LOG(LogTemp, Warning, TEXT("FindInteractingActor did not hit anything."));
+   }
+  
+   return nullptr;
 }
+
 
 void UInteractionComponent::BeginInteract()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent %s"), bIsInteracting ? TEXT("true") : TEXT("false"));
-	if (bIsInteracting) return;
-	//UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent"));
-	AActor* TargetActor = FindInteractingActor();
-	//UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent, Actor: %s"), TargetActor ? *TargetActor->GetName() : TEXT("None"));
-	if (!TargetActor) return;
-	
-	IInteractable* InteractableActor = Cast<IInteractable>(TargetActor);
-	if (InteractableActor && InteractableActor->CanInteract())
-	{
-		CurrentInteractingActor = TargetActor;
-		bIsInteracting = true;
-		InteractableActor->OnInteractBegin(GetWorld()->GetFirstPlayerController());
-	}
+   //UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent %s"), bIsInteracting ? TEXT("true") : TEXT("false"));
+   if (bIsInteracting) return;
+   //UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent"));
+   AActor* TargetActor = FindInteractingActor();
+   //UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent, Actor: %s"), TargetActor ? *TargetActor->GetName() : TEXT("None"));
+   if (!TargetActor) return;
+  
+   IInteractable* InteractableActor = Cast<IInteractable>(TargetActor);
+   if (InteractableActor && InteractableActor->CanInteract())
+   {
+      CurrentInteractingActor = TargetActor;
+      bIsInteracting = true;
+     
+      bHasLastMousePos = false;
+      LastMousePos = FVector2D::ZeroVector;
+     
+      InteractableActor->OnInteractBegin(GetWorld()->GetFirstPlayerController());
+   }
 }
+
 
 void UInteractionComponent::InteractHeld(float Delta)
 {
-	if (!bIsInteracting || !CurrentInteractingActor) return;
-	//UE_LOG(LogTemp, Warning, TEXT("Interact Held"));
-	
-	// does a proximity check if the player is close enough to the valve
-	// so they cant just hold E and the walk away and turn the valve from anywhere in the level
-	FVector VectorToValveFromPlayer = CurrentInteractingActor->GetActorLocation() - GetComponentLocation();
-	float Distance = VectorToValveFromPlayer.SizeSquared();
-	// dont forget to adjust maxinteractiondistance its at 500 in the editor now
-	if (Distance > FMath::Square(MaxInteractionDistance))
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Player to far away from valve"));
-		EndInteract();
-		return;
-	}
-	
-	// makes sure that the player is looking at the valve when turning it and dont care about lenght of vector only
-	// direction difference between the angle of valve and player
-	FVector DirectionToValve = VectorToValveFromPlayer.GetSafeNormal();
-	float Dot = FVector::DotProduct(GetForwardVector(), DirectionToValve);
-	
-	if (Dot < AcceptableLookRatio)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Player looked away from valve"));
-		EndInteract();
-		return;
-	}
-	IInteractable* InteractableActor = Cast<IInteractable>(CurrentInteractingActor);
-	if (InteractableActor)
-	{
-		InteractableActor->OnInteractHold(GetWorld()->GetFirstPlayerController(), Delta);
-	}
+   if (!bIsInteracting || !CurrentInteractingActor) return;
+   //UE_LOG(LogTemp, Warning, TEXT("Interact Held"));
+  
+   // does a proximity check if the player is close enough to the valve
+   // so they cant just hold E and the walk away and turn the valve from anywhere in the level
+   FVector VectorToValveFromPlayer = CurrentInteractingActor->GetActorLocation() - GetComponentLocation();
+   float Distance = VectorToValveFromPlayer.SizeSquared();
+   // dont forget to adjust maxinteractiondistance its at 500 in the editor now
+   if (Distance > FMath::Square(MaxInteractionDistance))
+   {
+      //UE_LOG(LogTemp, Warning, TEXT("Player to far away from valve"));
+      EndInteract();
+      return;
+   }
+  
+   // makes sure that the player is looking at the valve when turning it and dont care about lenght of vector only
+   // direction difference between the angle of valve and player
+   FVector DirectionToValve = VectorToValveFromPlayer.GetSafeNormal();
+   float Dot = FVector::DotProduct(GetForwardVector(), DirectionToValve);
+  
+   if (Dot < AcceptableLookRatio)
+   {
+      //UE_LOG(LogTemp, Warning, TEXT("Player looked away from valve"));
+      EndInteract();
+      return;
+   }
+   IInteractable* InteractableActor = Cast<IInteractable>(CurrentInteractingActor);
+   if (InteractableActor)
+   {
+      //InteractableActor->OnInteractHold(GetWorld()->GetFirstPlayerController(), Delta);
+      float CircularDelta = ComputeCircularDelta();
+      InteractableActor->OnInteractHold(
+         GetWorld()->GetFirstPlayerController(), CircularDelta);
+   }
 }
+
 
 void UInteractionComponent::EndInteract()
 {
-	if (!bIsInteracting || !CurrentInteractingActor) return;
-	
-	IInteractable* InteractableActor = Cast<IInteractable>(CurrentInteractingActor);
-	if (InteractableActor)
-	{
-		InteractableActor->OnInteractEnd(GetWorld()->GetFirstPlayerController());
-	}
-	
-	CurrentInteractingActor = nullptr;
-	bIsInteracting = false;
+   if (!bIsInteracting || !CurrentInteractingActor) return;
+  
+   IInteractable* InteractableActor = Cast<IInteractable>(CurrentInteractingActor);
+   if (InteractableActor)
+   {
+      InteractableActor->OnInteractEnd(GetWorld()->GetFirstPlayerController());
+   }
+  
+   CurrentInteractingActor = nullptr;
+   bIsInteracting = false;
+}
+
+
+float UInteractionComponent::ComputeCircularDelta()
+{
+   APlayerController* PC = GetWorld()->GetFirstPlayerController();
+   if (!PC || !CurrentInteractingActor) return 0.0f;
+
+
+   float MouseX, MouseY;
+   if (!PC->GetMousePosition(MouseX, MouseY)) return 0.0f;
+   FVector2D CurrentMousePos(MouseX, MouseY);
+
+
+   // project the valves world location to screen space
+   FVector2D ValveScreenPos;
+   if (!PC->ProjectWorldLocationToScreen(
+         CurrentInteractingActor->GetActorLocation(), ValveScreenPos))
+   {
+      return 0.0f;
+   }
+
+
+   // First frame — record position and return no delta
+   if (!bHasLastMousePos)
+   {
+      LastMousePos = CurrentMousePos;
+      bHasLastMousePos = true;
+      return 0.0f;
+   }
+
+
+   FVector2D ToLast = LastMousePos - ValveScreenPos;
+   FVector2D ToCurrent = CurrentMousePos - ValveScreenPos;
+  
+   // ignore the cursor if its too close to center so it doesnt act weird
+   if (ToLast.SizeSquared() < 400.0f || ToCurrent.SizeSquared() < 400.0f)
+   {
+      LastMousePos = CurrentMousePos;
+      return 0.0f;
+   }
+
+
+   float AngleLast = FMath::Atan2(ToLast.Y, ToLast.X);
+   float AngleCurrent = FMath::Atan2(ToCurrent.Y, ToCurrent.X);
+
+
+   float Delta = AngleCurrent - AngleLast;
+
+
+   // Wrap to [-PI, PI] so crossing the 180-degree boundary doesn't spike
+   if (Delta >  PI) Delta -= 2.0f * PI;
+   if (Delta < -PI) Delta += 2.0f * PI;
+
+
+   LastMousePos = CurrentMousePos;
+
+
+   return FMath::RadiansToDegrees(Delta);
 }

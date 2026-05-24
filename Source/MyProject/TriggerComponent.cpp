@@ -64,6 +64,7 @@ void UTriggerComponent::SetSpawnPoint()
 		
 		// Sets the transform of the spawn point the transform of the object the code is on
 		PS->SetCheckPointTransform(GetOwner()->GetActorTransform());
+		PS->TriggerSaveGame();PS->TriggerSaveGame();
 		
 		GetOwner()->Destroy();
 
