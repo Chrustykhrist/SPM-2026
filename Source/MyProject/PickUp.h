@@ -6,6 +6,7 @@
 #include "Components/SceneComponent.h"
 #include "PickUp.generated.h"
 
+class ACustomPlayerState;
 class UUserWidget;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -28,9 +29,6 @@ public:
 	// Picks up the item that the player is looking at
 	UFUNCTION()
 	void PickUp();
-
-	UFUNCTION(BlueprintCallable)
-	bool GetPowerswitched();
 	
 	UPROPERTY()
 	FName RecentlyPressed;
@@ -44,6 +42,12 @@ public:
 private:
 	UFUNCTION()
 	void RemoveNotif();
+	
+	UFUNCTION()
+	void CollectItem(const FHitResult& Hit, ACustomPlayerState* PlayerState);
+	
+	UFUNCTION()
+	void ShowNotif();
 	
 	// The max distance allowed between the players eyes and the item. Measured in cm
 	UPROPERTY(EditAnywhere)

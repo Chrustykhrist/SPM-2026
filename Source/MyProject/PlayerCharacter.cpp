@@ -15,6 +15,7 @@
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "InteractionComponent.h"
 #include "FootstepComponent.h"
+#include "PushComponent.h"
 #include "Misc/LowLevelTestAdapter.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -301,8 +302,10 @@ void APlayerCharacter::SlowDown(const FInputActionValue& Value)
  */
 void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
 {
+	UPushComponent* Push = Cast<UPushComponent>(GetComponentByClass(UPushComponent::StaticClass()));
 	UPickUp* PickUp = Cast<UPickUp>(GetComponentByClass(UPickUp::StaticClass()));
 
+	Push->Push();
 	PickUp->PickUp();
 }
 

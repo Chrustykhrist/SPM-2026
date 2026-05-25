@@ -45,26 +45,21 @@ void UPickUp::PickUp()
 	// Vector to check where the player is looking and how far
 	FVector PlayerPos = GetComponentLocation();
 	FVector GrabVector = PlayerPos + GetForwardVector() * MaxGrabDistance;
-	FVector PushVector = PlayerPos + GetForwardVector() * MaxPushDistance;
 
 #if WITH_EDITOR
 	// Shows where the player is looking
-	DrawDebugLine(GetWorld(), PlayerPos, GrabVector, FColor::Red);
-	DrawDebugSphere(GetWorld(), GrabVector, GrabRadius, 10, FColor::Blue);
+	DrawDebugSphere(GetWorld(), GrabVector, GrabRadius, 16, FColor::Blue, false, 1);
 #endif
 	
 	FHitResult ItemHit;
-	FHitResult ButtonHit;
 
 	// Shape that is used to check whether an item is hit
 	FCollisionShape GrabVolume = FCollisionShape::MakeSphere(GrabRadius);
 
 	// true if we hit an item that has the required hit channel as "Block", otherwise false
 	bGrabbable = GetWorld()->SweepSingleByChannel(ItemHit, PlayerPos, GrabVector, FQuat::Identity, ECC_GameTraceChannel2, GrabVolume);
-	bPushable = GetWorld()->LineTraceSingleByChannel(ButtonHit, PlayerPos, PushVector, ECC_GameTraceChannel3);
 	
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
+	ACustomPlayerState* PS = GetWorld()->GetFirstPlayerController()->GetPlayerState<ACustomPlayerState>();
 	
 	if (bGrabbable)
 	{
@@ -79,29 +74,13 @@ void UPickUp::PickUp()
 
 		if (ItemName == FName("PowerKey") && PS->GetCollectedItems()[FName("PowerKey")] >= 1)
 		{
-			if (IsValid(NotifClass) && !IsValid(Notif))
-			{
-				Notif = CreateWidget(GetWorld(), NotifClass);
-			}
-			if (IsValid(Notif))
-			{
-				Notif->AddToViewport();
-			}
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPickUp::RemoveNotif, RestartDelay, false);
+			ShowNotif();
 			return;
 		}
 		
 		if (PS->CollectedItems[ItemName] >= 3)
 		{
-			if (IsValid(NotifClass) && !IsValid(Notif))
-			{
-				Notif = CreateWidget(GetWorld(), NotifClass);
-			}
-			if (IsValid(Notif))
-			{
-				Notif->AddToViewport();
-			}
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPickUp::RemoveNotif, RestartDelay, false);
+			ShowNotif();
 			return;
 		}
 		
@@ -109,66 +88,10 @@ void UPickUp::PickUp()
 		{
 			UE_LOG(LogTemp, Error, TEXT("Item Not Found, Working on making it dynamic"));
 			return;
-			//PS->CollectedItems.Add(FName(ItemName), 1);
-		} else
-		{
-			PS->CollectedItems[ItemName]++;
 		}
 
-		//UE_LOG(LogTemp, Display, TEXT("%s, %d"), *ItemHit.GetActor()->GetName(), PS->CollectedItems[ItemName]);
-		
-		ItemHit.GetActor()->Destroy();
+		CollectItem(ItemHit, PS);
 	}
-
-	if (bPushable)
-	{
-		// UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->GetName());
-		// UE_LOG(LogTemp, Warning, TEXT("%s"), *ButtonHit.GetComponent()->ComponentTags[0].ToString());
-
-		if (UKeyPadComponent* KP = Cast<UKeyPadComponent>(ButtonHit.GetActor()->GetComponentByClass(UKeyPadComponent::StaticClass())))
-		{
-			if (ButtonHit.GetComponent()->ComponentTags[0].IsEqual("Accept"))
-			{
-				// If the Accept button is press check if it is correct. Done im keypad
-				KP->Accepted();
-			}
-			else if (ButtonHit.GetComponent()->ComponentTags[0].IsEqual("Clear"))
-			{
-				// If the clear button is called, clears the list of pressed buttons. Done in keypad
-				KP->ClearPressed();
-			}
-			else
-			{
-				// if the amount pressed is 4 remove all the pressed buttons then add the pressed ones otherwise, just add the button
-				if (KP->PressedButtons.Num() == 4)
-				{
-					KP->ClearPressed();
-				}
-				
-				KP->Pressed(ButtonHit.GetComponent()->ComponentTags[0]);
-				
-				RecentlyPressed = ButtonHit.GetComponent()->ComponentTags[0];
-
-			}
-		} else if(ButtonHit.GetActor()->ActorHasTag("PowerSwitch"))
-		{
-			bPowerSwitchPushed = true;
-		}
-		
-		if (AKeycardReader* KeycardReader = Cast<AKeycardReader>(ButtonHit.GetActor()))
-		{
-			/*APlayerController* PC = GetWorld()->GetFirstPlayerController();
-			ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
-			KeycardReader->TryUnlock(PS);*/
-			
-			KeycardReader->OpenDoors();
-		}
-	}
-}
-
-bool UPickUp::GetPowerswitched()
-{
-	return bPowerSwitchPushed;
 }
 
 void UPickUp::RemoveNotif()
@@ -178,5 +101,25 @@ void UPickUp::RemoveNotif()
 		Notif->RemoveFromParent();
 		Notif = nullptr;
 	}
+}
+
+void UPickUp::CollectItem(const FHitResult& Hit, ACustomPlayerState* PS)
+{
+	PS->CollectedItems[Hit.GetActor()->Tags[0]]++;
+	
+	Hit.GetActor()->Destroy();
+}
+
+void UPickUp::ShowNotif()
+{
+	if (IsValid(NotifClass) && !IsValid(Notif))
+	{
+		Notif = CreateWidget(GetWorld(), NotifClass);
+	}
+	if (IsValid(Notif))
+	{
+		Notif->AddToViewport();
+	}
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UPickUp::RemoveNotif, RestartDelay, false);
 }
 
