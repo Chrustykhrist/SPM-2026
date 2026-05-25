@@ -3,6 +3,10 @@
 
 #include "PushComponent.h"
 
+#include "CustomPlayerState.h"
+#include "KeycardReader.h"
+#include "KeyPadComponent.h"
+
 // Sets default values for this component's properties
 UPushComponent::UPushComponent()
 {
@@ -38,13 +42,56 @@ void UPushComponent::Push()
 	FVector PushDistance = PlayerVector + GetForwardVector() * MaxPushDistance;
 	
 #if WITH_EDITOR
-	DrawDebugLine(GetWorld(), PlayerVector, PushDistance, FColor::Red, false, 2);
+	DrawDebugLine(GetWorld(), PlayerVector, PushDistance, FColor::Red, false, 1);
 #endif
 	
+	FHitResult HitResult;
+	
+	bPushable = GetWorld()->LineTraceSingleByChannel(HitResult, PlayerVector, PushDistance, ECC_GameTraceChannel3);
+	
+	if (bPushable)
+	{
+		APlayerController* PC = GetWorld()->GetFirstPlayerController();
+		ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
+		
+		if (UKeyPadComponent* KP = Cast<UKeyPadComponent>(HitResult.GetActor()->GetComponentByClass(UKeyPadComponent::StaticClass())))
+		{
+			HandleKeyPad(HitResult, KP);
+		}
+		else if (HitResult.GetActor()->ActorHasTag("PowerSwitch"))
+		{
+			bPowerSwitchPushed = true;
+		}
+		else if (AKeycardReader* KR = Cast<AKeycardReader>(HitResult.GetActor()))
+		{
+			KR->OpenDoors();
+		}
+	}
 }
 
-bool UPushComponent::GetPowerswitched()
+bool UPushComponent::GetPowerSwitched()
 {
-	return false;
+	return bPowerSwitchPushed;
+}
+
+void UPushComponent::HandleKeyPad(const FHitResult& HitResult, UKeyPadComponent* KP)
+{
+	if (HitResult.GetComponent()->ComponentTags[0].IsEqual("Accept"))
+	{
+		KP->Accepted();
+	}
+	else if (HitResult.GetComponent()->ComponentTags[0].IsEqual("Clear"))
+	{
+		KP->ClearPressed();
+	}
+	else
+	{
+		if (KP->PressedButtons.Num() == 4)
+		{
+			KP->ClearPressed();
+		}
+				
+		KP->Pressed(HitResult.GetComponent()->ComponentTags[0]);
+	}
 }
 

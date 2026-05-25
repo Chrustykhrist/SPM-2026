@@ -29,22 +29,18 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 
 	// Adds the number that was pressed on the in-game keypad
 	UFUNCTION()
 	void Pressed(FName number);
 
-
 	// Called when the correct numbers are inputed
 	UFUNCTION()
 	void Accepted();
-
-
+	
 	// Remove all the pressed buttons form the array of pressed buttons.
 	UFUNCTION()
 	void ClearPressed();
@@ -53,38 +49,39 @@ public:
 	TArray<FName> GetNeededCode();
   
 	UFUNCTION(BlueprintCallable, Blueprintable)
-	FString GetRecentlyPressed();
-
-
+	FString ShowPressed();
+	
 	// What buttons have been pressed
 	UPROPERTY()
 	TArray<FName> PressedButtons;
-
-
+	
 	// The code that needs to be inputted
 	UPROPERTY(meta=(BlueprintCallable))
 	TArray<FName> NeededCode;
-
-
+	
 	// The list of doors that are to open
 	UPROPERTY(EditAnywhere, Category="Doors")
 	TArray<AActor*> Doors;
-
-
+	
 	// True if correct buttons in correct sequence, otherwise false
 	bool CorrectInput = true;
-
-
+	
 	// True if doors should turn
 	bool Turn = false;
   
 	void RestoreState(ACustomPlayerState* PS);
-
-
-
+	
+	UFUNCTION(BlueprintCallable)
+	void SetRecentlyPressed(FName number) { RecentlyPressed = number; }
+	
+	UFUNCTION(BlueprintCallable)
+	FName GetRecentlyPressed() { return RecentlyPressed; }
 
 private:
 	// Array of all the doors yaws
 	UPROPERTY()
 	TArray<float> DoorYaws;
+	
+	UPROPERTY()
+	FName RecentlyPressed;
 };

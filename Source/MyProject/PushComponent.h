@@ -7,6 +7,8 @@
 #include "PushComponent.generated.h"
 
 
+class UKeyPadComponent;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYPROJECT_API UPushComponent : public USceneComponent
 {
@@ -27,11 +29,8 @@ public:
 	UFUNCTION( BlueprintCallable )
 	void Push();
 	
-	UFUNCTION(BlueprintCallable)
-	bool GetPowerswitched();
-	
-	UPROPERTY()
-	FName RecentlyPressed;
+	UFUNCTION( BlueprintCallable , Blueprintable )
+	bool GetPowerSwitched();
 	
 private:
 	UPROPERTY(EditAnywhere)
@@ -40,4 +39,7 @@ private:
 	bool bPushable = false;
 	
 	bool bPowerSwitchPushed = false;
+	
+	UFUNCTION()
+	void HandleKeyPad(const FHitResult& HitResult, UKeyPadComponent* KeyPadComponent);
 };
