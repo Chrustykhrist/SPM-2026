@@ -80,7 +80,7 @@ void UKeyPadComponent::BeginPlay()
             DoorYaws[i] + 90 : DoorYaws[i] - 90;
          Doors[i]->SetActorRotation(FRotator(0, TargetYaw, 0));
       }
-      Turn = false; // Door already in position, no need to animate
+      bTurn = false; // Door already in position, no need to animate
    }
    else
    {
@@ -96,6 +96,7 @@ void UKeyPadComponent::BeginPlay()
       for (int i = 0; i < Doors.Num(); i++)
       {
          DoorYaws.Add(Doors[i]->GetActorRotation().Yaw);
+         DoorOffsets.Add(0.0f);
       }
    }
   
@@ -114,18 +115,12 @@ void UKeyPadComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 
    // Turn the doors 90 degrees
-   if (Turn)
+   if (bTurn)
    {
       for (int i = 0; i < Doors.Num(); i++)
       {
-         if (Doors[i]->ActorHasTag("Left"))
-         {
-            Doors[i]->SetActorRotation(FMath::RInterpConstantTo(Doors[i]->GetActorRotation(), FRotator(0,  DoorYaws[i] + 90, 0), DeltaTime, 30));
-         }
-         else
-         {
-            Doors[i]->SetActorRotation(FMath::RInterpConstantTo(Doors[i]->GetActorRotation(), FRotator(0,  DoorYaws[i] - 90, 0), DeltaTime, 30));
-         }
+         FRotator TargetRotation = FRotator(0, DoorYaws[i] + DoorOffsets[i], 0);
+         Doors[i]->SetActorRotation(FMath::RInterpConstantTo(Doors[i]->GetActorRotation(), TargetRotation, DeltaTime, 30));
       }
    }
   
@@ -161,16 +156,18 @@ void UKeyPadComponent::Accepted()
               
       if (PressedButtons[i] != NeededCode[i])
       {
-         CorrectInput = false;
-         
+         bCorrectInput = false;
       }
    }
 
 
    // If correct, allow the door to turn, otherwise do nothing
-   if (CorrectInput)
+   if (bCorrectInput)
    {
-      Turn = true;
+      //Turn = true;
+      
+      OpenDoors();
+      
       UE_LOG(LogTemp, Display, TEXT("Correct"));
       // Save keypad solved state
       APlayerController* PC = GetWorld()->GetFirstPlayerController();
@@ -194,7 +191,7 @@ void UKeyPadComponent::Accepted()
    {
       ClearPressed();
       UE_LOG(LogTemp, Warning, TEXT("Incorrect"));
-      CorrectInput = true;
+      bCorrectInput = true;
    }
 }
 
@@ -206,6 +203,38 @@ void UKeyPadComponent::ClearPressed()
 {
    PressedButtons.Empty();
    UE_LOG(LogTemp, Display, TEXT("Clear Pressed"));
+}
+
+void UKeyPadComponent::OpenDoors()
+{
+   APawn* Pawn = Cast<APawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+  
+   if (Pawn == nullptr) return;
+  
+   FVector PawnLocation = Pawn->GetActorLocation();
+   UE_LOG(LogTemp, Warning, TEXT("OpenDoors| Before loop"));
+   for (int i = 0; i < Doors.Num(); i++)
+   {
+      FVector DoorForward = FRotator(0, DoorYaws[i], 0).Vector();
+      FVector ToDoor = (Doors[i]->GetActorLocation() - PawnLocation).GetSafeNormal();
+     
+      float Dot = FVector::DotProduct(DoorForward, ToDoor);
+      DoorOffsets[i] = (Dot >= 0.0f) ? 90.0f : -90.0f;
+      UE_LOG(LogTemp, Warning, TEXT("OpenDoors| Inside loop"));
+      // Save that this door was opened
+      APlayerController* PC = GetWorld()->GetFirstPlayerController();
+      if (PC)
+      {
+         ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
+         if (PS)
+         {
+            PS->SetDoorOpened(FName(*Doors[i]->GetName()));
+            UE_LOG(LogTemp, Warning, TEXT("OpenDoors| PS SetDoorOpened %s"), *Doors[i]->GetName());
+         }
+      }
+   }
+  
+   bTurn = true;
 }
 
 
@@ -246,7 +275,7 @@ void UKeyPadComponent::RestoreState(ACustomPlayerState* PS)
          DoorYaws[i] + 90 : DoorYaws[i] - 90;
       Doors[i]->SetActorRotation(FRotator(0, TargetYaw, 0));
    }
-   Turn = false;
+   bTurn = false;
   
    UE_LOG(LogTemp, Warning, TEXT("RestoreState| Final NeededCode:"));
    for (const FName& Num : NeededCode)
