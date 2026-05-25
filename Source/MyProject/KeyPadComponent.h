@@ -44,10 +44,12 @@ public:
 	UFUNCTION()
 	void Accepted();
 
-
 	// Remove all the pressed buttons form the array of pressed buttons.
 	UFUNCTION()
 	void ClearPressed();
+	
+	UFUNCTION()
+	void OpenDoors();
   
 	UFUNCTION(BlueprintCallable, Blueprintable)
 	TArray<FName> GetNeededCode();
@@ -60,7 +62,6 @@ public:
 	UPROPERTY()
 	TArray<FName> PressedButtons;
 
-
 	// The code that needs to be inputted
 	UPROPERTY(meta=(BlueprintCallable))
 	TArray<FName> NeededCode;
@@ -70,21 +71,19 @@ public:
 	UPROPERTY(EditAnywhere, Category="Doors")
 	TArray<AActor*> Doors;
 
-
 	// True if correct buttons in correct sequence, otherwise false
-	bool CorrectInput = true;
-
-
+	bool bCorrectInput = true;
+	
 	// True if doors should turn
-	bool Turn = false;
+	bool bTurn = false;
   
 	void RestoreState(ACustomPlayerState* PS);
-
-
-
 
 private:
 	// Array of all the doors yaws
 	UPROPERTY()
 	TArray<float> DoorYaws;
+	
+	UPROPERTY()
+	TArray<float> DoorOffsets;
 };
