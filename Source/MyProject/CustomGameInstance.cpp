@@ -4,6 +4,7 @@
 #include "CustomGameInstance.h"
 
 #include "CustomPlayerState.h"
+#include "fmod.hpp"
 #include "Kismet/GameplayStatics.h"
 
 UCustomGameInstance::UCustomGameInstance()

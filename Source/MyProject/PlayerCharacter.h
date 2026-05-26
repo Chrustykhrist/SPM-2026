@@ -55,28 +55,22 @@ protected:
 	UInputAction* IASprint;
 
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* IAUse;
+	UInputAction* IAInteract;
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IAPause;
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IAHide;
-
-	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* IAHoldBreath;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IAFlashlight;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* IAUseItem;
+	UInputAction* IAUseFirstItem;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* IASelectFirstItem;
-	
-	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* IASelectSecondItem;
+	UInputAction* IAUseSecondItem;
 #pragma endregion	
 
 public:	
@@ -138,8 +132,6 @@ private:
 	void PauseGame(const FInputActionValue& Value);
 
 	void HideInLocker(const FInputActionValue& Value);
-	void HoldBreath(const FInputActionValue& Value);
-	void ReleaseBreath(const FInputActionValue& Value);
 	
 	void InteractBegin(const FInputActionValue& Value);
 	void InteractHold(const FInputActionValue& Value);
@@ -147,10 +139,8 @@ private:
 	
 	void UseFlashlight(const FInputActionValue& Value);
 	
-	void UseItem(const FInputActionValue& Value);
-	
-	void SwitchToFirstItem(const FInputActionValue& Value);
-	void SwitchToSecondItem(const FInputActionValue& Value);
+	void UseFirstItem(const FInputActionValue& Value);
+	void UseSecondItem(const FInputActionValue& Value);
 #pragma endregion	
 	UPROPERTY()
 	UCharacterMovementComponent* MovementComponent;

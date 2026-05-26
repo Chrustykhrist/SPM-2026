@@ -104,21 +104,17 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IASprint, ETriggerEvent::Completed, this, &APlayerCharacter::SlowDown);
 
 		// Use item / Pick up item
-		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
+		UEnhancedInput->BindAction(IAInteract, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
 
 		// Pause
 		UEnhancedInput->BindAction(IAPause, ETriggerEvent::Started, this, &APlayerCharacter::PauseGame);
 
 		// Hide
 		UEnhancedInput->BindAction(IAHide, ETriggerEvent::Started, this, &APlayerCharacter::HideInLocker);
-
-		// Hold breath
-		//UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Triggered, this, &APlayerCharacter::HoldBreath);
-		//UEnhancedInput->BindAction(IAHoldBreath, ETriggerEvent::Completed, this, &APlayerCharacter::ReleaseBreath);
 		
 		// Interaction valves
-		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Started, this, &APlayerCharacter::InteractBegin);
-		UEnhancedInput->BindAction(IAUse, ETriggerEvent::Completed, this, &APlayerCharacter::InteractEnd);
+		UEnhancedInput->BindAction(IAInteract, ETriggerEvent::Started, this, &APlayerCharacter::InteractBegin);
+		UEnhancedInput->BindAction(IAInteract, ETriggerEvent::Completed, this, &APlayerCharacter::InteractEnd);
 		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
 		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
 		
@@ -126,13 +122,15 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		UEnhancedInput->BindAction(IAFlashlight, ETriggerEvent::Started, this, &APlayerCharacter::UseFlashlight);
 		
 		// Select and use items
-		//UEnhancedInput->BindAction(IAUseItem, ETriggerEvent::Started, this, &APlayerCharacter::UseItem);
-		UEnhancedInput->BindAction(IASelectFirstItem, ETriggerEvent::Started, this, &APlayerCharacter::SwitchToFirstItem);
-		UEnhancedInput->BindAction(IASelectSecondItem, ETriggerEvent::Started, this, &APlayerCharacter::SwitchToSecondItem);
+		UEnhancedInput->BindAction(IAUseFirstItem, ETriggerEvent::Started, this, &APlayerCharacter::UseFirstItem);
+		UEnhancedInput->BindAction(IAUseSecondItem, ETriggerEvent::Started, this, &APlayerCharacter::UseSecondItem);
 	}
 
 }
 
+/**
+ * Reset the state the player is in after dying
+ */
 void APlayerCharacter::ResetPlayer()
 {
 	bRunning = false;
@@ -384,35 +382,6 @@ void APlayerCharacter::HideInLocker(const FInputActionValue& Value)
 }
 
 /**
- * Lowers stamina when holding space
- */
-void APlayerCharacter::HoldBreath(const FInputActionValue& Value)
-{
-	if (HidingComponent == nullptr)
-	{
-		return;
-	}
-	
-	if (HidingComponent->bHiding)
-	{
-		if (Stamina > 0)
-		{
-			Stamina -= GetWorld()->GetDeltaSeconds()/2;
-		}
-		bHoldBreath = true;
-		UE_LOG(LogTemp, Display, TEXT("%f"), Stamina);
-	}
-}
-
-/**
- * Lets the player recover stamina
- */
-void APlayerCharacter::ReleaseBreath(const FInputActionValue& Value)
-{
-	bHoldBreath = false;
-}
-
-/**
  * Sets the component the player is hiding in
  */
 void APlayerCharacter::SetHidingComponent(UHidingComponent* NewHidingComponent)
@@ -489,61 +458,8 @@ void APlayerCharacter::UseFlashlight(const FInputActionValue& Value)
 	}
 }
 
-void APlayerCharacter::UseItem(const FInputActionValue& Value)
+void APlayerCharacter::UseFirstItem(const FInputActionValue& Value)
 {
-	UFlashlightComponent* FL = Cast<UFlashlightComponent>(GetComponentByClass(UFlashlightComponent::StaticClass()));
-	
-	ACustomPlayerState* PS = Cast<ACustomPlayerState>(UGameplayStatics::GetPlayerState(this, 0));
-	
-	if (PS == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("No Player State Found"));
-		return;
-	}
-	
-	if (SelectedItem == 0)
-	{
-		return;
-	}
-	
-	if (SelectedItem == 2)
-	{
-		if (FL == nullptr)
-		{
-			UE_LOG(LogTemp, Error, TEXT("No Flashlight Component"));
-			return;
-		}
-		
-		if (PS->GetCollectedItems()[FName("Flashlight")] < 1)
-		{
-			return;
-		}
-		
-		if (PS->GetCollectedItems()[FName("Battery")] >= 1)
-		{
-			FL->Recharge();
-			PS->CollectedItems[FName("Battery")]--;
-		}
-	} else if (SelectedItem == 1)
-	{
-		if (PS->GetCollectedItems()[FName("Medicine")] >= 1)
-		{
-			Stamina = MaxStamina;
-			PS->CollectedItems[FName("Medicine")]--;
-		}
-	}
-}
-
-void APlayerCharacter::SwitchToFirstItem(const FInputActionValue& Value)
-{
-	/*if (SelectedItem == 0 || SelectedItem == 2)
-	{
-		SelectedItem = 1;
-	} else if (SelectedItem == 1)
-	{
-		SelectedItem = 0;
-	}*/
-	
 	ACustomPlayerState* PS = Cast<ACustomPlayerState>(UGameplayStatics::GetPlayerState(this, 0));
 	
 	if (PS->GetCollectedItems()[FName("Medicine")] >= 1)
@@ -553,15 +469,8 @@ void APlayerCharacter::SwitchToFirstItem(const FInputActionValue& Value)
 	}
 }
 
-void APlayerCharacter::SwitchToSecondItem(const FInputActionValue& Value)
+void APlayerCharacter::UseSecondItem(const FInputActionValue& Value)
 {
-	/*if (SelectedItem == 0 || SelectedItem == 1)
-	{
-		SelectedItem = 2;
-	} else if (SelectedItem == 2)
-	{
-		SelectedItem = 0;
-	}*/
 	
 	UFlashlightComponent* FL = Cast<UFlashlightComponent>(GetComponentByClass(UFlashlightComponent::StaticClass()));
 	
