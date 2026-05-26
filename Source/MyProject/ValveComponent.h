@@ -26,7 +26,7 @@ public:
 	UValveComponent();
   
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Valve")
-	float RequiredRotationDegrees = 360.0f;
+	float RequiredRotationDegrees = 720.0f;
   
 	UPROPERTY(EditAnywhere, Category = "Valve")
 	float InputSensitivity = 1.0f;

@@ -66,7 +66,7 @@ void UValveComponent::ApplyRotationDelta(float Delta)
       UE_LOG(LogTemp, Warning, TEXT("Rotate mesh"));
       float MappedRotateAngle = FMath::GetMappedRangeValueClamped(
             FVector2D(0.0f, RequiredRotationDegrees),
-            FVector2D(0.0f, 360.0f),
+            FVector2D(0.0f, RequiredRotationDegrees),
             CurrentRotation);
      
      

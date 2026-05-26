@@ -196,7 +196,7 @@ float UInteractionComponent::ComputeCircularDelta()
    FVector2D ToCurrent = CurrentMousePos - ValveScreenPos;
   
    // ignore the cursor if its too close to center so it doesnt act weird
-   if (ToLast.SizeSquared() < 400.0f || ToCurrent.SizeSquared() < 400.0f)
+   if (ToLast.SizeSquared() < 200.0f || ToCurrent.SizeSquared() < 200.0f)
    {
       LastMousePos = CurrentMousePos;
       return 0.0f;
