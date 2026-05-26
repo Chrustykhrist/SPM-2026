@@ -24,7 +24,10 @@ public:
   
 	UFUNCTION(BlueprintCallable, Category = "Save Data")
 	static bool LoadGame(const FString& SlotName, FMasterSaveData& OutSaveData);
-  
+	
+	UFUNCTION(BlueprintCallable, Category = "Save Data")
+	static FString GetLevelByName(const FString& SlotName);
+	
 	UFUNCTION(BlueprintCallable, Category = "Save Data")
 	static bool DoesSaveExist(const FString& SlotName);
   

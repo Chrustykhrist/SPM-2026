@@ -58,7 +58,10 @@ public:
 	// Patrol route
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Sight")
-	float SightDistance = 200.0f;
+	float SightDistanceNotChase = 200.0f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Sight")
+	float SightDistanceChase = 400.0f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Sight")
 	float SightAngle = 35.0f;
@@ -108,6 +111,8 @@ private:
 	float AngleDeg;
 	
 	float BestDistanceSq = FLT_MAX;
+	
+	float SightDistance = SightDistanceNotChase;
 	
 	UHidingComponent* HidingComp;
 	
