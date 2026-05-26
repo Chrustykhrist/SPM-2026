@@ -12,7 +12,7 @@ UValveComponent::UValveComponent()
    // Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
    // off to improve performance if you don't need them.
    PrimaryComponentTick.bCanEverTick = false;
-
+   //ComponentTags.Add(FName("ValveComponent"));
 
    // ...
 }
@@ -100,10 +100,12 @@ void UValveComponent::CompleteValve()
       LinkedTube->Drain();
    }
    //UHighlightInteractablesComponent* HighlightedComp = GetOwner()->GetComponentByClass(UHighlightInteractablesComponent::StaticClass());
-   UActorComponent* HighlightedComp = GetOwner()->GetComponentByClass(UHighlightInteractablesComponent::StaticClass());
+   UHighlightInteractablesComponent* HighlightedComp = GetOwner()->FindComponentByClass<UHighlightInteractablesComponent>();
    if (HighlightedComp)
    {
+      HighlightedComp->EnableHighlight(false);
       HighlightedComp->SetActive(false);
+      HighlightedComp->DestroyComponent();
    }
    
    OnValveCompleted.Broadcast();

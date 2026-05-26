@@ -45,7 +45,8 @@ public:
 	void ApplyRotationDelta(float Delta);
   
 	void EndInteraction();
-  
+	
+	UFUNCTION(BlueprintCallable, Category = "Valve")
 	bool IsComplete() const {return bComplete;}
   
 	bool IsBeingUsed() const {return bActive;}
