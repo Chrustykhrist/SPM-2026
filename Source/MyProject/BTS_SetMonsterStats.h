@@ -21,9 +21,13 @@ protected:
 	
 	virtual void OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	
+#pragma region MonsterStats	
+	
 	UPROPERTY(EditAnywhere, Category = "MonsterStats", meta = (AllowPrivateAccess = true))
 	float MonsterSpeed = 100.0f;
 	
 	UPROPERTY(EditAnywhere, Category = "MonsterStats", meta = (AllowPrivateAccess = true))
 	float MonsterRotationSpeed = 360.0f;
+	
+#pragma endregion	
 };
