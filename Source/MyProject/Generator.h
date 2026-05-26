@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Generator.generated.h"
 
+class USpotLightComponent;
+
 UCLASS()
 class MYPROJECT_API AGenerator : public AActor
 {
@@ -26,4 +28,10 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* GeneratorMesh;
+	
+	UPROPERTY(EditAnywhere, Category="Changes on Turn on")
+	TArray<USpotLightComponent*> SpotLights;
+	
+	UPROPERTY(EditAnywhere, Category="Changes on Turn on")
+	TArray<AActor*> Openings;
 };
