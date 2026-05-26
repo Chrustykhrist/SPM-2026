@@ -93,6 +93,10 @@ void AKeycardReader::OpenDoors()
    APawn* Pawn = Cast<APawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
   
    if (Pawn == nullptr) return;
+   
+   ACustomPlayerState* PS = Pawn->GetPlayerState<ACustomPlayerState>();
+   
+   if (!PS->HasRequiredItem(RequiredKeycard)) return;
   
    FVector PawnLocation = Pawn->GetActorLocation();
    UE_LOG(LogTemp, Warning, TEXT("OpenDoors| Before loop"));
@@ -108,7 +112,6 @@ void AKeycardReader::OpenDoors()
       APlayerController* PC = GetWorld()->GetFirstPlayerController();
       if (PC)
       {
-         ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
          if (PS)
          {
             PS->SetDoorOpened(FName(*LinkedDoor[i]->GetName()));
@@ -123,8 +126,6 @@ void AKeycardReader::OpenDoors()
    APlayerController* PC = GetWorld()->GetFirstPlayerController();
    if (PC)
    {
-      ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
-     
       if (PS)
       {
          UE_LOG(LogTemp, Warning, TEXT("OpenDoors| TriggerSaveGame"));

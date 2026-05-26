@@ -189,6 +189,7 @@ void UKeyPadComponent::Accepted()
    }
    else
    {
+      ClearPressed();
       UE_LOG(LogTemp, Warning, TEXT("Incorrect"));
       bCorrectInput = true;
    }
@@ -242,8 +243,7 @@ TArray<FName> UKeyPadComponent::GetNeededCode()
    return NeededCode;
 }
 
-
-FString UKeyPadComponent::GetRecentlyPressed()
+FString UKeyPadComponent::ShowPressed()
 {
    FString Result = "";
    for (const FName& Button : PressedButtons)
@@ -252,7 +252,6 @@ FString UKeyPadComponent::GetRecentlyPressed()
    }
    return Result;
 }
-
 
 // Restore the state of the keypad
 void UKeyPadComponent::RestoreState(ACustomPlayerState* PS)
