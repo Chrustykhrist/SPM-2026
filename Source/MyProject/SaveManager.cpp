@@ -55,6 +55,16 @@ bool USaveManager::LoadGame(const FString& SlotName, FMasterSaveData& OutSaveDat
 	return FJsonObjectConverter::JsonObjectStringToUStruct(JsonString, &OutSaveData, 0, 0);
 }
 
+FString USaveManager::GetLevelByName(const FString& SlotName)
+{
+	FMasterSaveData LoadedData;
+	if (LoadGame(SlotName, LoadedData))
+	{
+		return LoadedData.SavedLevel;
+	}
+	return TEXT("LVL1"); 
+}
+
 
 bool USaveManager::DoesSaveExist(const FString& SlotName)
 {

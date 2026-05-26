@@ -152,7 +152,7 @@ int ACustomPlayerState::GetItemCount(FName ItemName)
 {
    if (!CollectedItems.Contains(ItemName)) return 0;
   
-   UE_LOG(LogTemp, Warning, TEXT("Item Count: %d"), CollectedItems[ItemName]);
+   //UE_LOG(LogTemp, Warning, TEXT("Item Count: %d"), CollectedItems[ItemName]);
   
    return CollectedItems[ItemName];
 }
@@ -167,8 +167,10 @@ void ACustomPlayerState::PopulateSaveData(FMasterSaveData& SaveData) const
    SaveData.OpenedDoors = OpenedDoors;
    SaveData.KeypadStates = KeypadStates;
    SaveData.KeypadCodes = KeypadCodes;
-  
-   // Debug
+   FString LevelName = GetWorld()->GetMapName();
+   LevelName.RemoveFromStart(TEXT("/Content/FirstPerson/"));
+   SaveData.SavedLevel = LevelName;
+   
    for (const FName& Door : OpenedDoors)
    {
       UE_LOG(LogTemp, Warning, TEXT("PopulateSaveData| Saving opened door: %s"), *Door.ToString());
@@ -188,8 +190,7 @@ void ACustomPlayerState::LoadFromSaveData(const FMasterSaveData& SaveData)
    OpenedDoors = SaveData.OpenedDoors;
    KeypadStates = SaveData.KeypadStates;
    KeypadCodes = SaveData.KeypadCodes;
-  
-   // Debug
+   
    for (const FName& Door : OpenedDoors)
    {
       UE_LOG(LogTemp, Warning, TEXT("LoadFromSaveData| Loaded opened door: %s"), *Door.ToString());
@@ -209,6 +210,7 @@ void ACustomPlayerState::TriggerSaveGame(FString SlotName)
    }
 #else
    UE_LOG(LogTemp, Warning, TEXT("TriggerSaveGame| Skipped in Editor"));
+   UE_LOG(LogTemp, Warning, TEXT("MapName: %s"), *GetWorld()->GetMapName());
 #endif 
 }
 

@@ -70,7 +70,7 @@ void ABlindMonsterCharacter::BeginPlay()
 void ABlindMonsterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//CheckLineOfSight();
+	
 	CheckTimer += DeltaTime;
 	if (CheckTimer >= CheckSightInterval)
 	{
@@ -150,7 +150,6 @@ void ABlindMonsterCharacter::SelectClosestRouteToPlayer()
  
 	if (BestRoute != ActivePatrolRoute)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Route changed to: %s"), *BestRoute->GetName());
 		ActivePatrolRoute = BestRoute;
 		CurrentWaypointIndex = 0;
 	}
@@ -174,21 +173,30 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 	if (!Player) return;
  
 	// ignore player if they are hiding
-	if (CheckIfHiding()) return;
-	
+	if (CheckIfHiding())
+	{
+		SightDistance = SightDistanceNotChase;
+		return;
+	}
 	
 	ToPlayer = Player->GetActorLocation() - GetActorLocation();
 	Distance = ToPlayer.Size();
 	
-	if (CheckIfOutOfDistance()) return;
-	
+	if (CheckIfOutOfDistance())
+	{
+		SightDistance = SightDistanceNotChase;
+		return;
+	}
 	// degree check with dot product
 	AngleDeg = FMath::RadiansToDegrees(
 		FMath::Acos(
 			FVector::DotProduct(GetActorForwardVector(), ToPlayer.GetSafeNormal())));
 	
-	if (CheckIfOutOfSight()) return;
- 
+	if (CheckIfOutOfSight())
+	{
+		SightDistance = SightDistanceNotChase;
+		return;
+	}
 	// raycast to see if anything is in the way, for example a wall
 	FHitResult Hit;
 	FCollisionQueryParams Params;
@@ -204,6 +212,7 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 	// if not player we ignore
 	if (bBlocked && Hit.GetActor() != Player) return;
 	
+	SightDistance = SightDistanceChase;
 	if (!bIsChasing)
 	{
 		bIsChasing = true;
@@ -216,9 +225,9 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 			BB->SetValueAsBool("IsAlerted", true);
 			BB->SetValueAsBool("IsChasing", true);
  
-			UE_LOG(LogTemp, Warning, 
-				TEXT("Player seen at distance %.1f cm, degree %.1f – intensive chase!"),
-				Distance, AngleDeg);
+			// UE_LOG(LogTemp, Warning, 
+			// 	TEXT("Player seen at distance %.1f cm, degree %.1f – intensive chase!"),
+			// 	Distance, AngleDeg);
 		}
 	}
 	else
