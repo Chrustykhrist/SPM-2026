@@ -5,12 +5,12 @@
 #include "HighlightInteractablesComponent.generated.h"
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class MYPROJECT_API UHighlightComponent : public UActorComponent
+class MYPROJECT_API UHighlightInteractablesComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
-	UHighlightComponent();
+	UHighlightInteractablesComponent();
 
 protected:
 	virtual void BeginPlay() override;

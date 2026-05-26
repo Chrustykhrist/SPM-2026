@@ -5,6 +5,7 @@
 
 #include "ValveComponent.h"
 #include "TubeActor.h"
+#include "HighlightInteractablesComponent.h"
 // Sets default values for this component's properties
 UValveComponent::UValveComponent()
 {
@@ -98,5 +99,12 @@ void UValveComponent::CompleteValve()
    {
       LinkedTube->Drain();
    }
+   //UHighlightInteractablesComponent* HighlightedComp = GetOwner()->GetComponentByClass(UHighlightInteractablesComponent::StaticClass());
+   UActorComponent* HighlightedComp = GetOwner()->GetComponentByClass(UHighlightInteractablesComponent::StaticClass());
+   if (HighlightedComp)
+   {
+      HighlightedComp->SetActive(false);
+   }
+   
    OnValveCompleted.Broadcast();
 }
