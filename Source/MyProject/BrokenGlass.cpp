@@ -38,6 +38,7 @@ void ABrokenGlass::Tick(float DeltaTime)
 
 }
 
+// make it so the glas sound can play when player is inside the box
 void ABrokenGlass::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -49,6 +50,8 @@ void ABrokenGlass::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 	}
 }
 
+// triggers the noise when player is actually moving (player velocity > 0) inside this trigger box
+// triggernoise is handled by my generlized NoiseEmitterComonponent, thats also where the soundbase is stored as well
 void ABrokenGlass::PlayerStep()
 {
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
@@ -58,6 +61,7 @@ void ABrokenGlass::PlayerStep()
 	}
 }
 
+// end the sound of stepping on glas as soon as you walk out of the glass trigger box
 void ABrokenGlass::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
