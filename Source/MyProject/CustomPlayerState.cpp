@@ -168,7 +168,7 @@ void ACustomPlayerState::PopulateSaveData(FMasterSaveData& SaveData) const
    SaveData.KeypadStates = KeypadStates;
    SaveData.KeypadCodes = KeypadCodes;
    FString LevelName = GetWorld()->GetMapName();
-   LevelName.RemoveFromStart(TEXT("/Content/FirstPerson/"));
+   LevelName.RemoveFromStart(TEXT("/Game/FirstPerson/"));
    SaveData.SavedLevel = LevelName;
    
    for (const FName& Door : OpenedDoors)
