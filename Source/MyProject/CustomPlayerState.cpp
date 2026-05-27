@@ -62,10 +62,10 @@ void ACustomPlayerState::BeginPlay()
       APlayerController* PC = GetWorld()->GetFirstPlayerController();
       if (PC)
       {
-         APawn* Pawn = PC->GetPawn();
-         if (Pawn && !SpawnTransform.GetLocation().IsZero())
+         APawn* Player = PC->GetPawn();
+         if (Player && !SpawnTransform.GetLocation().IsZero())
          {
-            Pawn->SetActorLocationAndRotation(
+            Player->SetActorLocationAndRotation(
                SpawnTransform.GetLocation(),
                SpawnTransform.GetRotation()
             );

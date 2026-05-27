@@ -22,7 +22,6 @@ class MYPROJECT_API UValveComponent : public UActorComponent
 
 
 public:
-	// Sets default values for this component's properties
 	UValveComponent();
   
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Valve")

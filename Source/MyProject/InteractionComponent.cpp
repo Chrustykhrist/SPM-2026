@@ -51,19 +51,11 @@ AActor* UInteractionComponent::FindInteractingActor() const
    FHitResult ActorHit;
    FCollisionShape Sphere = FCollisionShape::MakeSphere(InteractionRadius);
   
-   //bool bHit = GetWorld()->SweepSingleByChannel(ActorHit, StartLocation,
-      //EndLocation, FQuat::Identity, ECC_GameTraceChannel13, Sphere);
-  
    // Going to change the TraceChannel to 13 or something but will do that later
    // when i know no one else changes the project setting since there will be annoying conflicts
    bool bHit = GetWorld()->SweepSingleByChannel(ActorHit, StartLocation,
       EndLocation, FQuat::Identity, ECC_Visibility, Sphere);
-  
-   // if (bHit && ActorHit.GetActor() &&
-   //     ActorHit.GetActor()->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
-   // {
-   //     return ActorHit.GetActor(); ECC_Visibility
-   // }
+   
    AActor* HitActor = ActorHit.GetActor();
 #if WITH_EDITOR
    DrawDebugSphere(GetWorld(), EndLocation, InteractionRadius, 12, FColor::Red, false, 2.0f);

@@ -12,9 +12,7 @@ UValveComponent::UValveComponent()
    // Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
    // off to improve performance if you don't need them.
    PrimaryComponentTick.bCanEverTick = false;
-   //ComponentTags.Add(FName("ValveComponent"));
-
-   // ...
+   
 }
 
 
@@ -55,8 +53,7 @@ void UValveComponent::ApplyRotationDelta(float Delta)
 {
    if (!bActive || bComplete) return;
    UE_LOG(LogTemp, Warning, TEXT("ApplyRotationDelta"));
-   // CurrentRotation = FMath::Clamp(CurrentRotation + Delta * InputSensitivity *
-   //     GetWorld()->GetDeltaSeconds(), 0.0f, RequiredRotationDegrees);
+   
    CurrentRotation = FMath::Clamp(
       CurrentRotation + Delta * InputSensitivity,
       0.0f, RequiredRotationDegrees);
@@ -74,7 +71,6 @@ void UValveComponent::ApplyRotationDelta(float Delta)
       FQuat SpinDelta = FQuat(FVector::UpVector, FMath::DegreesToRadians(MappedRotateAngle));
       FQuat BaseRotation = FQuat(InitialMeshRotation);
       ValveMesh->SetRelativeRotation(BaseRotation * SpinDelta);
-      //ValveMesh->SetRelativeRotation(FRotator(0.0f, MappedRotateAngle, 0.0f));
    }
   
    if (CurrentRotation >= RequiredRotationDegrees)
@@ -99,7 +95,7 @@ void UValveComponent::CompleteValve()
    {
       LinkedTube->Drain();
    }
-   //UHighlightInteractablesComponent* HighlightedComp = GetOwner()->GetComponentByClass(UHighlightInteractablesComponent::StaticClass());
+   
    UHighlightInteractablesComponent* HighlightedComp = GetOwner()->FindComponentByClass<UHighlightInteractablesComponent>();
    if (HighlightedComp)
    {
