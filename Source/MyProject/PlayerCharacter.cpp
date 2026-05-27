@@ -71,7 +71,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	// Check if the player has stopped running and/or is crouching, 
 	// if true recover the stamina of the player
-	if (!bRunning && !bHoldBreath && Stamina <= MaxNaturalRecovery)
+	if (!bRunning && Stamina <= MaxNaturalRecovery)
 	{
 		Stamina += GetWorld()->GetDeltaSeconds();
 	}
@@ -138,8 +138,6 @@ void APlayerCharacter::ResetPlayer()
 	bCrouching = false;
 	
 	bMoving = false;
-	
-	bHoldBreath = false;
 	
 	bHiding = false;
 }

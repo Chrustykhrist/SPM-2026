@@ -13,6 +13,7 @@ AGenerator::AGenerator()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Create mesh
 	GeneratorMesh = CreateDefaultSubobject<UStaticMeshComponent>("GeneratorMesh");
 	RootComponent = GeneratorMesh;
 }
@@ -22,6 +23,7 @@ void AGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Save the starting position of all doors
 	if (!Openings.IsEmpty())
 	{
 		for (AActor* Actor : Openings)
@@ -37,7 +39,7 @@ void AGenerator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	
+	// Open all doors in chosen relative direction
 	if (bOpen && !Openings.IsEmpty())
 	{
 		for (int i = 0; i < Openings.Num(); i++)
@@ -54,6 +56,7 @@ void AGenerator::Tick(float DeltaTime)
 
 void AGenerator::TurnOn()
 {
+	// Brighten all lights
 	if (!SpotLights.IsEmpty())
 	{
 		for (ASpotLight* SpotLight : SpotLights)
@@ -63,6 +66,7 @@ void AGenerator::TurnOn()
 		}
 	}
 	
+	// Allow doors to move
 	bOpen = true;
 }
 
