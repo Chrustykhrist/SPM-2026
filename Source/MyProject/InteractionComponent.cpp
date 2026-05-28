@@ -80,11 +80,11 @@ AActor* UInteractionComponent::FindInteractingActor() const
 
 void UInteractionComponent::BeginInteract()
 {
-   //UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent %s"), bIsInteracting ? TEXT("true") : TEXT("false"));
+   
    if (bIsInteracting) return;
-   //UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent"));
+   
    AActor* TargetActor = FindInteractingActor();
-   //UE_LOG(LogTemp, Warning, TEXT("Begin interact InteractionComponent, Actor: %s"), TargetActor ? *TargetActor->GetName() : TEXT("None"));
+   
    if (!TargetActor) return;
   
    IInteractable* InteractableActor = Cast<IInteractable>(TargetActor);
@@ -95,48 +95,89 @@ void UInteractionComponent::BeginInteract()
      
       bHasLastMousePos = false;
       LastMousePos = FVector2D::ZeroVector;
+      bHasLastStickAngle = false;
+      VirtualStickPos = FVector2D::ZeroVector;
      
       InteractableActor->OnInteractBegin(GetWorld()->GetFirstPlayerController());
    }
 }
 
 
-void UInteractionComponent::InteractHeld(float Delta)
+void UInteractionComponent::InteractHeld(FVector2D Input)
 {
+   // if (!bIsInteracting || !CurrentInteractingActor) return;
+   // //UE_LOG(LogTemp, Warning, TEXT("Interact Held"));
+   //
+   // // does a proximity check if the player is close enough to the valve
+   // // so they cant just hold E and the walk away and turn the valve from anywhere in the level
+   // FVector VectorToValveFromPlayer = CurrentInteractingActor->GetActorLocation() - GetComponentLocation();
+   // float Distance = VectorToValveFromPlayer.SizeSquared();
+   // // dont forget to adjust maxinteractiondistance its at 500 in the editor now
+   // if (Distance > FMath::Square(MaxInteractionDistance))
+   // {
+   //    //UE_LOG(LogTemp, Warning, TEXT("Player to far away from valve"));
+   //    EndInteract();
+   //    return;
+   // }
+   //
+   // // makes sure that the player is looking at the valve when turning it and dont care about lenght of vector only
+   // // direction difference between the angle of valve and player
+   // FVector DirectionToValve = VectorToValveFromPlayer.GetSafeNormal();
+   // float Dot = FVector::DotProduct(GetForwardVector(), DirectionToValve);
+   //
+   // if (Dot < AcceptableLookRatio)
+   // {
+   //    //UE_LOG(LogTemp, Warning, TEXT("Player looked away from valve"));
+   //    EndInteract();
+   //    return;
+   // }
+   // IInteractable* InteractableActor = Cast<IInteractable>(CurrentInteractingActor);
+   // if (InteractableActor)
+   // {
+   //    //InteractableActor->OnInteractHold(GetWorld()->GetFirstPlayerController(), Delta);
+   //    float CircularDelta = ComputeCircularDelta();
+   //    InteractableActor->OnInteractHold(
+   //       GetWorld()->GetFirstPlayerController(), CircularDelta);
+   // }
+   
    if (!bIsInteracting || !CurrentInteractingActor) return;
-   //UE_LOG(LogTemp, Warning, TEXT("Interact Held"));
-  
-   // does a proximity check if the player is close enough to the valve
-   // so they cant just hold E and the walk away and turn the valve from anywhere in the level
-   FVector VectorToValveFromPlayer = CurrentInteractingActor->GetActorLocation() - GetComponentLocation();
+
+   FVector VectorToValveFromPlayer = CurrentInteractingActor->GetActorLocation() 
+                                   - GetComponentLocation();
    float Distance = VectorToValveFromPlayer.SizeSquared();
-   // dont forget to adjust maxinteractiondistance its at 500 in the editor now
    if (Distance > FMath::Square(MaxInteractionDistance))
    {
-      //UE_LOG(LogTemp, Warning, TEXT("Player to far away from valve"));
       EndInteract();
       return;
    }
-  
-   // makes sure that the player is looking at the valve when turning it and dont care about lenght of vector only
-   // direction difference between the angle of valve and player
+
    FVector DirectionToValve = VectorToValveFromPlayer.GetSafeNormal();
    float Dot = FVector::DotProduct(GetForwardVector(), DirectionToValve);
-  
    if (Dot < AcceptableLookRatio)
    {
-      //UE_LOG(LogTemp, Warning, TEXT("Player looked away from valve"));
       EndInteract();
       return;
    }
+
    IInteractable* InteractableActor = Cast<IInteractable>(CurrentInteractingActor);
-   if (InteractableActor)
+   if (!InteractableActor) return;
+
+   APlayerController* PC = GetWorld()->GetFirstPlayerController();
+   float MouseX, MouseY;
+   float CircularDelta = 0.0f;
+
+   if (PC && PC->GetMousePosition(MouseX, MouseY))
    {
-      //InteractableActor->OnInteractHold(GetWorld()->GetFirstPlayerController(), Delta);
-      float CircularDelta = ComputeCircularDelta();
-      InteractableActor->OnInteractHold(
-         GetWorld()->GetFirstPlayerController(), CircularDelta);
+      // Mouse is available — use screen-space circular delta
+      CircularDelta = ComputeCircularDelta();
    }
+   else
+   {
+      // No mouse (controller) — use right stick circular delta
+      CircularDelta = ComputeCircularDeltaFromStick(Input);
+   }
+
+   InteractableActor->OnInteractHold(PC, CircularDelta);
 }
 
 
@@ -188,7 +229,7 @@ float UInteractionComponent::ComputeCircularDelta()
    FVector2D ToCurrent = CurrentMousePos - ValveScreenPos;
   
    // ignore the cursor if its too close to center so it doesnt act weird
-   if (ToLast.SizeSquared() < 200.0f || ToCurrent.SizeSquared() < 200.0f)
+   if (ToLast.SizeSquared() < 100.0f || ToCurrent.SizeSquared() < 100.0f)
    {
       LastMousePos = CurrentMousePos;
       return 0.0f;
@@ -211,4 +252,33 @@ float UInteractionComponent::ComputeCircularDelta()
 
 
    return FMath::RadiansToDegrees(Delta);
+}
+
+float UInteractionComponent::ComputeCircularDeltaFromStick(FVector2D StickInput)
+{
+   
+   if (StickInput.SizeSquared() < 0.1f)
+   {
+      bHasLastStickAngle = false; // reset so re-engaging doesn't spike
+      return 0.0f;
+   }
+   
+   float CurrentAngle = FMath::Atan2(StickInput.Y, StickInput.X);
+   
+   if (!bHasLastStickAngle)
+   {
+      LastStickAngle = CurrentAngle;
+      bHasLastStickAngle = true;
+      return 0.0f;
+   }
+
+   float Delta = CurrentAngle - LastStickAngle;
+   
+   if (Delta >  PI) Delta -= 2.0f * PI;
+   if (Delta < -PI) Delta += 2.0f * PI;
+
+   LastStickAngle = CurrentAngle;
+
+   return FMath::RadiansToDegrees(Delta);
+   
 }
