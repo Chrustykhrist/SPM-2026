@@ -21,7 +21,7 @@ public:
 	FName FillLevelParameterName  = TEXT("FillLevel");
 	
 	UPROPERTY(EditAnywhere, Category = "Tube")
-	float DrainDuration = 12.0f;
+	float DrainDuration = 8.0f;
 	
 	UFUNCTION(BlueprintCallable)
 	void Drain();
