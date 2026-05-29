@@ -62,10 +62,10 @@ void ACustomPlayerState::BeginPlay()
       APlayerController* PC = GetWorld()->GetFirstPlayerController();
       if (PC)
       {
-         APawn* Pawn = PC->GetPawn();
-         if (Pawn && !SpawnTransform.GetLocation().IsZero())
+         APawn* Player = PC->GetPawn();
+         if (Player && !SpawnTransform.GetLocation().IsZero())
          {
-            Pawn->SetActorLocationAndRotation(
+            Player->SetActorLocationAndRotation(
                SpawnTransform.GetLocation(),
                SpawnTransform.GetRotation()
             );
@@ -168,7 +168,7 @@ void ACustomPlayerState::PopulateSaveData(FMasterSaveData& SaveData) const
    SaveData.KeypadStates = KeypadStates;
    SaveData.KeypadCodes = KeypadCodes;
    FString LevelName = GetWorld()->GetMapName();
-   LevelName.RemoveFromStart(TEXT("/Content/FirstPerson/"));
+   LevelName.RemoveFromStart(TEXT("/Game/FirstPerson/"));
    SaveData.SavedLevel = LevelName;
    
    for (const FName& Door : OpenedDoors)

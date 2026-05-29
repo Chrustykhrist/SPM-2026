@@ -167,6 +167,7 @@ AActor* ABlindMonsterCharacter::GetNextWaypoint()
 	return Waypoint;
 }
 
+// Checks if the player is close enough to the monster for it to activate chase mode, both proximity and trace with filter of dot
 void ABlindMonsterCharacter::CheckLineOfSight()
 {
 	
@@ -187,7 +188,7 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 		SightDistance = SightDistanceNotChase;
 		return;
 	}
-	// degree check with dot product
+	// degree check with dot product so it only accepts within this degree cap
 	AngleDeg = FMath::RadiansToDegrees(
 		FMath::Acos(
 			FVector::DotProduct(GetActorForwardVector(), ToPlayer.GetSafeNormal())));
@@ -241,6 +242,7 @@ void ABlindMonsterCharacter::CheckLineOfSight()
 	}
 }
 
+// if monster hear noise from another instigator it will react and run there
 void ABlindMonsterCharacter::OnHearNoise(APawn* OtherPawn, const FVector& Location, float Volume)
 {
 		if (OtherPawn != nullptr && OtherPawn != this && OtherPawn->IsPlayerControlled())
@@ -297,6 +299,7 @@ bool ABlindMonsterCharacter::CheckIfHiding()
 	return false;
 }
 
+// proximity check for the player
 bool ABlindMonsterCharacter::CheckIfOutOfDistance()
 {
 	// ToPlayer = Player->GetActorLocation() - GetActorLocation();
@@ -321,6 +324,7 @@ bool ABlindMonsterCharacter::CheckIfOutOfDistance()
 	return false;
 }
 
+// dot product filter for the acceptable degrees the player need to be withing for the monster to see the player
 bool ABlindMonsterCharacter::CheckIfOutOfSight()
 {
 	
@@ -344,6 +348,7 @@ bool ABlindMonsterCharacter::CheckIfOutOfSight()
 	return false;
 }
 
+// resets the monsters movement when the player respawns
 void ABlindMonsterCharacter::ResetMovement()
 {
 	if (GetCharacterMovement())
@@ -358,6 +363,7 @@ void ABlindMonsterCharacter::ResetMovement()
 	}
 }
 
+// sets the initial transform that the monster has in the beginning
 void ABlindMonsterCharacter::Respawn()
 {
 	SetActorTransform(SpawnLocation);

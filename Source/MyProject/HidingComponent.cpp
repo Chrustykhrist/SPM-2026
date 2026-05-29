@@ -57,6 +57,7 @@ void UHidingComponent::Hide()
 	// Set rotation to the same as the locker
 	FRotator NewRotation = GetOwner()->GetActorRotation();
 	
+	// Stop player from moving
 	if (UCharacterMovementComponent* CMC = Cast<UCharacterMovementComponent>(PP->GetMovementComponent()))
 	{
 		CMC->StopMovementImmediately();
@@ -70,6 +71,7 @@ void UHidingComponent::Hide()
 	// Teleport player with offset
 	PP->SetActorLocationAndRotation(NewLocation, NewRotation);
 	
+	// Rotate player to look out of locker
 	if (AHorrorPlayerController* PC = Cast<AHorrorPlayerController>(PP->GetController()))
 	{
 		PC->SetControlRotation(NewRotation);
@@ -93,6 +95,7 @@ void UHidingComponent::GetOut()
 	
 	ACharacter* PP = Cast<ACharacter>(Player);
 	
+	// Allow player move
 	if (UCharacterMovementComponent* CMC = Cast<UCharacterMovementComponent>(PP->GetMovementComponent()))
 	{
 		CMC->GravityScale = 1.0f;
@@ -121,7 +124,7 @@ AActor* UHidingComponent::GetPlayer() const
 	// Goes through all the actors that are in the array
 	for (AActor* Actor : PlayerActors)
 	{
-		// If the actor has the tag "PLayer" which only the player should have, returns that actor
+		// If the actor has the tag "Player" which only the player should have, returns that actor
 		if (Actor->ActorHasTag("Player"))
 		{
 			APlayerCharacter* PC = Cast<APlayerCharacter>(Actor);

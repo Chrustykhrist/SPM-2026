@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Generator.generated.h"
 
+class ASpotLight;
+
 UCLASS()
 class MYPROJECT_API AGenerator : public AActor
 {
@@ -22,8 +24,31 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
+	UFUNCTION(BlueprintCallable)
+	void TurnOn();
 
 private:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* GeneratorMesh;
+	
+	UPROPERTY(EditAnywhere, Category="Changes on Turn on")
+	TArray<ASpotLight*> SpotLights;
+	
+	UPROPERTY(EditAnywhere, Category="Changes on Turn on")
+	TArray<AActor*> Openings;
+	
+	UPROPERTY(EditAnywhere, Category="Changes to")
+	float IntensityIncrease = 5;
+	
+	UPROPERTY(EditAnywhere, Category="Changes to")
+	float AttenuationIncrease = 500;
+	
+	UPROPERTY(EditAnywhere, Category="Changes to")
+	FVector MoveDistance = FVector(300, 0, 0);
+	
+	bool bOpen = false;
+	
+	UPROPERTY()
+	TArray<FVector> StartLocations;
 };
