@@ -71,7 +71,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	// Check if the player has stopped running and/or is crouching, 
 	// if true recover the stamina of the player
-	if (!bRunning && !bHoldBreath && Stamina <= MaxNaturalRecovery)
+	if (!bRunning && Stamina <= MaxNaturalRecovery)
 	{
 		Stamina += GetWorld()->GetDeltaSeconds();
 	}
@@ -138,8 +138,6 @@ void APlayerCharacter::ResetPlayer()
 	bCrouching = false;
 	
 	bMoving = false;
-	
-	bHoldBreath = false;
 	
 	bHiding = false;
 }
@@ -405,11 +403,12 @@ void APlayerCharacter::InteractBegin(const FInputActionValue& Value)
 
 void APlayerCharacter::InteractHold(const FInputActionValue& Value)
 {
-	UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(GetComponentByClass(UInteractionComponent::StaticClass()));;
+	UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(
+		GetComponentByClass(UInteractionComponent::StaticClass()));
+
 	if (InteractionComponent && InteractionComponent->bIsInteracting)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Hold"));
-		InteractionComponent->InteractHeld(Value.Get<FVector2D>().X);
+		InteractionComponent->InteractHeld(Value.Get<FVector2D>());
 	}
 }
 

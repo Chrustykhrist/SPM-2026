@@ -22,11 +22,10 @@ class MYPROJECT_API UValveComponent : public UActorComponent
 
 
 public:
-	// Sets default values for this component's properties
 	UValveComponent();
   
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Valve")
-	float RequiredRotationDegrees = 360.0f;
+	float RequiredRotationDegrees = 720.0f;
   
 	UPROPERTY(EditAnywhere, Category = "Valve")
 	float InputSensitivity = 1.0f;
@@ -45,7 +44,8 @@ public:
 	void ApplyRotationDelta(float Delta);
   
 	void EndInteraction();
-  
+	
+	UFUNCTION(BlueprintCallable, Category = "Valve")
 	bool IsComplete() const {return bComplete;}
   
 	bool IsBeingUsed() const {return bActive;}

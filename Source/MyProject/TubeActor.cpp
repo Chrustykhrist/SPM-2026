@@ -17,15 +17,7 @@ ATubeActor::ATubeActor()
 void ATubeActor::BeginPlay()
 {
 	Super::BeginPlay();
-	// makes an instance of the material so we can change it for each tube
-	// this was for to drain material and not move it down
-	// DynamicFluidMaterial = FluidMesh->CreateAndSetMaterialInstanceDynamic(0);
-	// if (DynamicFluidMaterial)
-	// {
-	// 	DynamicFluidMaterial->SetScalarParameterValue(FillLevelParameterName, 1.0f);
-	// }
 	
-	// setup for to able to physically move the actor downards slowly to make it seem its draining
 	StartLocation = GetActorLocation();
 	// i know bad way of figureing out the distance the actor needs to travel,
 	//just wanted to see if it works as i intended
@@ -50,22 +42,6 @@ void ATubeActor::Tick(float DeltaTime)
 	
 	if (bDraining && CurrentFillLevel > 0.0f)
 	{
-		// CurrentFillLevel = FMath::Max(0.0f, CurrentFillLevel - DeltaTime / DrainDuration);
-		//
-		// if (DynamicFluidMaterial)
-		// {
-		// 	DynamicFluidMaterial->SetScalarParameterValue(FillLevelParameterName, CurrentFillLevel);
-		// }
-		
-		
-		// if (CurrentFillLevel <= 0.0f)
-		// {
-		// 	FluidMesh->SetVisibility(false);
-		// 	SetActorTickEnabled(false);
-		// }
-		// CurrentFillLevel -= DeltaTime / DrainDuration;
-		// FVector NewLocation = FMath::VInterpTo(GetActorLocation(), 
-		// 	UnderTheMap, DeltaTime, DrainDuration);
 		
 		// make it so the tube/substance moves slowly downards underneath the map and then
 		// dissapears making it seem its draining
@@ -83,9 +59,8 @@ void ATubeActor::Tick(float DeltaTime)
 		if (CurrentFillLevel <= 0.0f)
 		{
 			CurrentFillLevel = 0.0f;
-			this->Destroy();
-			//FluidMesh->SetVisibility(false);
 			SetActorTickEnabled(false);
+			this->Destroy();
 		}
 	}
 }

@@ -15,6 +15,8 @@ UBTS_SetMonsterStats::UBTS_SetMonsterStats()
 	bNotifyBecomeRelevant = true;
 }
 
+// gets called when it is relevant, with other words when the behavior tree hits this node inside the tree
+// where we can set the stats of the monster and make it so it makes different tempo of sound when walking or running
 void UBTS_SetMonsterStats::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	
@@ -36,6 +38,7 @@ void UBTS_SetMonsterStats::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, u
 				MonsterMovement->MaxWalkSpeed = MonsterSpeed;
 				MonsterMovement->RotationRate.Yaw = MonsterRotationSpeed;
 				
+				// currently magic numbers, should change
 				if (MonsterFootstepComp)
 				{
 					if (MonsterSpeed <= 250.0f)

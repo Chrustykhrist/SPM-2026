@@ -11,11 +11,19 @@
 UHidingComponent::UHidingComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	
 }
 
 void UHidingComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// LockerDoor = Cast<UStaticMeshComponent>(GetOwner()->GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Door"))[0]);
+	//
+	// if (LockerDoor)
+	// {
+	// 	DoorRotation = LockerDoor->GetRelativeRotation();
+	// }
 }
 
 void UHidingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -27,6 +35,14 @@ void UHidingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	{
 		Player = GetPlayer();
 	}
+	
+	// if (bOpen)
+	// {
+	// 	FRotator NewRotation = DoorRotation + FRotator(0, 140, 0);
+	// 	
+	// 	LockerDoor->SetRelativeRotation(FMath::RInterpConstantTo(DoorRotation, NewRotation, DeltaTime, 10));
+	// }
+	
 }
 
 /**
@@ -38,6 +54,8 @@ void UHidingComponent::Hide()
 	{
 		return;
 	}
+	
+	// bOpen = true;
 	
 	ACharacter* PP = Cast<ACharacter>(Player);
 	
@@ -57,6 +75,7 @@ void UHidingComponent::Hide()
 	// Set rotation to the same as the locker
 	FRotator NewRotation = GetOwner()->GetActorRotation();
 	
+	// Stop player from moving
 	if (UCharacterMovementComponent* CMC = Cast<UCharacterMovementComponent>(PP->GetMovementComponent()))
 	{
 		CMC->StopMovementImmediately();
@@ -70,12 +89,15 @@ void UHidingComponent::Hide()
 	// Teleport player with offset
 	PP->SetActorLocationAndRotation(NewLocation, NewRotation);
 	
+	// Rotate player to look out of locker
 	if (AHorrorPlayerController* PC = Cast<AHorrorPlayerController>(PP->GetController()))
 	{
 		PC->SetControlRotation(NewRotation);
 	}
 	
 	bHiding = true;
+	
+	//CloseDoor();
 }
 
 /**
@@ -91,8 +113,10 @@ void UHidingComponent::GetOut()
 		return;
 	}
 	
+	
 	ACharacter* PP = Cast<ACharacter>(Player);
 	
+	// Allow player move
 	if (UCharacterMovementComponent* CMC = Cast<UCharacterMovementComponent>(PP->GetMovementComponent()))
 	{
 		CMC->GravityScale = 1.0f;
@@ -104,6 +128,7 @@ void UHidingComponent::GetOut()
 	PlayerPawn->SetActorEnableCollision(true);
 	
 	bHiding = false;
+	
 }
 
 /**
@@ -121,7 +146,7 @@ AActor* UHidingComponent::GetPlayer() const
 	// Goes through all the actors that are in the array
 	for (AActor* Actor : PlayerActors)
 	{
-		// If the actor has the tag "PLayer" which only the player should have, returns that actor
+		// If the actor has the tag "Player" which only the player should have, returns that actor
 		if (Actor->ActorHasTag("Player"))
 		{
 			APlayerCharacter* PC = Cast<APlayerCharacter>(Actor);
@@ -137,4 +162,20 @@ AActor* UHidingComponent::GetPlayer() const
 	// Otherwise return null
 	return nullptr;
 }
+
+// void UHidingComponent::OpenDoor()
+// {
+// 	if (!LockerDoor) return;
+// 	
+// 	bOpen = true;
+// 	
+// 	// FRotator NewRotation = DoorRotation + FRotator(0, 140, 0);
+// 	//
+// 	// LockerDoor->SetRelativeRotation(FMath::RInterpConstantTo(DoorRotation, NewRotation, FApp::GetDeltaTime(), 10));
+// }
+//
+// void UHidingComponent::CloseDoor()
+// {
+// 	bClose = true;
+// }
 

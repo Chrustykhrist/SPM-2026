@@ -106,6 +106,7 @@ void AHorrorGameMode::GameOver()
 			PS->GetCheckPointTransform().GetLocation(),
 			PS->GetCheckPointTransform().GetRotation()
 		);
+		PC->SetControlRotation(PS->GetCheckPointTransform().GetRotation().Rotator());
 	}
 	
 	NewPawn->EnableInput(PC);

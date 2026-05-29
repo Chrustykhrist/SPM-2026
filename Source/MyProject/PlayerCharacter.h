@@ -95,7 +95,7 @@ public:
 	
 	bool GetMoving() const { return bMoving; }
 	
-	UFootstepComponent* GetFootstepComponent() { return FootstepComponent; }
+	UFootstepComponent* GetFootstepComponent() const { return FootstepComponent; }
 	
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	bool GetPaused() const { return bPaused; }
@@ -141,14 +141,25 @@ private:
 	
 	void UseFirstItem(const FInputActionValue& Value);
 	void UseSecondItem(const FInputActionValue& Value);
-#pragma endregion	
+#pragma endregion
+	
+#pragma region COMPONENTS	
 	UPROPERTY()
 	UCharacterMovementComponent* MovementComponent;
 	
+	UPROPERTY()
+	UHidingComponent* HidingComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
+	UFootstepComponent* FootstepComponent;
+	
+#pragma endregion	
+
+#pragma region BOOLEANS	
 	/*
 	 *  Booleans used to check what the player is currently doing
 	 */
-#pragma region BOOLEANS	
+	
 	bool bRunning = false;
 	
 	bool bCrouching = false;
@@ -158,17 +169,16 @@ private:
 	bool bPaused = false;
 	
 	bool bOnPauseStartScreen = true;
-
-	bool bHoldBreath = false;
 	
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	bool bHiding = false;
 #pragma endregion	
+
+#pragma region VARIABLES
 	/*
 	 * Variables to change different values on the character and its inputs
 	 */
-
-#pragma region VARIABLES	
+	
 	float WalkSpeed;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -198,9 +208,6 @@ private:
 
 	UPROPERTY()
 	float SpeedDecrease;
-
-	UPROPERTY()
-	UHidingComponent* HidingComponent;
 	
 	UPROPERTY(EditAnywhere, Category="Sound")
 	float SprintLoudnessMultiplier = 0.65f;
@@ -215,9 +222,6 @@ private:
 	//TObjectPtr<UInteractionComponent> InteractionComponent;
 	
 	float CurrentTurnDelta = 0.0f;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
-	UFootstepComponent* FootstepComponent;
 	
 	UPROPERTY()
 	int SelectedItem = 0;

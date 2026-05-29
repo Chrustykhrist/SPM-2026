@@ -12,7 +12,6 @@ class MYPROJECT_API ATubeActor : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ATubeActor();
 	
 	UPROPERTY(VisibleAnywhere, Category = "Tube")
@@ -22,7 +21,7 @@ public:
 	FName FillLevelParameterName  = TEXT("FillLevel");
 	
 	UPROPERTY(EditAnywhere, Category = "Tube")
-	float DrainDuration = 12.0f;
+	float DrainDuration = 8.0f;
 	
 	UFUNCTION(BlueprintCallable)
 	void Drain();

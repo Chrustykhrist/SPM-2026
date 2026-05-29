@@ -18,7 +18,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	float LoudnessMultiplier = 0.85f;
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -45,5 +48,4 @@ private:
 	
 	FTimerHandle StepTimerHandle;
 	
-	float LoudnessMultiplier = 0.85f;
 };
