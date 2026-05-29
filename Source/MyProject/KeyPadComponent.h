@@ -9,8 +9,7 @@
 #include "KeyPadComponent.generated.h"
 
 
-
-
+class UFMODEvent;
 class ACustomPlayerState;
 
 
@@ -90,4 +89,7 @@ private:
 	
 	UPROPERTY()
 	FName RecentlyPressed;
+	
+	UPROPERTY(EditAnywhere)
+	UFMODEvent* PressEvent;
 };

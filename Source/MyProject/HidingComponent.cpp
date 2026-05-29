@@ -11,11 +11,19 @@
 UHidingComponent::UHidingComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	
 }
 
 void UHidingComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// LockerDoor = Cast<UStaticMeshComponent>(GetOwner()->GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Door"))[0]);
+	//
+	// if (LockerDoor)
+	// {
+	// 	DoorRotation = LockerDoor->GetRelativeRotation();
+	// }
 }
 
 void UHidingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -27,6 +35,14 @@ void UHidingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	{
 		Player = GetPlayer();
 	}
+	
+	// if (bOpen)
+	// {
+	// 	FRotator NewRotation = DoorRotation + FRotator(0, 140, 0);
+	// 	
+	// 	LockerDoor->SetRelativeRotation(FMath::RInterpConstantTo(DoorRotation, NewRotation, DeltaTime, 10));
+	// }
+	
 }
 
 /**
@@ -38,6 +54,8 @@ void UHidingComponent::Hide()
 	{
 		return;
 	}
+	
+	// bOpen = true;
 	
 	ACharacter* PP = Cast<ACharacter>(Player);
 	
@@ -78,6 +96,8 @@ void UHidingComponent::Hide()
 	}
 	
 	bHiding = true;
+	
+	//CloseDoor();
 }
 
 /**
@@ -93,6 +113,7 @@ void UHidingComponent::GetOut()
 		return;
 	}
 	
+	
 	ACharacter* PP = Cast<ACharacter>(Player);
 	
 	// Allow player move
@@ -107,6 +128,7 @@ void UHidingComponent::GetOut()
 	PlayerPawn->SetActorEnableCollision(true);
 	
 	bHiding = false;
+	
 }
 
 /**
@@ -140,4 +162,20 @@ AActor* UHidingComponent::GetPlayer() const
 	// Otherwise return null
 	return nullptr;
 }
+
+// void UHidingComponent::OpenDoor()
+// {
+// 	if (!LockerDoor) return;
+// 	
+// 	bOpen = true;
+// 	
+// 	// FRotator NewRotation = DoorRotation + FRotator(0, 140, 0);
+// 	//
+// 	// LockerDoor->SetRelativeRotation(FMath::RInterpConstantTo(DoorRotation, NewRotation, FApp::GetDeltaTime(), 10));
+// }
+//
+// void UHidingComponent::CloseDoor()
+// {
+// 	bClose = true;
+// }
 
