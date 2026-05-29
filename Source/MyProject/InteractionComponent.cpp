@@ -58,7 +58,7 @@ AActor* UInteractionComponent::FindInteractingActor() const
    
    AActor* HitActor = ActorHit.GetActor();
 #if WITH_EDITOR
-   DrawDebugSphere(GetWorld(), EndLocation, InteractionRadius, 12, FColor::Red, false, 2.0f);
+   //DrawDebugSphere(GetWorld(), EndLocation, InteractionRadius, 12, FColor::Red, false, 2.0f);
 #endif 
    if (bHit && HitActor)
    {
@@ -229,7 +229,7 @@ float UInteractionComponent::ComputeCircularDelta()
    FVector2D ToCurrent = CurrentMousePos - ValveScreenPos;
   
    // ignore the cursor if its too close to center so it doesnt act weird
-   if (ToLast.SizeSquared() < 100.0f || ToCurrent.SizeSquared() < 100.0f)
+   if (ToLast.SizeSquared() < 60.0f || ToCurrent.SizeSquared() < 60.0f)
    {
       LastMousePos = CurrentMousePos;
       return 0.0f;
