@@ -5,6 +5,8 @@
 
 #include "KeyPadComponent.h"
 #include "CustomPlayerState.h"
+#include "FMODBlueprintStatics.h"
+#include "FMODEvent.h"
 #include "PickUp.h"
 #include "PlayerCharacter.h"
 
@@ -134,7 +136,23 @@ void UKeyPadComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 */
 void UKeyPadComponent::Pressed(FName number)
 {
+   USceneComponent* TargetPoint = GetOwner()->GetRootComponent();
+   
+   UFMODAudioComponent* Sound = UFMODBlueprintStatics::PlayEventAttached(
+      PressEvent, 
+      TargetPoint, 
+      NAME_None, 
+      FVector::ZeroVector, 
+      EAttachLocation::SnapToTarget, 
+      true, 
+      true, 
+      true);
+   
+   //Sound->Play();
+   
    PressedButtons.Add(number);
+   
+   //Sound->Stop();
 }
 
 

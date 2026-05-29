@@ -42,4 +42,16 @@ public:
 private:
 	UPROPERTY()
 	AActor* Player;
+	
+	// UPROPERTY(EditAnywhere)
+	// UStaticMeshComponent* LockerDoor;
+	//
+	// UPROPERTY()
+	// FRotator DoorRotation;
+	//
+	// UFUNCTION()
+	// void OpenDoor();
+	//
+	// UFUNCTION()
+	// void CloseDoor();
 };
