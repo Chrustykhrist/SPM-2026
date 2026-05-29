@@ -54,4 +54,8 @@ private:
 	//
 	// UFUNCTION()
 	// void CloseDoor();
+	//
+	// bool bOpen = false;
+	//
+	// bool bClose = false;
 };

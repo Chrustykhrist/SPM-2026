@@ -11,12 +11,15 @@
 UHidingComponent::UHidingComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	
 }
 
 void UHidingComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// LockerDoor = Cast<UStaticMeshComponent>(GetOwner()->GetComponentsByTag(UStaticMeshComponent::StaticClass(), FName("Door"))[0]);
+	//
 	// if (LockerDoor)
 	// {
 	// 	DoorRotation = LockerDoor->GetRelativeRotation();
@@ -32,6 +35,14 @@ void UHidingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	{
 		Player = GetPlayer();
 	}
+	
+	// if (bOpen)
+	// {
+	// 	FRotator NewRotation = DoorRotation + FRotator(0, 140, 0);
+	// 	
+	// 	LockerDoor->SetRelativeRotation(FMath::RInterpConstantTo(DoorRotation, NewRotation, DeltaTime, 10));
+	// }
+	
 }
 
 /**
@@ -43,8 +54,8 @@ void UHidingComponent::Hide()
 	{
 		return;
 	}
-
-	//OpenDoor();
+	
+	// bOpen = true;
 	
 	ACharacter* PP = Cast<ACharacter>(Player);
 	
@@ -102,7 +113,6 @@ void UHidingComponent::GetOut()
 		return;
 	}
 	
-	//OpenDoor();
 	
 	ACharacter* PP = Cast<ACharacter>(Player);
 	
@@ -119,7 +129,6 @@ void UHidingComponent::GetOut()
 	
 	bHiding = false;
 	
-	//CloseDoor();
 }
 
 /**
@@ -158,13 +167,15 @@ AActor* UHidingComponent::GetPlayer() const
 // {
 // 	if (!LockerDoor) return;
 // 	
-// 	FRotator NewRotation = DoorRotation + FRotator(0, 140, 0);
+// 	bOpen = true;
 // 	
-// 	LockerDoor->SetRelativeRotation(FMath::RInterpConstantTo(DoorRotation, NewRotation, FApp::GetDeltaTime(), 10));
+// 	// FRotator NewRotation = DoorRotation + FRotator(0, 140, 0);
+// 	//
+// 	// LockerDoor->SetRelativeRotation(FMath::RInterpConstantTo(DoorRotation, NewRotation, FApp::GetDeltaTime(), 10));
 // }
 //
 // void UHidingComponent::CloseDoor()
 // {
-// 	
+// 	bClose = true;
 // }
 
