@@ -97,6 +97,8 @@ void AKeycardReader::OpenDoors()
    ACustomPlayerState* PS = Pawn->GetPlayerState<ACustomPlayerState>();
    
    if (!PS->HasRequiredItem(RequiredKeycard)) return;
+   
+   UFunction* UnlockFunction = nullptr;
   
    FVector PawnLocation = Pawn->GetActorLocation();
    UE_LOG(LogTemp, Warning, TEXT("OpenDoors| Before loop"));
