@@ -2,13 +2,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/MeshComponent.h"
 
-UHighlightComponent::UHighlightComponent()
+UHighlightInteractablesComponent::UHighlightInteractablesComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.TickInterval = 0.1f; 
 }
 
-void UHighlightComponent::BeginPlay()
+void UHighlightInteractablesComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
@@ -21,7 +21,7 @@ void UHighlightComponent::BeginPlay()
 	}
 }
 
-void UHighlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UHighlightInteractablesComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -45,7 +45,7 @@ void UHighlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	}
 }
 
-void UHighlightComponent::EnableHighlight(bool bEnable)
+void UHighlightInteractablesComponent::EnableHighlight(bool bEnable)
 {
 	bIsHighlighted = bEnable;
 	for (UMeshComponent* Mesh : MeshComponents)
