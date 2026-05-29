@@ -19,11 +19,7 @@ class MYPROJECT_API AValveActor : public AActor, public IInteractable
 	GENERATED_BODY()
   
 public:
-	// Sets default values for this actor's properties
 	AValveActor();
-  
-	// UPROPERTY(VisibleAnywhere)
-	// TObjectPtr<UStaticMeshComponent> ValveBaseMesh;
   
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneComponent> ValveRoot;

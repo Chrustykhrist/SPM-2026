@@ -403,11 +403,12 @@ void APlayerCharacter::InteractBegin(const FInputActionValue& Value)
 
 void APlayerCharacter::InteractHold(const FInputActionValue& Value)
 {
-	UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(GetComponentByClass(UInteractionComponent::StaticClass()));;
+	UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(
+		GetComponentByClass(UInteractionComponent::StaticClass()));
+
 	if (InteractionComponent && InteractionComponent->bIsInteracting)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Hold"));
-		InteractionComponent->InteractHeld(Value.Get<FVector2D>().X);
+		InteractionComponent->InteractHeld(Value.Get<FVector2D>());
 	}
 }
 
