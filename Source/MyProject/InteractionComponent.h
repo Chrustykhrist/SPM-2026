@@ -25,10 +25,13 @@ public:
   
 	UPROPERTY(EditAnywhere, Category = "Interaction")
 	float InteractionRadius = 50.0f;
-  
+	
+	UPROPERTY(EditAnywhere, Category = "Interaction")
+	float ValveRotationSpeed = 90.0f;
+	
 	void BeginInteract();
   
-	void InteractHeld(FVector2D Input);
+	void InteractHeld();
   
 	void EndInteract();
   
@@ -37,7 +40,8 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-
+	// UPROPERTY(EditAnywhere, Category = "Interaction")
+	// float IgnoreCentreThreshold = 100.0f;
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -50,13 +54,13 @@ private:
   
 	float AcceptableLookRatio = 0.7f;
   
-	FVector2D LastMousePos = FVector2D::ZeroVector;
-	bool bHasLastMousePos = false;
-
-	FVector2D VirtualStickPos = FVector2D::ZeroVector;
-	bool bHasLastStickAngle = false;
-	float LastStickAngle = 0.0f;
-	
-	float ComputeCircularDelta();
-	float ComputeCircularDeltaFromStick(FVector2D StickInput);
+	// FVector2D LastMousePos = FVector2D::ZeroVector;
+	// bool bHasLastMousePos = false;
+	//
+	// FVector2D VirtualStickPos = FVector2D::ZeroVector;
+	// bool bHasLastStickAngle = false;
+	// float LastStickAngle = 0.0f;
+	float RotationDelta = 0.0f;
+	// float ComputeCircularDelta();
+	// float ComputeCircularDeltaFromStick(FVector2D StickInput);
 };

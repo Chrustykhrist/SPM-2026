@@ -115,8 +115,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		// Interaction valves
 		UEnhancedInput->BindAction(IAInteract, ETriggerEvent::Started, this, &APlayerCharacter::InteractBegin);
 		UEnhancedInput->BindAction(IAInteract, ETriggerEvent::Completed, this, &APlayerCharacter::InteractEnd);
-		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
-		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
+		UEnhancedInput->BindAction(IAInteract, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
+		UEnhancedInput->BindAction(IAInteract, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
 		
 		// Flashlight
 		UEnhancedInput->BindAction(IAFlashlight, ETriggerEvent::Started, this, &APlayerCharacter::UseFlashlight);
@@ -408,7 +408,8 @@ void APlayerCharacter::InteractHold(const FInputActionValue& Value)
 
 	if (InteractionComponent && InteractionComponent->bIsInteracting)
 	{
-		InteractionComponent->InteractHeld(Value.Get<FVector2D>());
+		//InteractionComponent->InteractHeld(Value.Get<FVector2D>());
+		InteractionComponent->InteractHeld();
 	}
 }
 
