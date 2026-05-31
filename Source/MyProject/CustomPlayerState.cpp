@@ -13,6 +13,7 @@
 #include "CustomGameInstance.h"
 #include "KeycardReader.h"
 #include "KeyPadComponent.h"
+#include "ValveComponent.h"
 #include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -167,6 +168,7 @@ void ACustomPlayerState::PopulateSaveData(FMasterSaveData& SaveData) const
    SaveData.OpenedDoors = OpenedDoors;
    SaveData.KeypadStates = KeypadStates;
    SaveData.KeypadCodes = KeypadCodes;
+   SaveData.CompletedValves = CompletedValves;
    FString LevelName = GetWorld()->GetMapName();
    LevelName.RemoveFromStart(TEXT("/Game/FirstPerson/"));
    SaveData.SavedLevel = LevelName;
@@ -186,10 +188,12 @@ void ACustomPlayerState::LoadFromSaveData(const FMasterSaveData& SaveData)
    {
       CollectedItems.Emplace(Element.Key, Element.Value);
    }
+   
    UnlockedDoors = SaveData.UnlockedDoors;
    OpenedDoors = SaveData.OpenedDoors;
    KeypadStates = SaveData.KeypadStates;
    KeypadCodes = SaveData.KeypadCodes;
+   CompletedValves = SaveData.CompletedValves;
    
    for (const FName& Door : OpenedDoors)
    {
@@ -282,6 +286,15 @@ FString ACustomPlayerState::GetKeypadCode(FName KeypadName) const
    return Found ? *Found : TEXT("");
 }
 
+void ACustomPlayerState::SetValveCompleted(FName ValveName)
+{
+   CompletedValves.AddUnique(ValveName);
+}
+
+bool ACustomPlayerState::IsValveCompleted(FName ValveName) const
+{
+   return CompletedValves.Contains(ValveName);
+}
 
 void ACustomPlayerState::RestoreWorldState()
 {
@@ -304,5 +317,8 @@ void ACustomPlayerState::RestoreWorldState()
    {
       UKeyPadComponent* Keypad = Actor->FindComponentByClass<UKeyPadComponent>();
       if (Keypad) Keypad->RestoreState(this);
+      
+      UValveComponent* Valve = Actor->FindComponentByClass<UValveComponent>();
+      if (Valve) Valve->RestoreState(this);
    }
 }

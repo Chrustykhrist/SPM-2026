@@ -9,6 +9,8 @@
 #include "ValveComponent.generated.h"
 
 
+class ACustomPlayerState;
+class UHighlightInteractablesComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnValveCompleted);
 
 
@@ -51,7 +53,8 @@ public:
 	bool IsBeingUsed() const {return bActive;}
   
 	float GetProgress() const { return CurrentRotation / RequiredRotationDegrees; }
-  
+	
+	void RestoreState(ACustomPlayerState* PS);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -64,9 +67,16 @@ public:
 
 private:
 	float CurrentRotation = 0.0f;
+	
 	bool bActive = false;
+	
 	bool bComplete = false;
+	
 	FRotator InitialMeshRotation = FRotator::ZeroRotator;
+	
 	void CompleteValve();
-     
+	
+	void FindHighlightAndDestroy();
+	
+	UHighlightInteractablesComponent* HighlightedComp = nullptr;
 };
