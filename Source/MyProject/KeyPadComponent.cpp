@@ -6,11 +6,6 @@
 #include "KeyPadComponent.h"
 #include "CustomPlayerState.h"
 #include "FMODBlueprintStatics.h"
-#include "FMODEvent.h"
-#include "PickUp.h"
-#include "PlayerCharacter.h"
-#include "ToolContextInterfaces.h"
-
 
 // Sets default values for this component's properties
 UKeyPadComponent::UKeyPadComponent()
