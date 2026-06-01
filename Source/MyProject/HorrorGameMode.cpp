@@ -13,6 +13,7 @@
 void AHorrorGameMode::PlayerDied(FVector KillerInstigator)
 {
 	
+	// we could cache this in beginplay but if simulate instead of play in editor it may crash
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (PC)
 	{
@@ -20,32 +21,31 @@ void AHorrorGameMode::PlayerDied(FVector KillerInstigator)
 		if (PlayerPawn)
 		{
 			PlayerPawn->DisableInput(PC);
-			// snap the camera to the monster that killed the player before jumpscare
+			// snap the camera to the monster that killed the player before jumpscare with snap or smooth turn depending on bool bSmoothDeathTurn
 			if (!KillerInstigator.IsZero() && bSmoothDeathTurn)
 			{
 				FVector ToKiller = (KillerInstigator - PlayerPawn->GetActorLocation()).GetSafeNormal();
 				FRotator LookAt = ToKiller.Rotation();
 				LookAt.Pitch = PC->GetControlRotation().Pitch;
 				LookAt.Roll = 0.0f;
-
-				// Cache state for the tick
+				
 				CachedDeathPC = PC;
 				DeathTurnStartRotation = PC->GetControlRotation();
 				DeathTurnTargetRotation = LookAt;
 				DeathTurnElapsed = 0.0f;
 
-				// Tick ~60 times/sec for the duration, then fire StartDeathSequence
+				// tick ~60 times/sec for the duration
 				GetWorldTimerManager().SetTimer(
 					DeathTurnTimerHandle,
 					this,
 					&AHorrorGameMode::TickDeathTurn,
 					1.0f / 60.0f,
-					true // looping
+					true
 				);
-				return; // StartDeathSequence fires after the turn finishes
+				return; 
 			}
 
-			// Instant snap fallback (smooth disabled or no killer location)
+			// if bSmoothDeathTurn is diabled or no killer it will fallback to snap turn instead
 			if (!KillerInstigator.IsZero())
 			{
 				FVector ToKiller = (KillerInstigator - PlayerPawn->GetActorLocation()).GetSafeNormal();
@@ -88,7 +88,7 @@ void AHorrorGameMode::TickDeathTurn()
 	DeathTurnElapsed += 1.0f / 60.0f;
 	float Alpha = FMath::Clamp(DeathTurnElapsed / DeathTurnDuration, 0.0f, 1.0f);
 
-	// Apply optional curve for easing (ease-in-out etc.), otherwise linear
+	// able to make a optional curve for easing, otherwise its jsut linear
 	float EasedAlpha = DeathTurnCurve
 		? DeathTurnCurve->GetFloatValue(Alpha)
 		: Alpha;
