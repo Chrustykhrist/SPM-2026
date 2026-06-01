@@ -24,10 +24,10 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void TurnOn();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void TurnOff();
 	
 #pragma region GET/SET	
@@ -42,6 +42,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetFlashlightDuration(float NewDuration) { FlashlightDuration = NewDuration; }
+	
+	UFUNCTION(BlueprintCallable)
+	void SetFlashlightColor(FLinearColor NewColor) { Flashlight->SetLightColor(NewColor); }
 #pragma endregion
 	
 	UFUNCTION()

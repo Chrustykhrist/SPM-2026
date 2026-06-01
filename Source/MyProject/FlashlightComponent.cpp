@@ -3,6 +3,8 @@
 
 #include "FlashlightComponent.h"
 
+#include "CustomGameInstance.h"
+
 // Sets default values for this component's properties
 UFlashlightComponent::UFlashlightComponent()
 {
@@ -21,6 +23,8 @@ void UFlashlightComponent::BeginPlay()
 
 	// ...
 	
+	UCustomGameInstance* GI = Cast<UCustomGameInstance>(GetWorld()->GetGameInstance());
+	
 	Flashlight = Cast<USpotLightComponent>(GetOwner()->GetComponentByClass(USpotLightComponent::StaticClass()));
 	
 	Recharge();
@@ -29,6 +33,8 @@ void UFlashlightComponent::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UFlashlightComponent was not found"));
 	}
+	
+	Flashlight->SetLightColor(GI->GetFlashlightColor());
 	
 	Flashlight->SetActive(false);
 	Flashlight->SetVisibility(false);

@@ -29,6 +29,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SaveInventory();
 	
+	UFUNCTION()
+	void SetFlashlightColor(FLinearColor Color) { FlashlightColor = Color; }
+	
+	UFUNCTION()
+	FLinearColor GetFlashlightColor() const { return FlashlightColor; }
+	
 protected:
 	virtual void Init() override;
 	virtual void Shutdown() override;
@@ -39,4 +45,7 @@ private:
 	TMap<FName, int> Inventory;
 	
 	bool bPowerIsOn = false;
+	
+	UPROPERTY()
+	FLinearColor FlashlightColor = FLinearColor::White;
 };
