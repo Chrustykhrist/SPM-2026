@@ -9,6 +9,7 @@
 #include "FMODEvent.h"
 #include "PickUp.h"
 #include "PlayerCharacter.h"
+#include "ToolContextInterfaces.h"
 
 
 // Sets default values for this component's properties
@@ -171,6 +172,7 @@ void UKeyPadComponent::Accepted()
    
    if (PressedButtons.Num() < 4)
    {
+      ClearPressed();
       return;
    }
 
@@ -186,6 +188,10 @@ void UKeyPadComponent::Accepted()
       }
    }
 
+   if (!bCorrectInput)
+   {
+      ClearPressed();
+   }
 
    // If correct, allow the door to turn, otherwise do nothing
    if (bCorrectInput)
