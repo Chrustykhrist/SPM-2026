@@ -7,6 +7,7 @@
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "StalkerMonsterAIController.generated.h"
 
+class AStalkerMonsterCharacter;
 /**
  * 
  */
@@ -59,6 +60,7 @@ protected:
 	
 private:
 	
+	AStalkerMonsterCharacter* StalkerMonster;
 	
 	FVector PlayerLocation;
 	

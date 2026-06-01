@@ -45,13 +45,13 @@ void ABrokenGlass::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 	APawn* Player = Cast<APawn>(OtherActor);
 	if (Player && Player->IsPlayerControlled())
 	{
-		GetWorld()->GetTimerManager().SetTimer(StepTimerHandle, this, &ABrokenGlass::PlayerStep, 0.5f, true);
+		GetWorld()->GetTimerManager().SetTimer(StepTimerHandle, this, &ABrokenGlass::PlayerStep, 0.3f, true);
 		//NoiseEmitter->TriggerNoise(Player, 0.8f, GetActorLocation());
 	}
 }
 
 // triggers the noise when player is actually moving (player velocity > 0) inside this trigger box
-// triggernoise is handled by my generlized NoiseEmitterComonponent, thats also where the soundbase is stored as well
+// triggernoise is handled by my generalized NoiseEmitterComonponent, thats also where the soundbase is stored as well
 void ABrokenGlass::PlayerStep()
 {
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);

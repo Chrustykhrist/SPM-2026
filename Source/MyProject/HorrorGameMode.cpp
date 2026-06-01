@@ -7,9 +7,10 @@
 #include "CustomPlayerState.h"
 #include "FootstepComponent.h"
 #include "PlayerCharacter.h"
+#include "StalkerMonsterCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
-void AHorrorGameMode::PlayerDied()
+void AHorrorGameMode::PlayerDied(FVector KillerInstigator)
 {
 	
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
@@ -19,32 +20,115 @@ void AHorrorGameMode::PlayerDied()
 		if (PlayerPawn)
 		{
 			PlayerPawn->DisableInput(PC);
+			// snap the camera to the monster that killed the player before jumpscare
+			if (!KillerInstigator.IsZero() && bSmoothDeathTurn)
+			{
+				FVector ToKiller = (KillerInstigator - PlayerPawn->GetActorLocation()).GetSafeNormal();
+				FRotator LookAt = ToKiller.Rotation();
+				LookAt.Pitch = PC->GetControlRotation().Pitch;
+				LookAt.Roll = 0.0f;
+
+				// Cache state for the tick
+				CachedDeathPC = PC;
+				DeathTurnStartRotation = PC->GetControlRotation();
+				DeathTurnTargetRotation = LookAt;
+				DeathTurnElapsed = 0.0f;
+
+				// Tick ~60 times/sec for the duration, then fire StartDeathSequence
+				GetWorldTimerManager().SetTimer(
+					DeathTurnTimerHandle,
+					this,
+					&AHorrorGameMode::TickDeathTurn,
+					1.0f / 60.0f,
+					true // looping
+				);
+				return; // StartDeathSequence fires after the turn finishes
+			}
+
+			// Instant snap fallback (smooth disabled or no killer location)
+			if (!KillerInstigator.IsZero())
+			{
+				FVector ToKiller = (KillerInstigator - PlayerPawn->GetActorLocation()).GetSafeNormal();
+				FRotator LookAt = ToKiller.Rotation();
+				LookAt.Pitch = PC->GetControlRotation().Pitch;
+				LookAt.Roll = 0.0f;
+				PC->SetControlRotation(LookAt);
+			}
 		}
 	}
-	
+	StartDeathSequence();
+	// if (DeathSound)
+	// {
+	// 	UGameplayStatics::PlaySound2D(this, DeathSound);
+	// }
+	//
+	// OnPlayerDeathVisuals();
+	//
+	// GetWorldTimerManager().SetTimer(RestartTimerHandle, this, &AHorrorGameMode::GameOver, RestartDelay, false);
+	//
+	// APlayerCharacter* PCH = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	//
+	// //PCH->SetOnPauseStartScreen(false);
+	//
+	// if (PCH->bIsCrouched)
+	// {
+	// 	PCH->UnCrouch();
+	// }
+	//
+	// if (PCH->GetMoving())
+	// {
+	// 	PCH->GetFootstepComponent()->SetIsMoving(false);
+	// }
+	//
+	// PCH->ResetPlayer();
+}
+
+void AHorrorGameMode::TickDeathTurn()
+{
+	DeathTurnElapsed += 1.0f / 60.0f;
+	float Alpha = FMath::Clamp(DeathTurnElapsed / DeathTurnDuration, 0.0f, 1.0f);
+
+	// Apply optional curve for easing (ease-in-out etc.), otherwise linear
+	float EasedAlpha = DeathTurnCurve
+		? DeathTurnCurve->GetFloatValue(Alpha)
+		: Alpha;
+
+	if (CachedDeathPC)
+	{
+		FRotator BlendedRotation = FMath::Lerp(DeathTurnStartRotation, DeathTurnTargetRotation, EasedAlpha);
+		CachedDeathPC->SetControlRotation(BlendedRotation);
+	}
+
+	if (Alpha >= 1.0f)
+	{
+		GetWorldTimerManager().ClearTimer(DeathTurnTimerHandle);
+		StartDeathSequence();
+	}
+}
+
+void AHorrorGameMode::StartDeathSequence()
+{
 	if (DeathSound)
 	{
 		UGameplayStatics::PlaySound2D(this, DeathSound);
 	}
-	
+
 	OnPlayerDeathVisuals();
-	
+
 	GetWorldTimerManager().SetTimer(RestartTimerHandle, this, &AHorrorGameMode::GameOver, RestartDelay, false);
-	
+
 	APlayerCharacter* PCH = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	
-	//PCH->SetOnPauseStartScreen(false);
-	
+
 	if (PCH->bIsCrouched)
 	{
 		PCH->UnCrouch();
 	}
-	
+
 	if (PCH->GetMoving())
 	{
 		PCH->GetFootstepComponent()->SetIsMoving(false);
 	}
-	
+
 	PCH->ResetPlayer();
 }
 
@@ -73,11 +157,14 @@ void AHorrorGameMode::GameOver()
 	//for (AActor* CurrentMonster )
 	TArray<AActor*> OutActors;
 	TArray<ABlindMonsterCharacter*> BlindMonsterActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABlindMonsterCharacter::StaticClass(), OutActors);
+	TArray<AStalkerMonsterCharacter*> StalkerMonsterActors;
+	TArray<AActor*> AllMonsters;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacter::StaticClass(), OutActors);
 	for (AActor* Actor : OutActors)
 	{
 		//ABlindMonsterCharacter* BlindMonster = Cast<ABlindMonsterCharacter>(Actor);
-		BlindMonsterActors.Add(Cast<ABlindMonsterCharacter>(Actor));
+		if (Actor->IsA(ABlindMonsterCharacter::StaticClass())) AllMonsters.Add(Cast<ABlindMonsterCharacter>(Actor));
+		if (Actor->IsA(AStalkerMonsterCharacter::StaticClass())) AllMonsters.Add(Cast<AStalkerMonsterCharacter>(Actor));
 	}
 	//AActor* MonsterActor = UGameplayStatics::GetActorOfClass(GetWorld(), ABlindMonsterCharacter::StaticClass());
 	//ABlindMonsterCharacter* BlindMonster = Cast<ABlindMonsterCharacter>(MonsterActor);
@@ -112,12 +199,23 @@ void AHorrorGameMode::GameOver()
 	NewPawn->EnableInput(PC);
 	
 	// If we found blind monster reset its movement
-	if (!BlindMonsterActors.IsEmpty())
+	if (!AllMonsters.IsEmpty())
 	{
-		for (ABlindMonsterCharacter* CurrentMonster : BlindMonsterActors)
+		for (auto* CurrentMonster : AllMonsters)
 		{
-			CurrentMonster->ResetMovement();
-			CurrentMonster->Respawn();
+			if (CurrentMonster->IsA(ABlindMonsterCharacter::StaticClass()))
+			{
+				ABlindMonsterCharacter* BlindMonster = Cast<ABlindMonsterCharacter>(CurrentMonster);
+				BlindMonster->ResetMovement();
+				BlindMonster->Respawn();
+			}
+			else
+			{
+				AStalkerMonsterCharacter* StalkerMonster = Cast<AStalkerMonsterCharacter>(CurrentMonster);
+				StalkerMonster->ResetMovement();
+				StalkerMonster->Respawn();
+			}
+			
 		}
 		//BlindMonster->ResetMovement();
 	}

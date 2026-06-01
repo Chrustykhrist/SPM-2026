@@ -3,7 +3,6 @@
 
 #include "StalkerMonsterCharacter.h"
 
-#include "BlindMonsterAIController.h"
 #include "HorrorGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h"
@@ -12,7 +11,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Components/AudioComponent.h"
-#include "Blueprint/UserWidget.h"
+#include "GameFramework/CharacterMovementComponent.h"
 // Sets default values
 AStalkerMonsterCharacter::AStalkerMonsterCharacter()
 {
@@ -52,6 +51,8 @@ void AStalkerMonsterCharacter::BeginPlay()
 	Super::BeginPlay();
 	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	StalkerMonsterAIController = Cast<AStalkerMonsterAIController>(GetController());
+	GM = Cast<AHorrorGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	SpawnLocation = GetActorTransform();
 }
 
 // Called every frame
@@ -92,7 +93,7 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 		{
 			KillTimer = 0.0f;
 			SetMonsterState(EStalkerMonsterCharacterState::Killing);
-			UE_LOG(LogTemp, Warning, TEXT("Monster Killing State"));
+			//UE_LOG(LogTemp, Warning, TEXT("Monster Killing State"));
 		}
 		//Psuedo
 		/*
@@ -113,7 +114,7 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 		if (KillAnywayTimer >= IntervalKillAnyway)
 		{
 			KillAnywayTimer = 0.0f;
-			UE_LOG(LogTemp, Warning, TEXT("Monster KillAnyway"));
+			//UE_LOG(LogTemp, Warning, TEXT("Monster KillAnyway"));
 			TriggerKilling();
 		}
 	}
@@ -141,7 +142,7 @@ void AStalkerMonsterCharacter::Tick(float DeltaTime)
 			else if (bMonsterIsSeen && CurrentState == EStalkerMonsterCharacterState::Killing)
 			{
 				KillAnywayTimer = 0.0f;
-				UE_LOG(LogTemp, Warning, TEXT("Trigger Killing from else if"));
+				//UE_LOG(LogTemp, Warning, TEXT("Trigger Killing from else if"));
 				TriggerKilling();
 			}
 			else
@@ -182,7 +183,7 @@ bool AStalkerMonsterCharacter::CheckIfPlayerIsLooking()
 	FRotator CameraRotation;
 	PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
 	
-	FVector TraceStart = CameraLocation;
+	FVector TraceStart = CameraLocation + (CameraRotation.Vector() * TraceStartOffset);;
 	FVector TraceEnd = TraceStart + (CameraRotation.Vector() * TraceScalar);
 	
 	FHitResult HitResult;
@@ -197,7 +198,7 @@ bool AStalkerMonsterCharacter::CheckIfPlayerIsLooking()
 	{
 		if (HitResult.GetActor() == this)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s hit"), *HitResult.GetActor()->GetName());
+			//UE_LOG(LogTemp, Warning, TEXT("Player has hit monster with trace %s"), *HitResult.GetActor()->GetName());
 			return true;
 		}
 	}
@@ -208,13 +209,28 @@ bool AStalkerMonsterCharacter::CheckIfPlayerIsLooking()
 
 void AStalkerMonsterCharacter::AttachToPlayer(float DeltaTime)
 {
-	FVector AttachedLocation = PlayerPawn->GetActorLocation() - (PlayerPawn->GetActorForwardVector() * StalkDistance);
-	FVector SmoothedLocation = FMath::VInterpTo(GetActorLocation(), AttachedLocation, DeltaTime, FollowRunSpeed);
-	SetActorLocation(SmoothedLocation);
-		
-	FRotator PlayerRotation = PlayerPawn->GetActorRotation();
-	FRotator SmoothMonsterRotation = FMath::RInterpTo(GetActorRotation(), PlayerRotation, DeltaTime, FollowRotationSpeed);
-	SetActorRotation(SmoothMonsterRotation);
+	
+	AStalkerMonsterAIController* AIC = Cast<AStalkerMonsterAIController>(GetController());
+	if (AIC && AIC->GetBlackboardComponent())
+	{
+		UBlackboardComponent* BB = AIC->GetBlackboardComponent();
+		BB->SetValueAsObject("PlayerTarget", PlayerPawn);
+		//BB->SetValueAsBool("IsAlerted", true);
+		//BB->SetValueAsBool("IsChasing", true);
+ 
+		// UE_LOG(LogTemp, Warning, 
+		// 	TEXT("Player seen at distance %.1f cm, degree %.1f – intensive chase!"),
+		// 	Distance, AngleDeg);
+	}
+	
+	
+	// FVector AttachedLocation = PlayerPawn->GetActorLocation() - (PlayerPawn->GetActorForwardVector() * StalkDistance);
+	// FVector SmoothedLocation = FMath::VInterpTo(GetActorLocation(), AttachedLocation, DeltaTime, FollowRunSpeed);
+	// SetActorLocation(SmoothedLocation);
+	// 	
+	// FRotator PlayerRotation = PlayerPawn->GetActorRotation();
+	// FRotator SmoothMonsterRotation = FMath::RInterpTo(GetActorRotation(), PlayerRotation, DeltaTime, FollowRotationSpeed);
+	// SetActorRotation(SmoothMonsterRotation);
 }
 
 void AStalkerMonsterCharacter::TriggerKilling()
@@ -226,34 +242,54 @@ void AStalkerMonsterCharacter::TriggerKilling()
 	KillTimer = 0.0f;
 	KillAnywayTimer = 0.0f;
 	SetMonsterState(EStalkerMonsterCharacterState::Killing);
-	UE_LOG(LogTemp, Warning, TEXT("Killing"));
+	//UE_LOG(LogTemp, Warning, TEXT("Killing"));
 	StalkerMonsterAIController->StopMovement();
 	
 	// There is also UGameplayStatics::PlaySoundAtLocation(this, KillSound, GetActorLocation());
-	if (KillSound)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Kill sound should play %s"), *KillSound->GetName());
-		UGameplayStatics::PlaySound2D(this, KillSound);
-	}
-	if (KillWidgetClass)
-	{
-		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		
-		if (PC)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("PC fetched"));
-			UUserWidget* KillWidget = CreateWidget<UUserWidget>(PC,  KillWidgetClass);
-			if (KillWidget) KillWidget->AddToViewport();
-		}
-	}
+	// if (KillSound)
+	// {
+	// 	//UE_LOG(LogTemp, Warning, TEXT("Kill sound should play %s"), *KillSound->GetName());
+	// 	UGameplayStatics::PlaySound2D(this, KillSound);
+	// }
+	// if (KillWidgetClass)
+	// {
+	// 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	// 	
+	// 	if (PC)
+	// 	{
+	// 		UE_LOG(LogTemp, Warning, TEXT("PC fetched"));
+	// 		UUserWidget* KillWidget = CreateWidget<UUserWidget>(PC,  KillWidgetClass);
+	// 		if (KillWidget) KillWidget->AddToViewport();
+	// 	}
+	// }
 	
-	AHorrorGameMode* GM = Cast<AHorrorGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	//AHorrorGameMode* GM = Cast<AHorrorGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (GM)
 	{
-		GM->PlayerDied();
+		GM->PlayerDied(GetActorLocation());
 	}
 	// can put more in here for example like a animation PlayAnimMontage
 	// and a blueprintcallable method to create like screen shake or other things
 	// damage can also be applied and gameover
+}
+
+void AStalkerMonsterCharacter::ResetMovement()
+{
+	if (GetCharacterMovement())
+	{
+		bIsKilling = false;
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+		SetMonsterState(EStalkerMonsterCharacterState::Stalking);
+		// AStalkerMonsterAIController* AIController = Cast<AStalkerMonsterAIController>(GetController());
+		// if (AIController && AIController->GetBlackboardComponent())
+		// {
+		// 	AIController->GetBlackboardComponent()->SetValueAsBool("IsAlerted", false);
+		// }
+	}
+}
+
+void AStalkerMonsterCharacter::Respawn()
+{
+	SetActorTransform(SpawnLocation);
 }
 
