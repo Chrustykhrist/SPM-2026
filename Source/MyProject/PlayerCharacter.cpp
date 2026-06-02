@@ -148,7 +148,7 @@ void APlayerCharacter::ResetPlayer()
  */
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
-	if (!bMoving && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
+	if (!bMoving && GetCharacterMovement()->bWantsToCrouch == false && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
 	{
 		FootstepComponent->SetMovementState(EMovementState::Walking);
 	}
@@ -257,7 +257,7 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 	bRunning = true;
 
 	// Slows the player down depending on different conditions
-	if (Stamina > 0 && !bCrouching && bMoving)
+	if (Stamina > 0 && !bCrouching && bMoving && !bIsCrouched)
 	{
 		if (FootstepComponent->GetCurrentMovementState() != EMovementState::Sprinting && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
 		{
@@ -278,7 +278,7 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 	{
 		MovementComponent->MaxWalkSpeed = WalkSpeed;
 		bRunning = false;
-		if (FootstepComponent->GetCurrentMovementState() != EMovementState::Walking && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
+		if (FootstepComponent->GetCurrentMovementState() != EMovementState::Walking && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40 && !bIsCrouched)
 		{
 			FootstepComponent->SetMovementState(EMovementState::Walking);
 		}
