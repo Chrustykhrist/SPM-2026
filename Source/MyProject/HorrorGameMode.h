@@ -17,7 +17,7 @@ class MYPROJECT_API AHorrorGameMode : public AGameModeBase
 public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Game Rules")
-	void PlayerDied();
+	void PlayerDied(FVector KillerInstigator = FVector::ZeroVector);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Death")
@@ -30,6 +30,19 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game Rules")
 	void RemoveVisuals();
 	
+#pragma region TurnPlayerTowardsMonster	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Death Settings")
+	bool bSmoothDeathTurn = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Death Settings",
+			  meta = (EditCondition = "bSmoothDeathTurn", ClampMin = "0.1", ClampMax = "3.0"))
+	float DeathTurnDuration = 0.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Death Settings",
+			  meta = (EditCondition = "bSmoothDeathTurn"))
+	UCurveFloat* DeathTurnCurve;
+#pragma endregion
+	
 	void GameOver();
 	
 private:
@@ -38,6 +51,18 @@ private:
 	
 	FTimerHandle RestartTimerHandle;
 	
+	void StartDeathSequence();
 	
+	void TickDeathTurn();
+
+	FTimerHandle DeathTurnTimerHandle;
+	
+	FRotator DeathTurnStartRotation;
+	
+	FRotator DeathTurnTargetRotation;
+	
+	float DeathTurnElapsed = 0.0f;
+	
+	APlayerController* CachedDeathPC = nullptr;
 
 };

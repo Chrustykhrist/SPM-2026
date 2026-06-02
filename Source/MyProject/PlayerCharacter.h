@@ -182,7 +182,7 @@ private:
 	float WalkSpeed;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	float SprintSpeed = 800;
+	float SprintSpeed = 520;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	float CrouchSpeed = 200;

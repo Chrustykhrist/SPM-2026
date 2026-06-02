@@ -107,7 +107,7 @@ void ABlindMonsterCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedCompo
 		if (GameMode)
 		{
 			GetCharacterMovement()->DisableMovement();
-			GameMode->PlayerDied();
+			GameMode->PlayerDied(GetActorLocation());
 		}
 	}
 }

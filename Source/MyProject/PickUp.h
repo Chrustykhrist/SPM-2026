@@ -30,9 +30,6 @@ public:
 	UFUNCTION()
 	void PickUp();
 	
-	UPROPERTY()
-	FName RecentlyPressed;
-	
 	UPROPERTY(EditAnywhere, Category="Display")
 	TSubclassOf<UUserWidget> NotifClass;
 	
@@ -52,22 +49,13 @@ private:
 	// The max distance allowed between the players eyes and the item. Measured in cm
 	UPROPERTY(EditAnywhere)
 	float MaxGrabDistance = 100;
-
-	// Max distance between player and keypad
-	UPROPERTY(EditAnywhere)
-	float MaxPushDistance = 150;
-
+	
 	// The radius of the sphere that hits the item
 	UPROPERTY(EditAnywhere)
-	float GrabRadius = 50;
+	float GrabRadius = 25;
 
 	// Bool to check if the item is grabbable
 	bool bGrabbable = false;
-
-	// Bool to check if the item is pushable
-	bool bPushable = false;
-	
-	bool bPowerSwitchPushed = false;
 	
 	UPROPERTY(EditAnywhere)
 	float RestartDelay = 1.5f;

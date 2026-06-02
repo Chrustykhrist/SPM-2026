@@ -41,6 +41,9 @@ public:
 	float GetFlashlightDuration() const { return FlashlightDuration; }
 	
 	UFUNCTION(BlueprintCallable)
+	float GetMaxDuration() const { return MaxFlashlightDuration; }
+	
+	UFUNCTION(BlueprintCallable)
 	void SetFlashlightDuration(float NewDuration) { FlashlightDuration = NewDuration; }
 	
 	UFUNCTION(BlueprintCallable)
