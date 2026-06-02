@@ -54,11 +54,6 @@ void UFlashlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	if (GetState() == true && FlashlightDuration > 0.0f)
 	{
 		FlashlightDuration -= DeltaTime;
-		//UE_LOG(LogTemp, Warning, TEXT("Flashlight duration: %f"), FlashlightDuration);
-		
-		Flashlight->AttenuationRadius -= AttenuationDeteriorationRate * DeltaTime;
-		
-		Flashlight->Intensity -= IntensityDeteriorationRate * DeltaTime;
 	}
 	
 	// ...
@@ -82,8 +77,7 @@ void UFlashlightComponent::TurnOff()
 void UFlashlightComponent::Recharge()
 {
 	FlashlightDuration = MaxFlashlightDuration;
-	Flashlight->SetAttenuationRadius(Attenuation);
-	Flashlight->SetIntensity(Intensity);
-	
+	Flashlight->SetAttenuationRadius(MaxAttenuation);
+	Flashlight->SetIntensity(MaxIntensity);
 }
 

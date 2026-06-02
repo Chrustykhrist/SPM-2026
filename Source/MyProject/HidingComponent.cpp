@@ -125,6 +125,8 @@ void UHidingComponent::GetOut()
 
 	PlayerPawn->SetActorTransform(EntryPosition);
 	
+	PlayerPawn->GetController()->SetControlRotation(EntryPosition.GetRotation().Rotator());
+	
 	PlayerPawn->SetActorEnableCollision(true);
 	
 	bHiding = false;
