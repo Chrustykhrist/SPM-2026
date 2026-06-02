@@ -26,7 +26,7 @@ void AStalkerMonsterAIController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	
 	// Initilizes the BB and runs BT when AIController possesses
-	AStalkerMonsterCharacter* StalkerMonster = Cast<AStalkerMonsterCharacter>(InPawn);
+	StalkerMonster = Cast<AStalkerMonsterCharacter>(InPawn);
 	if (StalkerMonster && StalkerMonster->BehaviorTreeAsset)
 	{
 		BlackboardComp->InitializeBlackboard(*StalkerMonster->BehaviorTreeAsset->BlackboardAsset);
@@ -41,6 +41,7 @@ void AStalkerMonsterAIController::TriggerFlee()
 	bHasTeleported = false;
 	BlackboardComp->SetValueAsBool("IsDetected", true);
 	BlackboardComp->SetValueAsEnum("MonsterState", (uint8)EStalkerMonsterCharacterState::Fleeing);
+	UE_LOG(LogTemp, Warning, TEXT("TriggerFlee| bIsFleeing: %d and bHasTeleported: %d"), bIsFleeing ? 1 : 0, bHasTeleported ? 1 : 0);
 }
 
 // Stalk method that updates bools and changes the values in the BB
@@ -63,10 +64,10 @@ void AStalkerMonsterAIController::TriggerStalk()
 // This runs when the Stalk EQS runs in the BT to find location for monster to teleport to
 void AStalkerMonsterAIController::FindStalkLocation()
 {
-	AStalkerMonsterCharacter* Monster = Cast<AStalkerMonsterCharacter>(GetPawn());
-	if (!Monster || !StalkerQuery) return;
+	//StalkerMonster = Cast<AStalkerMonsterCharacter>(GetPawn());
+	if (!StalkerMonster || !StalkerQuery) return;
 	
-	FEnvQueryRequest Request(StalkerQuery, Monster);
+	FEnvQueryRequest Request(StalkerQuery, StalkerMonster);
 	
 	//Request.Execute(EEnvQueryRunMode::RandomBest5Pct, this, &AStalkerMonsterAIController::OnStalkLocationFound);
 	Request.Execute(EEnvQueryRunMode::SingleResult, this, &AStalkerMonsterAIController::OnStalkLocationFound);
@@ -83,7 +84,10 @@ void AStalkerMonsterAIController::OnStalkLocationFound(TSharedPtr<FEnvQueryResul
 		FVector TargetLocation = Result->GetItemAsLocation(0);
 		if (!bHasTeleported)
 		{
+			
 			GetPawn()->SetActorLocation(TargetLocation);
+			
+			//GetPawn()->SetActorLocation(TargetLocation);
 			
 			bHasTeleported = true;
 			BlackboardComp->SetValueAsBool("HasTeleported", true);
