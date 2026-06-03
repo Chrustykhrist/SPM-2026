@@ -38,6 +38,12 @@ private:
 	UPROPERTY(EditAnywhere, Category="Changes on Turn on")
 	TArray<AActor*> Openings;
 	
+	UPROPERTY()
+	TArray<float> DoorOffsets;
+	
+	UPROPERTY()
+	TArray<float> DoorYaws;
+	
 	UPROPERTY(EditAnywhere, Category="Changes to")
 	float IntensityIncrease = 5;
 	
