@@ -197,7 +197,7 @@ private:
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	float Stamina;
 	
-	UPROPERTY(EditAnywhere, Category="Input")
+	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	float MaxStamina = 15;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
