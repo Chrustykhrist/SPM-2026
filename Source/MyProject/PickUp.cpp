@@ -48,7 +48,7 @@ void UPickUp::PickUp()
 
 #if WITH_EDITOR
 	// Shows where the player is looking
-	DrawDebugSphere(GetWorld(), GrabVector, GrabRadius, 16, FColor::Blue, false, 1);
+	DrawDebugSphere(GetWorld(), GrabVector, GrabRadius, 16, FColor::Blue, false, 0.5);
 #endif
 	
 	FHitResult ItemHit;

@@ -98,6 +98,8 @@ void AKeycardReader::OpenDoors()
    
    if (!PS->HasRequiredItem(RequiredKeycard)) return;
    
+   PS->UseItem(RequiredKeycard);
+   
    UFunction* UnlockFunction = nullptr;
   
    FVector PawnLocation = Pawn->GetActorLocation();

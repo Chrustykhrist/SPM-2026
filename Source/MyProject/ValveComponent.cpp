@@ -4,6 +4,8 @@
 
 
 #include "ValveComponent.h"
+
+#include "CustomPlayerState.h"
 #include "TubeActor.h"
 #include "HighlightInteractablesComponent.h"
 // Sets default values for this component's properties
@@ -22,9 +24,19 @@ void UValveComponent::BeginPlay()
    Super::BeginPlay();
 
 
+   // if (ValveMesh)
+   // {
+   //    InitialMeshRotation = ValveMesh->GetRelativeRotation();
+   // }
    if (ValveMesh)
    {
       InitialMeshRotation = ValveMesh->GetRelativeRotation();
+      UE_LOG(LogTemp, Warning, TEXT("ValveComponent BeginPlay| InitialMeshRotation: %s"), 
+          *InitialMeshRotation.ToString());
+   }
+   else
+   {
+      UE_LOG(LogTemp, Error, TEXT("ValveComponent BeginPlay| ValveMesh is null!"));
    }
   
 }
@@ -95,14 +107,73 @@ void UValveComponent::CompleteValve()
    {
       LinkedTube->Drain();
    }
+   if (GetOwner() == nullptr || GetWorld() == nullptr) 
+   {
+      UE_LOG(LogTemp, Error, TEXT("CompleteValve| Owner or World is null"));
+      FindHighlightAndDestroy();
+      OnValveCompleted.Broadcast();
+      return;
+   }
+   APlayerController* PC = GetWorld()->GetFirstPlayerController();
+   if (PC)
+   {
+      ACustomPlayerState* PS = PC->GetPlayerState<ACustomPlayerState>();
+      if (PS)
+      {
+         PS->SetValveCompleted(FName(*GetOwner()->GetName()));
+         PS->TriggerSaveGame();
+      }
+      else
+      {
+         UE_LOG(LogTemp, Error, TEXT("CompleteValve| PlayerState is null"));
+      }
+   }
+   else
+   {
+      UE_LOG(LogTemp, Error, TEXT("CompleteValve| PlayerController is null"));
+   }
    
-   UHighlightInteractablesComponent* HighlightedComp = GetOwner()->FindComponentByClass<UHighlightInteractablesComponent>();
+   FindHighlightAndDestroy();
+   
+   OnValveCompleted.Broadcast();
+}
+
+void UValveComponent::RestoreState(ACustomPlayerState* PS)
+{
+   if (PS == nullptr) return;
+   if (!PS->IsValveCompleted(FName(*GetOwner()->GetName()))) return;
+   
+   bComplete = true;
+   bActive = false;
+   
+   if (ValveMesh)
+   {
+      if (InitialMeshRotation.IsZero())
+      {
+         InitialMeshRotation = ValveMesh->GetRelativeRotation();
+      }
+      FQuat SpinDelta = FQuat(FVector::UpVector, 
+          FMath::DegreesToRadians(RequiredRotationDegrees));
+      FQuat BaseRotation = FQuat(InitialMeshRotation);
+      ValveMesh->SetRelativeRotation(BaseRotation * SpinDelta);
+   }
+   
+   if (LinkedTube)
+   {
+      LinkedTube->Destroy();
+   }
+
+   FindHighlightAndDestroy();
+}
+
+void UValveComponent::FindHighlightAndDestroy()
+{
+   HighlightedComp = 
+       GetOwner()->FindComponentByClass<UHighlightInteractablesComponent>();
    if (HighlightedComp)
    {
       HighlightedComp->EnableHighlight(false);
       HighlightedComp->SetActive(false);
       HighlightedComp->DestroyComponent();
    }
-   
-   OnValveCompleted.Broadcast();
 }

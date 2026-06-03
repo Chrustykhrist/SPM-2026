@@ -42,7 +42,7 @@ void UPushComponent::Push()
 	FVector PushDistance = PlayerVector + GetForwardVector() * MaxPushDistance;
 	
 #if WITH_EDITOR
-	DrawDebugLine(GetWorld(), PlayerVector, PushDistance, FColor::Red, false, 1);
+	DrawDebugLine(GetWorld(), PlayerVector, PushDistance, FColor::Red, false, 0.5);
 #endif
 	
 	FHitResult HitResult;

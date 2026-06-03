@@ -36,6 +36,9 @@ struct FMasterSaveData
 	TMap<FName, FString> KeypadCodes;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FName> CompletedValves;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString SavedLevel = TEXT("LVL1");
 	// could add more things to save later on
 };

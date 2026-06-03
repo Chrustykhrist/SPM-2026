@@ -71,10 +71,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	// Check if the player has stopped running and/or is crouching, 
 	// if true recover the stamina of the player
-	if (!bRunning && Stamina <= MaxNaturalRecovery)
-	{
-		Stamina += GetWorld()->GetDeltaSeconds();
-	}
+	// if (!bRunning && Stamina <= MaxNaturalRecovery)
+	// {
+	// 	Stamina += GetWorld()->GetDeltaSeconds();
+	// }
 }
 
 // Called to bind functionality to input
@@ -115,8 +115,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		// Interaction valves
 		UEnhancedInput->BindAction(IAInteract, ETriggerEvent::Started, this, &APlayerCharacter::InteractBegin);
 		UEnhancedInput->BindAction(IAInteract, ETriggerEvent::Completed, this, &APlayerCharacter::InteractEnd);
-		UEnhancedInput->BindAction(IALookMouse, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
-		UEnhancedInput->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
+		UEnhancedInput->BindAction(IAInteract, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
+		UEnhancedInput->BindAction(IAInteract, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractHold);
 		
 		// Flashlight
 		UEnhancedInput->BindAction(IAFlashlight, ETriggerEvent::Started, this, &APlayerCharacter::UseFlashlight);
@@ -148,7 +148,7 @@ void APlayerCharacter::ResetPlayer()
  */
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
-	if (!bMoving && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
+	if (!bMoving && GetCharacterMovement()->bWantsToCrouch == false && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
 	{
 		FootstepComponent->SetMovementState(EMovementState::Walking);
 	}
@@ -257,23 +257,31 @@ void APlayerCharacter::Sprint(const FInputActionValue& Value)
 	bRunning = true;
 
 	// Slows the player down depending on different conditions
-	if (Stamina > 0 && !bCrouching && bMoving)
+	if (Stamina > 0 && !bCrouching && bMoving && !bIsCrouched)
 	{
 		if (FootstepComponent->GetCurrentMovementState() != EMovementState::Sprinting && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
 		{
 			FootstepComponent->SetMovementState(EMovementState::Sprinting);
 		}
 		MakeNoise(SprintLoudnessMultiplier, this, GetActorLocation());
-		MovementComponent->MaxWalkSpeed = WalkSpeed + SpeedDecrease * Stamina;
+		MovementComponent->MaxWalkSpeed = SprintSpeed;
 		Stamina -= GetWorld()->GetDeltaSeconds();
-	} else if (bCrouching)
+	} else if (GetCharacterMovement()->bWantsToCrouch)
 	{
 		MovementComponent->MaxWalkSpeed = CrouchSpeed;
 		bRunning = false;
+		if (FootstepComponent->GetCurrentMovementState() != EMovementState::Sneaking && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40)
+		{
+			FootstepComponent->SetMovementState(EMovementState::Sneaking);
+		}
 	} else
 	{
 		MovementComponent->MaxWalkSpeed = WalkSpeed;
 		bRunning = false;
+		if (FootstepComponent->GetCurrentMovementState() != EMovementState::Walking && GetCapsuleComponent()->GetScaledCapsuleHalfHeight() != 40 && !bIsCrouched)
+		{
+			FootstepComponent->SetMovementState(EMovementState::Walking);
+		}
 	}
 	
 }
@@ -408,7 +416,8 @@ void APlayerCharacter::InteractHold(const FInputActionValue& Value)
 
 	if (InteractionComponent && InteractionComponent->bIsInteracting)
 	{
-		InteractionComponent->InteractHeld(Value.Get<FVector2D>());
+		//InteractionComponent->InteractHeld(Value.Get<FVector2D>());
+		InteractionComponent->InteractHeld();
 	}
 }
 
@@ -461,6 +470,11 @@ void APlayerCharacter::UseFirstItem(const FInputActionValue& Value)
 {
 	ACustomPlayerState* PS = Cast<ACustomPlayerState>(UGameplayStatics::GetPlayerState(this, 0));
 	
+	if (Stamina == MaxStamina)
+	{
+		return;
+	}
+	
 	if (PS->GetCollectedItems()[FName("Medicine")] >= 1)
 	{
 		Stamina = MaxStamina;
@@ -481,7 +495,7 @@ void APlayerCharacter::UseSecondItem(const FInputActionValue& Value)
 		return;
 	}
 		
-	if (PS->GetCollectedItems()[FName("Flashlight")] < 1)
+	if (PS->GetCollectedItems()[FName("Flashlight")] < 1 && FL->GetFlashlightDuration() == FL->GetMaxDuration())
 	{
 		return;
 	}

@@ -24,10 +24,10 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void TurnOn();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void TurnOff();
 	
 #pragma region GET/SET	
@@ -41,7 +41,13 @@ public:
 	float GetFlashlightDuration() const { return FlashlightDuration; }
 	
 	UFUNCTION(BlueprintCallable)
+	float GetMaxDuration() const { return MaxFlashlightDuration; }
+	
+	UFUNCTION(BlueprintCallable)
 	void SetFlashlightDuration(float NewDuration) { FlashlightDuration = NewDuration; }
+	
+	UFUNCTION(BlueprintCallable)
+	void SetFlashlightColor(FLinearColor NewColor) { Flashlight->SetLightColor(NewColor); }
 #pragma endregion
 	
 	UFUNCTION()
@@ -60,14 +66,20 @@ private:
 	float MaxFlashlightDuration = 10.0f;
 	
 	UPROPERTY(EditAnywhere)
-	float AttenuationDeteriorationRate = 30.0f;
+	float MaxAttenuation = 1500.0f;
 	
 	UPROPERTY(EditAnywhere)
-	float IntensityDeteriorationRate = 0.3f;
+	float MaxIntensity = 15.0f;
+	
+	UPROPERTY(EditAnywhere)
+	float DeterioratedAttenuation = 500.0f;
+	
+	UPROPERTY(EditAnywhere)
+	float DeterioratedIntensity = 2.0f;
 	
 	UPROPERTY()
-	float Intensity = 10;
+	float AttenuationRate = 20.0f;
 	
 	UPROPERTY()
-	float Attenuation = 1000;
+	float IntensityRate = 0.6f;
 };

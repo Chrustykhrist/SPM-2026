@@ -74,10 +74,8 @@ public:
    UPROPERTY()
    TArray<FName> UnlockedDoors;
 
-
    UFUNCTION(BlueprintCallable)
    void UnlockDoor(FName DoorName);
-
 
    UFUNCTION(BlueprintCallable)
    bool IsDoorUnlocked(FName DoorName) const;
@@ -85,10 +83,8 @@ public:
    UPROPERTY()
    TArray<FName> OpenedDoors;
 
-
    UFUNCTION(BlueprintCallable)
    void SetDoorOpened(FName DoorName);
-
 
    UFUNCTION(BlueprintCallable)
    bool IsDoorOpened(FName DoorName) const;
@@ -96,19 +92,24 @@ public:
    UPROPERTY()
    TMap<FName, bool> KeypadStates;
 
-
    UPROPERTY()
    TMap<FName, FString> KeypadCodes;
-
 
    UFUNCTION(BlueprintCallable)
    void SetKeypadSolved(FName KeypadName, FString Code);
 
-
    UFUNCTION(BlueprintCallable)
    bool IsKeypadSolved(FName KeypadName) const;
-
-
+   
    UFUNCTION(BlueprintCallable)
    FString GetKeypadCode(FName KeypadName) const;
+   
+   UPROPERTY()
+   TArray<FName> CompletedValves;
+
+   UFUNCTION(BlueprintCallable)
+   void SetValveCompleted(FName ValveName);
+
+   UFUNCTION(BlueprintCallable)
+   bool IsValveCompleted(FName ValveName) const;
 };

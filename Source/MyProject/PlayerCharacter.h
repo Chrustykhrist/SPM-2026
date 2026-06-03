@@ -182,7 +182,7 @@ private:
 	float WalkSpeed;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	float SprintSpeed = 800;
+	float SprintSpeed = 520;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	float CrouchSpeed = 200;
@@ -197,7 +197,7 @@ private:
 	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	float Stamina;
 	
-	UPROPERTY(EditAnywhere, Category="Input")
+	UPROPERTY(EditAnywhere, Category="Input", BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	float MaxStamina = 15;
 	
 	UPROPERTY(EditAnywhere, Category="Input")

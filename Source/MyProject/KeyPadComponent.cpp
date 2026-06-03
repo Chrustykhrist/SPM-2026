@@ -5,9 +5,7 @@
 
 #include "KeyPadComponent.h"
 #include "CustomPlayerState.h"
-#include "PickUp.h"
-#include "PlayerCharacter.h"
-
+#include "FMODBlueprintStatics.h"
 
 // Sets default values for this component's properties
 UKeyPadComponent::UKeyPadComponent()
@@ -134,6 +132,18 @@ void UKeyPadComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 */
 void UKeyPadComponent::Pressed(FName number)
 {
+   USceneComponent* TargetPoint = GetOwner()->GetRootComponent();
+   
+   UFMODAudioComponent* Sound = UFMODBlueprintStatics::PlayEventAttached(
+      PressEvent, 
+      TargetPoint, 
+      NAME_None, 
+      FVector::ZeroVector, 
+      EAttachLocation::SnapToTarget, 
+      true, 
+      true, 
+      true);
+   
    PressedButtons.Add(number);
 }
 
@@ -143,8 +153,21 @@ void UKeyPadComponent::Pressed(FName number)
 */
 void UKeyPadComponent::Accepted()
 {
+   USceneComponent* TargetPoint = GetOwner()->GetRootComponent();
+   
+   UFMODAudioComponent* Sound = UFMODBlueprintStatics::PlayEventAttached(
+      PressEvent, 
+      TargetPoint, 
+      NAME_None, 
+      FVector::ZeroVector, 
+      EAttachLocation::SnapToTarget, 
+      true, 
+      true, 
+      true);
+   
    if (PressedButtons.Num() < 4)
    {
+      ClearPressed();
       return;
    }
 
@@ -152,7 +175,7 @@ void UKeyPadComponent::Accepted()
    // Check if the code is correct
    for (int i = 0; i < NeededCode.Num(); i++)
    {
-      UE_LOG(LogTemp, Warning, TEXT("%s"), (PressedButtons[i] != NeededCode[i]) ? TEXT("Different") : TEXT("Same"));
+      //UE_LOG(LogTemp, Warning, TEXT("%s"), (PressedButtons[i] != NeededCode[i]) ? TEXT("Different") : TEXT("Same"));
               
       if (PressedButtons[i] != NeededCode[i])
       {
@@ -160,6 +183,10 @@ void UKeyPadComponent::Accepted()
       }
    }
 
+   if (!bCorrectInput)
+   {
+      ClearPressed();
+   }
 
    // If correct, allow the door to turn, otherwise do nothing
    if (bCorrectInput)
@@ -168,7 +195,7 @@ void UKeyPadComponent::Accepted()
       
       OpenDoors();
       
-      UE_LOG(LogTemp, Display, TEXT("Correct"));
+      //UE_LOG(LogTemp, Display, TEXT("Correct"));
       // Save keypad solved state
       APlayerController* PC = GetWorld()->GetFirstPlayerController();
       if (PC)
@@ -190,7 +217,7 @@ void UKeyPadComponent::Accepted()
    else
    {
       ClearPressed();
-      UE_LOG(LogTemp, Warning, TEXT("Incorrect"));
+      //UE_LOG(LogTemp, Warning, TEXT("Incorrect"));
       bCorrectInput = true;
    }
 }
@@ -201,8 +228,20 @@ void UKeyPadComponent::Accepted()
 */
 void UKeyPadComponent::ClearPressed()
 {
+   USceneComponent* TargetPoint = GetOwner()->GetRootComponent();
+   
+   UFMODAudioComponent* Sound = UFMODBlueprintStatics::PlayEventAttached(
+      PressEvent, 
+      TargetPoint, 
+      NAME_None, 
+      FVector::ZeroVector, 
+      EAttachLocation::SnapToTarget, 
+      true, 
+      true, 
+      true);
+   
    PressedButtons.Empty();
-   UE_LOG(LogTemp, Display, TEXT("Clear Pressed"));
+   //UE_LOG(LogTemp, Display, TEXT("Clear Pressed"));
 }
 
 void UKeyPadComponent::OpenDoors()
@@ -212,7 +251,7 @@ void UKeyPadComponent::OpenDoors()
    if (Pawn == nullptr) return;
   
    FVector PawnLocation = Pawn->GetActorLocation();
-   UE_LOG(LogTemp, Warning, TEXT("OpenDoors| Before loop"));
+   //UE_LOG(LogTemp, Warning, TEXT("OpenDoors| Before loop"));
    for (int i = 0; i < Doors.Num(); i++)
    {
       FVector DoorForward = FRotator(0, DoorYaws[i], 0).Vector();
@@ -220,7 +259,7 @@ void UKeyPadComponent::OpenDoors()
      
       float Dot = FVector::DotProduct(DoorForward, ToDoor);
       DoorOffsets[i] = (Dot >= 0.0f) ? 90.0f : -90.0f;
-      UE_LOG(LogTemp, Warning, TEXT("OpenDoors| Inside loop"));
+      //UE_LOG(LogTemp, Warning, TEXT("OpenDoors| Inside loop"));
       // Save that this door was opened
       APlayerController* PC = GetWorld()->GetFirstPlayerController();
       if (PC)
@@ -229,7 +268,7 @@ void UKeyPadComponent::OpenDoors()
          if (PS)
          {
             PS->SetDoorOpened(FName(*Doors[i]->GetName()));
-            UE_LOG(LogTemp, Warning, TEXT("OpenDoors| PS SetDoorOpened %s"), *Doors[i]->GetName());
+            //UE_LOG(LogTemp, Warning, TEXT("OpenDoors| PS SetDoorOpened %s"), *Doors[i]->GetName());
          }
       }
    }
@@ -277,7 +316,7 @@ void UKeyPadComponent::RestoreState(ACustomPlayerState* PS)
    }
    bTurn = false;
   
-   UE_LOG(LogTemp, Warning, TEXT("RestoreState| Final NeededCode:"));
+   //UE_LOG(LogTemp, Warning, TEXT("RestoreState| Final NeededCode:"));
    for (const FName& Num : NeededCode)
       UE_LOG(LogTemp, Warning, TEXT("  %s"), *Num.ToString());
 }

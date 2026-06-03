@@ -58,7 +58,7 @@ AActor* UInteractionComponent::FindInteractingActor() const
    
    AActor* HitActor = ActorHit.GetActor();
 #if WITH_EDITOR
-   DrawDebugSphere(GetWorld(), EndLocation, InteractionRadius, 12, FColor::Red, false, 2.0f);
+   //DrawDebugSphere(GetWorld(), EndLocation, InteractionRadius, 12, FColor::Red, false, 2.0f);
 #endif 
    if (bHit && HitActor)
    {
@@ -93,17 +93,18 @@ void UInteractionComponent::BeginInteract()
       CurrentInteractingActor = TargetActor;
       bIsInteracting = true;
      
-      bHasLastMousePos = false;
-      LastMousePos = FVector2D::ZeroVector;
-      bHasLastStickAngle = false;
-      VirtualStickPos = FVector2D::ZeroVector;
+      // old code for physical mouse circular data
+      // bHasLastMousePos = false;
+      // LastMousePos = FVector2D::ZeroVector;
+      // bHasLastStickAngle = false;
+      // VirtualStickPos = FVector2D::ZeroVector;
      
       InteractableActor->OnInteractBegin(GetWorld()->GetFirstPlayerController());
    }
 }
 
 
-void UInteractionComponent::InteractHeld(FVector2D Input)
+void UInteractionComponent::InteractHeld()
 {
    // if (!bIsInteracting || !CurrentInteractingActor) return;
    // //UE_LOG(LogTemp, Warning, TEXT("Interact Held"));
@@ -161,23 +162,27 @@ void UInteractionComponent::InteractHeld(FVector2D Input)
 
    IInteractable* InteractableActor = Cast<IInteractable>(CurrentInteractingActor);
    if (!InteractableActor) return;
-
-   APlayerController* PC = GetWorld()->GetFirstPlayerController();
-   float MouseX, MouseY;
-   float CircularDelta = 0.0f;
-
-   if (PC && PC->GetMousePosition(MouseX, MouseY))
-   {
-      // Mouse is available — use screen-space circular delta
-      CircularDelta = ComputeCircularDelta();
-   }
-   else
-   {
-      // No mouse (controller) — use right stick circular delta
-      CircularDelta = ComputeCircularDeltaFromStick(Input);
-   }
-
-   InteractableActor->OnInteractHold(PC, CircularDelta);
+   
+   RotationDelta = ValveRotationSpeed * GetWorld()->GetDeltaSeconds();
+   InteractableActor->OnInteractHold(GetWorld()->GetFirstPlayerController(), RotationDelta);
+   
+   // old code for circular motion
+   // APlayerController* PC = GetWorld()->GetFirstPlayerController();
+   // float MouseX, MouseY;
+   // float CircularDelta = 0.0f;
+   //
+   // if (PC && PC->GetMousePosition(MouseX, MouseY))
+   // {
+   //    // Mouse is available — use screen-space circular delta
+   //    CircularDelta = ComputeCircularDelta();
+   // }
+   // else
+   // {
+   //    // No mouse (controller) — use right stick circular delta
+   //    CircularDelta = ComputeCircularDeltaFromStick(Input);
+   // }
+   //
+   // InteractableActor->OnInteractHold(PC, CircularDelta);
 }
 
 
@@ -195,90 +200,90 @@ void UInteractionComponent::EndInteract()
    bIsInteracting = false;
 }
 
-
-float UInteractionComponent::ComputeCircularDelta()
-{
-   APlayerController* PC = GetWorld()->GetFirstPlayerController();
-   if (!PC || !CurrentInteractingActor) return 0.0f;
-
-
-   float MouseX, MouseY;
-   if (!PC->GetMousePosition(MouseX, MouseY)) return 0.0f;
-   FVector2D CurrentMousePos(MouseX, MouseY);
-
-
-   // project the valves world location to screen space
-   FVector2D ValveScreenPos;
-   if (!PC->ProjectWorldLocationToScreen(
-         CurrentInteractingActor->GetActorLocation(), ValveScreenPos))
-   {
-      return 0.0f;
-   }
-
-
-   // First frame — record position and return no delta
-   if (!bHasLastMousePos)
-   {
-      LastMousePos = CurrentMousePos;
-      bHasLastMousePos = true;
-      return 0.0f;
-   }
-
-
-   FVector2D ToLast = LastMousePos - ValveScreenPos;
-   FVector2D ToCurrent = CurrentMousePos - ValveScreenPos;
-  
-   // ignore the cursor if its too close to center so it doesnt act weird
-   if (ToLast.SizeSquared() < 100.0f || ToCurrent.SizeSquared() < 100.0f)
-   {
-      LastMousePos = CurrentMousePos;
-      return 0.0f;
-   }
-
-
-   float AngleLast = FMath::Atan2(ToLast.Y, ToLast.X);
-   float AngleCurrent = FMath::Atan2(ToCurrent.Y, ToCurrent.X);
-
-
-   float Delta = AngleCurrent - AngleLast;
-
-
-   // Wrap to [-PI, PI] so crossing the 180-degree boundary doesn't spike
-   if (Delta >  PI) Delta -= 2.0f * PI;
-   if (Delta < -PI) Delta += 2.0f * PI;
-
-
-   LastMousePos = CurrentMousePos;
-
-
-   return FMath::RadiansToDegrees(Delta);
-}
-
-float UInteractionComponent::ComputeCircularDeltaFromStick(FVector2D StickInput)
-{
-   
-   if (StickInput.SizeSquared() < 0.1f)
-   {
-      bHasLastStickAngle = false; // reset so re-engaging doesn't spike
-      return 0.0f;
-   }
-   
-   float CurrentAngle = FMath::Atan2(StickInput.Y, StickInput.X);
-   
-   if (!bHasLastStickAngle)
-   {
-      LastStickAngle = CurrentAngle;
-      bHasLastStickAngle = true;
-      return 0.0f;
-   }
-
-   float Delta = CurrentAngle - LastStickAngle;
-   
-   if (Delta >  PI) Delta -= 2.0f * PI;
-   if (Delta < -PI) Delta += 2.0f * PI;
-
-   LastStickAngle = CurrentAngle;
-
-   return FMath::RadiansToDegrees(Delta);
-   
-}
+//
+// float UInteractionComponent::ComputeCircularDelta()
+// {
+//    APlayerController* PC = GetWorld()->GetFirstPlayerController();
+//    if (!PC || !CurrentInteractingActor) return 0.0f;
+//
+//
+//    float MouseX, MouseY;
+//    if (!PC->GetMousePosition(MouseX, MouseY)) return 0.0f;
+//    FVector2D CurrentMousePos(MouseX, MouseY);
+//
+//
+//    // project the valves world location to screen space
+//    FVector2D ValveScreenPos;
+//    if (!PC->ProjectWorldLocationToScreen(
+//          CurrentInteractingActor->GetActorLocation(), ValveScreenPos))
+//    {
+//       return 0.0f;
+//    }
+//
+//
+//    // First frame — record position and return no delta
+//    if (!bHasLastMousePos)
+//    {
+//       LastMousePos = CurrentMousePos;
+//       bHasLastMousePos = true;
+//       return 0.0f;
+//    }
+//
+//
+//    FVector2D ToLast = LastMousePos - ValveScreenPos;
+//    FVector2D ToCurrent = CurrentMousePos - ValveScreenPos;
+//   
+//    // ignore the cursor if its too close to center so it doesnt act weird
+//    if (ToLast.SizeSquared() < IgnoreCentreThreshold || ToCurrent.SizeSquared() < IgnoreCentreThreshold)
+//    {
+//       LastMousePos = CurrentMousePos;
+//       return 0.0f;
+//    }
+//
+//
+//    float AngleLast = FMath::Atan2(ToLast.Y, ToLast.X);
+//    float AngleCurrent = FMath::Atan2(ToCurrent.Y, ToCurrent.X);
+//
+//
+//    float Delta = AngleCurrent - AngleLast;
+//
+//
+//    // Wrap to [-PI, PI] so crossing the 180-degree boundary doesn't spike
+//    if (Delta > PI) Delta -= 2.0f * PI;
+//    if (Delta < -PI) Delta += 2.0f * PI;
+//
+//
+//    LastMousePos = CurrentMousePos;
+//
+//
+//    return FMath::RadiansToDegrees(Delta);
+// }
+//
+// float UInteractionComponent::ComputeCircularDeltaFromStick(FVector2D StickInput)
+// {
+//    
+//    if (StickInput.SizeSquared() < 0.1f)
+//    {
+//       bHasLastStickAngle = false; // reset so re-engaging doesn't spike
+//       return 0.0f;
+//    }
+//    
+//    float CurrentAngle = FMath::Atan2(StickInput.Y, StickInput.X);
+//    
+//    if (!bHasLastStickAngle)
+//    {
+//       LastStickAngle = CurrentAngle;
+//       bHasLastStickAngle = true;
+//       return 0.0f;
+//    }
+//
+//    float Delta = CurrentAngle - LastStickAngle;
+//    
+//    if (Delta > PI) Delta -= 2.0f * PI;
+//    if (Delta < -PI) Delta += 2.0f * PI;
+//
+//    LastStickAngle = CurrentAngle;
+//
+//    return FMath::RadiansToDegrees(Delta);
+//    
+// }

@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "StalkerMonsterCharacter.generated.h"
 
+class AHorrorGameMode;
+
 UENUM(BlueprintType)
 enum class EStalkerMonsterCharacterState : uint8
 {
@@ -44,6 +46,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Sound")
 	class UAudioComponent* AudioComp;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Detection")
+	float TraceStartOffset = 100.0f;
 	// Method to check if the player is looking at the monster
 	bool CheckIfPlayerIsLooking();
 	
@@ -63,6 +67,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	class UBehaviorTree* BehaviorTreeAsset;
 	
+	UPROPERTY(EditAnywhere, Category = "AI", meta = (AllowPrivateAccess = true))
+	float AttachDistance = 110.0f;
+	
+	void ResetMovement();
+	
+	void Respawn();
 private:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = true))
 	USoundBase* KillSound;
@@ -92,8 +102,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "AI", meta = (AllowPrivateAccess = true))
 	float FollowRunSpeed = 10.0f;
 	
-	UPROPERTY(EditAnywhere, Category = "AI", meta = (AllowPrivateAccess = true))
-	float AttachDistance = 110.0f;
+	
 	
 	UPROPERTY(EditAnywhere, Category = "AI", meta = (AllowPrivateAccess = true))
 	float StalkDistance = 100.0f;
@@ -116,4 +125,8 @@ private:
 	void AttachToPlayer(float DeltaTime);
 	
 	void TriggerKilling();
+	
+	AHorrorGameMode* GM;
+	
+	FTransform SpawnLocation;
 };
