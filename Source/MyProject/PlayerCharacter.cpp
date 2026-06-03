@@ -310,7 +310,7 @@ void APlayerCharacter::PickUpItem(const FInputActionValue& Value)
 	UPickUp* PickUp = Cast<UPickUp>(GetComponentByClass(UPickUp::StaticClass()));
 
 	Push->Push();
-	PickUp->PickUp();
+	PickUp->PickUpItem();
 }
 
 /**

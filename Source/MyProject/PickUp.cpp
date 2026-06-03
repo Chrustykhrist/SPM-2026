@@ -40,7 +40,7 @@ void UPickUp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 /**
  * Checks if the player is able to press or pick up the object in front of them
  */
-void UPickUp::PickUp()
+void UPickUp::PickUpItem()
 {
 	// Vector to check where the player is looking and how far
 	FVector PlayerPos = GetComponentLocation();
@@ -71,30 +71,30 @@ void UPickUp::PickUp()
 		
 		// Puts the item in the inventory and then removes it from the world
 		FName ItemName = ItemHit.GetActor()->Tags[0];
+		
+		if (!PS->GetCollectedItems().Contains(ItemName))
+		{
+			UE_LOG(LogTemp, Error, TEXT("Item Not Found, Working on making it dynamic"));
+			return;
+		}
 
+		// if (ItemHit.GetActor()->Tags.Num() >= 2)
+		// {
+		// 	if (ItemHit.GetActor()->Tags[1] == FName("Keycard"))
+		// 	{
+		// 		SwapKeycard.Broadcast(ItemHit.GetActor());
+		// 	}
+		// }
+		
 		if (ItemName == FName("PowerKey") && PS->GetCollectedItems()[FName("PowerKey")] >= 1)
 		{
 			ShowNotif();
 			return;
 		}
 		
-		if (ItemHit.GetActor()->Tags.Num() >= 2)
-		{
-			if (ItemHit.GetActor()->Tags[1] == FName("Keycard"))
-			{
-				
-			}
-		}
-		
 		if (PS->CollectedItems[ItemName] >= 3)
 		{
 			ShowNotif();
-			return;
-		}
-		
-		if (!PS->GetCollectedItems().Contains(ItemName))
-		{
-			UE_LOG(LogTemp, Error, TEXT("Item Not Found, Working on making it dynamic"));
 			return;
 		}
 
@@ -114,6 +114,8 @@ void UPickUp::RemoveNotif()
 void UPickUp::CollectItem(const FHitResult& Hit, ACustomPlayerState* PS)
 {
 	PS->CollectedItems[Hit.GetActor()->Tags[0]]++;
+	
+	UE_LOG(LogTemp, Log, TEXT("Collected Item"));
 	
 	Hit.GetActor()->Destroy();
 }
