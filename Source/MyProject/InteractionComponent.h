@@ -30,9 +30,9 @@ public:
 	float ValveRotationSpeed = 90.0f;
 	
 	void BeginInteract();
-  
+	
 	void InteractHeld();
-  
+	
 	void EndInteract();
   
 	bool bIsInteracting = false;
