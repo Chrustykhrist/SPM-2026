@@ -78,6 +78,14 @@ void UPickUp::PickUp()
 			return;
 		}
 		
+		if (ItemHit.GetActor()->Tags.Num() >= 2)
+		{
+			if (ItemHit.GetActor()->Tags[1] == FName("Keycard"))
+			{
+				
+			}
+		}
+		
 		if (PS->CollectedItems[ItemName] >= 3)
 		{
 			ShowNotif();

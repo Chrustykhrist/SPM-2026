@@ -30,6 +30,9 @@ public:
 	UFUNCTION()
 	void PickUp();
 	
+	UFUNCTION(BlueprintImplementableEvent)
+	void SwapKeycard();
+	
 	UPROPERTY(EditAnywhere, Category="Display")
 	TSubclassOf<UUserWidget> NotifClass;
 	
