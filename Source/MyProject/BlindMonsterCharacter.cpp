@@ -47,6 +47,14 @@ void ABlindMonsterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (!bIsActive)
+	{
+		SetActorHiddenInGame(true);
+		SetActorEnableCollision(false);
+		SetActorTickEnabled(false);
+		return; 
+	}
+	
 	if (PawnSensingComponent)
 	{
 		PRAGMA_DISABLE_DEPRECATION_WARNINGS
