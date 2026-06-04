@@ -56,6 +56,9 @@ public:
 	UFUNCTION()
 	void Deteriorate() const;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bForeverFlashlight = false;
+	
 private:
 	bool bState = false;
 	
