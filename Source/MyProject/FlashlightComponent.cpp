@@ -51,7 +51,7 @@ void UFlashlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 		TurnOff();
 	}*/
 	
-	if (GetState() == true && FlashlightDuration > 0.0f)
+	if (GetState() == true && FlashlightDuration > 0.0f && !bForeverFlashlight)
 	{
 		FlashlightDuration -= DeltaTime;
 	}
