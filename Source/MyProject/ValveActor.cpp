@@ -4,6 +4,8 @@
 
 
 #include "ValveActor.h"
+
+#include "FMODAudioComponent.h"
 #include "ValveComponent.h"
 // Sets default values
 AValveActor::AValveActor()
@@ -20,6 +22,10 @@ AValveActor::AValveActor()
 
    ValveComponent = CreateDefaultSubobject<UValveComponent>(TEXT("ValveComponent"));
    ValveComponent->ValveMesh = ValveWheelMesh;
+   
+   ValveAudioComponent = CreateDefaultSubobject<UFMODAudioComponent>(TEXT("ValveAudio"));
+   ValveAudioComponent->SetupAttachment(ValveRoot);
+   ValveAudioComponent->bAutoActivate = false;
 }
 
 
@@ -45,22 +51,30 @@ void AValveActor::Tick(float DeltaTime)
 
 void AValveActor::OnInteractBegin(APlayerController* PC)
 {
-   UE_LOG(LogTemp, Warning, TEXT("Begin interact Valve Actor"));
+   if (ValveAudioComponent)
+   {
+      ValveAudioComponent->Play();
+   }
    ValveComponent->BeginInteraction();
+   
+  
 }
 
 
 void AValveActor::OnInteractHold(APlayerController* PC, float Delta)
 {
-   UE_LOG(LogTemp, Warning, TEXT("Hold Valve Actor"));
    ValveComponent->ApplyRotationDelta(Delta);
 }
 
 
 void AValveActor::OnInteractEnd(APlayerController* PC)
 {
-   UE_LOG(LogTemp, Warning, TEXT("End Valve Actor"));
+   if (ValveAudioComponent && ValveAudioComponent->IsPlaying())
+   {
+      ValveAudioComponent->Stop();
+   }
    ValveComponent->EndInteraction();
+   
 }
 
 

@@ -9,6 +9,8 @@
 class ACustomPlayerState;
 class UUserWidget;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSwapKeycard, AActor*, Keycard);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYPROJECT_API UPickUp : public USceneComponent
 {
@@ -28,13 +30,45 @@ public:
 
 	// Picks up the item that the player is looking at
 	UFUNCTION()
-	void PickUp();
+	void PickUpItem();
+	
+	UPROPERTY(BlueprintAssignable, Category="Pick Up")
+	FSwapKeycard SwapKeycard;
 	
 	UPROPERTY(EditAnywhere, Category="Display")
 	TSubclassOf<UUserWidget> NotifClass;
 	
 	UPROPERTY()
 	UUserWidget* Notif;
+	
+	// Variables of the held item
+	
+	UPROPERTY(BlueprintReadWrite)
+	FName HeldTags;
+	
+	UFUNCTION(BlueprintCallable)
+	void SetHeldTags(FName Tags) { HeldTags = Tags; }
+	
+	UFUNCTION(BlueprintCallable)
+	FName GetHeldTags() { return HeldTags; }
+	
+	UPROPERTY(BlueprintReadWrite)
+	FTransform HeldTransform;
+	
+	UFUNCTION(BlueprintCallable)
+	void SetHeldTransform(FTransform Transform) { HeldTransform = Transform; }
+	
+	UFUNCTION(BlueprintCallable)
+	FTransform GetHeldTransform() { return HeldTransform; }
+	
+	UPROPERTY(BlueprintReadWrite)
+	UMaterialInterface* HeldMaterial;
+	
+	UFUNCTION(BlueprintCallable)
+	void SetHeldMaterial(UMaterialInterface* Material) { HeldMaterial = Material; }
+	
+	UFUNCTION(BlueprintCallable)
+	UMaterialInterface* GetHeldMaterial() { return HeldMaterial; }
 
 private:
 	UFUNCTION()
