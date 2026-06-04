@@ -16,7 +16,7 @@
 #include "ValveComponent.h"
 #include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "FlashlightComponent.h"
 
 ACustomPlayerState::ACustomPlayerState()
 {
@@ -172,6 +172,27 @@ void ACustomPlayerState::PopulateSaveData(FMasterSaveData& SaveData) const
    SaveData.KeypadStates = KeypadStates;
    SaveData.KeypadCodes = KeypadCodes;
    SaveData.CompletedValves = CompletedValves;
+   
+   // Save GameInstance state
+   UCustomGameInstance* GI = Cast<UCustomGameInstance>(GetGameInstance());
+   if (GI)
+   {
+      SaveData.FlashlightColor = GI->GetFlashlightColor();
+      SaveData.bPowerIsOn = GI->GetPowerStatus();
+   }
+
+   // Save flashlight duration from the component directly
+   APlayerController* PC = GetWorld()->GetFirstPlayerController();
+   if (PC && PC->GetPawn())
+   {
+      UFlashlightComponent* FL = PC->GetPawn()->
+          FindComponentByClass<UFlashlightComponent>();
+      if (FL)
+      {
+         SaveData.FlashlightDuration = FL->GetFlashlightDuration();
+      }
+   }
+   
    FString LevelName = GetWorld()->GetMapName();
    LevelName.RemoveFromStart(TEXT("/Game/FirstPerson/"));
    SaveData.SavedLevel = LevelName;
@@ -198,9 +219,17 @@ void ACustomPlayerState::LoadFromSaveData(const FMasterSaveData& SaveData)
    KeypadCodes = SaveData.KeypadCodes;
    CompletedValves = SaveData.CompletedValves;
    
-   for (const FName& Door : OpenedDoors)
+   // for (const FName& Door : OpenedDoors)
+   // {
+   //    UE_LOG(LogTemp, Warning, TEXT("LoadFromSaveData| Loaded opened door: %s"), *Door.ToString());
+   // }
+   // Restore into GameInstance so it persists across level loads
+   UCustomGameInstance* GI = Cast<UCustomGameInstance>(GetGameInstance());
+   if (GI)
    {
-      UE_LOG(LogTemp, Warning, TEXT("LoadFromSaveData| Loaded opened door: %s"), *Door.ToString());
+      GI->SetFlashlightColor(SaveData.FlashlightColor);
+      GI->SetPowerStatus(SaveData.bPowerIsOn);
+      GI->SetSavedFlashlightDuration(SaveData.FlashlightDuration);
    }
 }
 
@@ -224,7 +253,15 @@ void ACustomPlayerState::TriggerSaveGame(FString SlotName)
 
 void ACustomPlayerState::TriggerLoadGame(const FString SlotName)
 {
-#if !WITH_EDITOR   
+   FString CurrentMap = GetWorld()->GetMapName();
+   CurrentMap.RemoveFromStart(TEXT("UEDPIE_0_"));
+
+   if (CurrentMap != TEXT("LVL1") && CurrentMap != TEXT("LVL2"))
+   {
+      UE_LOG(LogTemp, Warning, TEXT("TriggerLoadGame| Skipped, not a game level: %s"), *CurrentMap);
+      return;
+   }
+#if !WITH_EDITOR  
    FMasterSaveData LoadedData;
    if (USaveManager::LoadGame(SlotName, LoadedData))
    {

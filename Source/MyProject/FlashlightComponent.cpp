@@ -27,15 +27,26 @@ void UFlashlightComponent::BeginPlay()
 	
 	Flashlight = Cast<USpotLightComponent>(GetOwner()->GetComponentByClass(USpotLightComponent::StaticClass()));
 	
-	Recharge();
+	//Recharge();
 	
 	if (Flashlight == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UFlashlightComponent was not found"));
 	}
 	
-	Flashlight->SetLightColor(GI->GetFlashlightColor());
+	// Use saved duration if available, otherwise full recharge
+	if (GI && GI->GetSavedFlashlightDuration() >= 0.0f)
+	{
+		FlashlightDuration = GI->GetSavedFlashlightDuration();
+		GI->SetSavedFlashlightDuration(-1.0f); // Clear after use
+	}
+	else
+	{
+		Recharge();
+	}
 	
+	//Flashlight->SetLightColor(GI->GetFlashlightColor());
+	Flashlight->SetLightColor(GI ? GI->GetFlashlightColor() : FLinearColor::White);
 	Flashlight->SetActive(false);
 	Flashlight->SetVisibility(false);
 }
