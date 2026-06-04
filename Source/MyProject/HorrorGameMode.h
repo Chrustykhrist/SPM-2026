@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+//#include "BlindMonsterCharacter.h"
 #include "HorrorGameMode.generated.h"
-
 /**
  * 
  */
+class ABlindMonsterCharacter;
 UCLASS()
 class MYPROJECT_API AHorrorGameMode : public AGameModeBase
 {
@@ -17,7 +18,7 @@ class MYPROJECT_API AHorrorGameMode : public AGameModeBase
 public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Game Rules")
-	void PlayerDied(FVector KillerInstigator = FVector::ZeroVector);
+	void PlayerDied(FVector KillerInstigator = FVector::ZeroVector, ABlindMonsterCharacter* Monster = nullptr);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Death")
@@ -29,6 +30,9 @@ protected:
 	// Removes the jumpscare from the screen
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game Rules")
 	void RemoveVisuals();
+	
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* JumpscareMontage;
 	
 #pragma region TurnPlayerTowardsMonster	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Death Settings")
@@ -64,5 +68,7 @@ private:
 	float DeathTurnElapsed = 0.0f;
 	
 	APlayerController* CachedDeathPC = nullptr;
+	
+	ABlindMonsterCharacter* CachedDeathCharacter = nullptr;
 
 };
