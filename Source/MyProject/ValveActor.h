@@ -10,6 +10,8 @@
 #include "ValveActor.generated.h"
 
 
+class UFMODEvent;
+class UFMODAudioComponent;
 class UValveComponent;
 
 
@@ -29,23 +31,22 @@ public:
   
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UValveComponent> ValveComponent;
-  
+	
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	TObjectPtr<UFMODAudioComponent> ValveAudioComponent;
+	
 	virtual void OnInteractBegin(APlayerController* PC) override;
-  
+	
 	virtual void OnInteractHold(APlayerController* PC, float Delta) override;
-  
+	
 	virtual void OnInteractEnd(APlayerController* PC) override;
   
 	virtual bool CanInteract() const override;
-  
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-
 };
