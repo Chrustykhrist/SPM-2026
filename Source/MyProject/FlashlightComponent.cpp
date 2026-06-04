@@ -56,6 +56,11 @@ void UFlashlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 		FlashlightDuration -= DeltaTime;
 	}
 	
+	if (FlashlightDuration <= 0.0f)
+	{
+		Deteriorate();
+	}
+	
 	// ...
 }
 
@@ -79,5 +84,11 @@ void UFlashlightComponent::Recharge()
 	FlashlightDuration = MaxFlashlightDuration;
 	Flashlight->SetAttenuationRadius(MaxAttenuation);
 	Flashlight->SetIntensity(MaxIntensity);
+}
+
+void UFlashlightComponent::Deteriorate() const
+{
+	Flashlight->SetIntensity(DeterioratedIntensity);
+	Flashlight->SetAttenuationRadius(DeterioratedAttenuation);
 }
 
