@@ -82,17 +82,28 @@ void ACustomPlayerState::BeginPlay()
          ->FindPlayerStart(GetWorld()->GetFirstPlayerController())
          ->GetActorLocation();
       SpawnTransform.SetLocation(Start);
+      
+      UCustomGameInstance* GI = Cast<UCustomGameInstance>(GetGameInstance());
+      if (GI)
+      {
+         const TMap<FName, int>& Items = GI->GetInventory();
+         CollectedItems.Append(Items);
+      }
    }
 #else
+   // Editor — always start fresh from PlayerStart and GameInstance
    FVector Start = GetWorld()->GetAuthGameMode()
-         ->FindPlayerStart(GetWorld()->GetFirstPlayerController())
-         ->GetActorLocation();
+       ->FindPlayerStart(GetWorld()->GetFirstPlayerController())
+       ->GetActorLocation();
    SpawnTransform.SetLocation(Start);
-#endif 
+
    UCustomGameInstance* GI = Cast<UCustomGameInstance>(GetGameInstance());
-  
-   const TMap<FName, int>& Items = GI->GetInventory();
-   CollectedItems.Append(Items);
+   if (GI)
+   {
+      const TMap<FName, int>& Items = GI->GetInventory();
+      CollectedItems.Append(Items);
+   }
+#endif 
 }
 
 
