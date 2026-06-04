@@ -62,6 +62,10 @@ void UPushComponent::Push()
 		{
 			bPowerSwitchPushed = true;
 		}
+		else if (HitResult.GetActor()->ActorHasTag("ExitButton"))
+		{
+			bExitButtonPushed = true;
+		}
 		else if (AKeycardReader* KR = Cast<AKeycardReader>(HitResult.GetActor()))
 		{
 			KR->OpenDoors();
