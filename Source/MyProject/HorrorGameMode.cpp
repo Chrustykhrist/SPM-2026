@@ -8,6 +8,7 @@
 #include "FootstepComponent.h"
 #include "PlayerCharacter.h"
 #include "StalkerMonsterCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 void AHorrorGameMode::PlayerDied(FVector KillerInstigator, ABlindMonsterCharacter* Monster)
@@ -149,8 +150,16 @@ void AHorrorGameMode::StartDeathSequence()
 	}
 
 	PCH->ResetPlayer();
+	
+	if (UCharacterMovementComponent* CMC = Cast<UCharacterMovementComponent>(PCH->GetMovementComponent()))
+	{
+		CMC->GravityScale = 1.0f;
+		CMC->SetMovementMode(MOVE_Walking);
+	}
+	
+	PCH->SetActorEnableCollision(true);
 }
-
+	
 /**
  * Respawns the player at the last gotten checkpoint
  */

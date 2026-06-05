@@ -18,6 +18,7 @@ public:
 	// Sets default values for this component's properties
 	UPushComponent();
 
+	bool bPowerSwitchPushed = false;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -40,8 +41,6 @@ private:
 	float MaxPushDistance = 150;
 	
 	bool bPushable = false;
-	
-	bool bPowerSwitchPushed = false;
 	
 	bool bExitButtonPushed = false;
 	

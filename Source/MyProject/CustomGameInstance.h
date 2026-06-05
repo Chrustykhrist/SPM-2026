@@ -30,7 +30,7 @@ public:
 	void SaveInventory();
 	
 	UFUNCTION()
-	void SetFlashlightColor(FLinearColor Color) { FlashlightColor = Color; }
+	void SetFlashlightColor(FLinearColor Color);
 	
 	UFUNCTION()
 	FLinearColor GetFlashlightColor() const { return FlashlightColor; }

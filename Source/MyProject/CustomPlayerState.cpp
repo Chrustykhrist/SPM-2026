@@ -57,22 +57,30 @@ void ACustomPlayerState::BeginPlay()
    // FVector Start = GetWorld()->GetAuthGameMode()->FindPlayerStart(GetWorld()->GetFirstPlayerController())->GetActorLocation();
    //
    //SpawnTransform.SetLocation(Start);
+   UE_LOG(LogTemp, Warning, TEXT("BeginPlay ACustomPlayerState MapName: %s"), *GetWorld()->GetMapName());
 #if !WITH_EDITOR   
    if (USaveManager::DoesSaveExist(TEXT("SaveSlot0")))
    {
       TriggerLoadGame();
+      FString CurrentMap = GetWorld()->GetMapName();
+      CurrentMap.RemoveFromStart(TEXT("UEDPIE_0_"));
       
+      FMasterSaveData LoadedData;
+      USaveManager::LoadGame(TEXT("SaveSlot0"), LoadedData);
       // Move player to saved checkpoint
-      APlayerController* PC = GetWorld()->GetFirstPlayerController();
-      if (PC)
+      if (LoadedData.SavedLevel == CurrentMap)
       {
-         APawn* Player = PC->GetPawn();
-         if (Player && !SpawnTransform.GetLocation().IsZero())
+         APlayerController* PC = GetWorld()->GetFirstPlayerController();
+         if (PC)
          {
-            Player->SetActorLocationAndRotation(
-               SpawnTransform.GetLocation(),
-               SpawnTransform.GetRotation()
-            );
+            APawn* Player = PC->GetPawn();
+            if (Player && !SpawnTransform.GetLocation().IsZero())
+            {
+               Player->SetActorLocationAndRotation(
+                  SpawnTransform.GetLocation(),
+                  SpawnTransform.GetRotation()
+               );
+            }
          }
       }
    }

@@ -47,6 +47,8 @@ struct FMasterSaveData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float FlashlightDuration = 10.0f;
 	
+public:
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString SavedLevel = TEXT("LVL1");
 	// could add more things to save later on
