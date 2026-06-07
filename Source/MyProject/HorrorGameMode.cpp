@@ -8,11 +8,12 @@
 #include "FootstepComponent.h"
 #include "PlayerCharacter.h"
 #include "StalkerMonsterCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-void AHorrorGameMode::PlayerDied(FVector KillerInstigator)
+void AHorrorGameMode::PlayerDied(FVector KillerInstigator, ABlindMonsterCharacter* Monster)
 {
-	
+	CachedDeathCharacter = Monster;
 	// we could cache this in beginplay but if simulate instead of play in editor it may crash
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (PC)
@@ -20,43 +21,54 @@ void AHorrorGameMode::PlayerDied(FVector KillerInstigator)
 		APawn* PlayerPawn = PC->GetPawn();
 		if (PlayerPawn)
 		{
-			PlayerPawn->DisableInput(PC);
-			// snap the camera to the monster that killed the player before jumpscare with snap or smooth turn depending on bool bSmoothDeathTurn
-			if (!KillerInstigator.IsZero() && bSmoothDeathTurn)
+			
+			if (bSmoothDeathTurn)
 			{
-				FVector ToKiller = (KillerInstigator - PlayerPawn->GetActorLocation()).GetSafeNormal();
-				FRotator LookAt = ToKiller.Rotation();
-				LookAt.Pitch = PC->GetControlRotation().Pitch;
-				LookAt.Roll = 0.0f;
-				
-				CachedDeathPC = PC;
-				DeathTurnStartRotation = PC->GetControlRotation();
-				DeathTurnTargetRotation = LookAt;
-				DeathTurnElapsed = 0.0f;
-
-				// tick ~60 times/sec for the duration
-				GetWorldTimerManager().SetTimer(
-					DeathTurnTimerHandle,
-					this,
-					&AHorrorGameMode::TickDeathTurn,
-					1.0f / 60.0f,
-					true
-				);
-				return; 
+				// Smoothly blend the player's camera view to the monster actor over 1.5 seconds
+				PC->SetViewTargetWithBlend(Monster, 1.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+			}
+			else
+			{
+				// Instantly snap the camera view to the monster
+				PC->SetViewTarget(Monster);
+			}
+			// PlayerPawn->DisableInput(PC);
+			// // snap the camera to the monster that killed the player before jumpscare with snap or smooth turn depending on bool bSmoothDeathTurn
+			// if (!KillerInstigator.IsZero() && bSmoothDeathTurn)
+			// {
+			// 	FVector ToKiller = (KillerInstigator - PlayerPawn->GetActorLocation()).GetSafeNormal();
+			// 	FRotator LookAt = ToKiller.Rotation();
+			// 	LookAt.Pitch = PC->GetControlRotation().Pitch;
+			// 	LookAt.Roll = 0.0f;
+			// 	
+			// 	CachedDeathPC = PC;
+			// 	DeathTurnStartRotation = PC->GetControlRotation();
+			// 	DeathTurnTargetRotation = LookAt;
+			// 	DeathTurnElapsed = 0.0f;
+			//
+			// 	// tick ~60 times/sec for the duration
+			// 	GetWorldTimerManager().SetTimer(
+			// 		DeathTurnTimerHandle,
+			// 		this,
+			// 		&AHorrorGameMode::TickDeathTurn,
+			// 		1.0f / 60.0f,
+			// 		true
+			// 	);
+			// 	return; 
 			}
 
 			// if bSmoothDeathTurn is diabled or no killer it will fallback to snap turn instead
-			if (!KillerInstigator.IsZero())
-			{
-				FVector ToKiller = (KillerInstigator - PlayerPawn->GetActorLocation()).GetSafeNormal();
-				FRotator LookAt = ToKiller.Rotation();
-				LookAt.Pitch = PC->GetControlRotation().Pitch;
-				LookAt.Roll = 0.0f;
-				PC->SetControlRotation(LookAt);
-			}
+			// if (!KillerInstigator.IsZero())
+			// {
+			// 	FVector ToKiller = (KillerInstigator - PlayerPawn->GetActorLocation()).GetSafeNormal();
+			// 	FRotator LookAt = ToKiller.Rotation();
+			// 	LookAt.Pitch = PC->GetControlRotation().Pitch;
+			// 	LookAt.Roll = 0.0f;
+			// 	PC->SetControlRotation(LookAt);
+			// }
 		}
-	}
-	StartDeathSequence();
+		StartDeathSequence();
+	
 	// if (DeathSound)
 	// {
 	// 	UGameplayStatics::PlaySound2D(this, DeathSound);
@@ -81,7 +93,9 @@ void AHorrorGameMode::PlayerDied(FVector KillerInstigator)
 	// }
 	//
 	// PCH->ResetPlayer();
-}
+	}
+	
+	
 
 void AHorrorGameMode::TickDeathTurn()
 {
@@ -114,7 +128,13 @@ void AHorrorGameMode::StartDeathSequence()
 	}
 
 	OnPlayerDeathVisuals();
-
+	if (UAnimInstance* AnimInstance = CachedDeathCharacter->GetMesh()->GetAnimInstance())
+	{
+		if (JumpscareMontage)
+		{
+			AnimInstance->Montage_Play(JumpscareMontage);
+		}
+	}
 	GetWorldTimerManager().SetTimer(RestartTimerHandle, this, &AHorrorGameMode::GameOver, RestartDelay, false);
 
 	APlayerCharacter* PCH = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
@@ -130,8 +150,16 @@ void AHorrorGameMode::StartDeathSequence()
 	}
 
 	PCH->ResetPlayer();
+	
+	if (UCharacterMovementComponent* CMC = Cast<UCharacterMovementComponent>(PCH->GetMovementComponent()))
+	{
+		CMC->GravityScale = 1.0f;
+		CMC->SetMovementMode(MOVE_Walking);
+	}
+	
+	PCH->SetActorEnableCollision(true);
 }
-
+	
 /**
  * Respawns the player at the last gotten checkpoint
  */

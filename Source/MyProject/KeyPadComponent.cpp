@@ -212,7 +212,6 @@ void UKeyPadComponent::Accepted()
             PS->TriggerSaveGame();
          }
       }
-     
    }
    else
    {
@@ -269,6 +268,16 @@ void UKeyPadComponent::OpenDoors()
          {
             PS->SetDoorOpened(FName(*Doors[i]->GetName()));
             //UE_LOG(LogTemp, Warning, TEXT("OpenDoors| PS SetDoorOpened %s"), *Doors[i]->GetName());
+         }
+         UFunction* UnlockFunction = nullptr;
+         for (AActor* CurrentDoor : Doors)
+         {
+            UnlockFunction = CurrentDoor->FindFunction(FName("UnlockDoor"));
+            if (UnlockFunction)
+            {
+               CurrentDoor->ProcessEvent(UnlockFunction, nullptr);
+               PS->UnlockDoor(FName(*CurrentDoor->GetName()));
+            }
          }
       }
    }

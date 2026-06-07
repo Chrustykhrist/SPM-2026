@@ -100,8 +100,6 @@ void AKeycardReader::OpenDoors()
    
    PS->UseItem(RequiredKeycard);
    
-   UFunction* UnlockFunction = nullptr;
-  
    FVector PawnLocation = Pawn->GetActorLocation();
    UE_LOG(LogTemp, Warning, TEXT("OpenDoors| Before loop"));
    for (int i = 0; i < LinkedDoor.Num(); i++)
@@ -136,6 +134,29 @@ void AKeycardReader::OpenDoors()
          PS->TriggerSaveGame();
       }
    }
+   
+   UFunction* UnlockFunction = nullptr;
+   for (AActor* CurrentDoor : LinkedDoor)
+   {
+      UnlockFunction = CurrentDoor->FindFunction(FName("UnlockDoor"));
+      if (UnlockFunction)
+      {
+         CurrentDoor->ProcessEvent(UnlockFunction, nullptr);
+         PS->UnlockDoor(FName(*CurrentDoor->GetName()));
+      }
+   }
+   
+   // UFunction* UnlockFunction = nullptr;
+   // for (AActor* CurrentDoor : LinkedDoor)
+   // {
+   //    UnlockFunction = CurrentDoor->FindFunction(FName("UnlcokDoor"));
+   //    if (UnlockFunction)
+   //    {
+   //       UE_LOG(LogTemp, Warning, TEXT("Door is being unlocked"));
+   //       CurrentDoor->ProcessEvent(UnlockFunction, nullptr);
+   //    }
+   //    PS->UnlockDoor(FName(*CurrentDoor->GetName()));
+   // }
 }
 
 

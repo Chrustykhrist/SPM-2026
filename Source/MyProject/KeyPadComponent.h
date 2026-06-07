@@ -62,13 +62,14 @@ public:
 	TArray<FName> NeededCode;
 	
 	// The list of doors that are to open
-	UPROPERTY(EditAnywhere, Category="Doors")
+	UPROPERTY(EditAnywhere, Category="Doors", BlueprintReadOnly)
 	TArray<AActor*> Doors;
 	
 	// True if correct buttons in correct sequence, otherwise false
 	bool bCorrectInput = true;
 	
 	// True if doors should turn
+	UPROPERTY( BlueprintReadOnly )
 	bool bTurn = false;
   
 	void RestoreState(ACustomPlayerState* PS);

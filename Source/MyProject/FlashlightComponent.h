@@ -53,6 +53,12 @@ public:
 	UFUNCTION()
 	void Recharge();
 	
+	UFUNCTION()
+	void Deteriorate() const;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bForeverFlashlight = false;
+	
 private:
 	bool bState = false;
 	
@@ -76,10 +82,4 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	float DeterioratedIntensity = 2.0f;
-	
-	UPROPERTY()
-	float AttenuationRate = 20.0f;
-	
-	UPROPERTY()
-	float IntensityRate = 0.6f;
 };

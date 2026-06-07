@@ -48,3 +48,10 @@ void UCustomGameInstance::SaveInventory()
 	const TMap<FName, int>& CopyMap = PS->GetCollectedItems();
 	Inventory.Append(CopyMap);
 }
+
+void UCustomGameInstance::SetFlashlightColor(FLinearColor Color)
+{
+	FlashlightColor = Color;
+	
+	
+}

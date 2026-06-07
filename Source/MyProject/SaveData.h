@@ -39,6 +39,17 @@ struct FMasterSaveData
 	TArray<FName> CompletedValves;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FLinearColor FlashlightColor = FLinearColor::White;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bPowerIsOn = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FlashlightDuration = 10.0f;
+	
+public:
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString SavedLevel = TEXT("LVL1");
 	// could add more things to save later on
 };

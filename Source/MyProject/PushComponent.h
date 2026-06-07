@@ -18,6 +18,7 @@ public:
 	// Sets default values for this component's properties
 	UPushComponent();
 
+	bool bPowerSwitchPushed = false;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -32,13 +33,16 @@ public:
 	UFUNCTION( BlueprintCallable , Blueprintable )
 	bool GetPowerSwitched();
 	
+	UFUNCTION( BlueprintCallable )
+	bool GetExitPushed() { return bExitButtonPushed; }
+	
 private:
 	UPROPERTY(EditAnywhere)
 	float MaxPushDistance = 150;
 	
 	bool bPushable = false;
 	
-	bool bPowerSwitchPushed = false;
+	bool bExitButtonPushed = false;
 	
 	UFUNCTION()
 	void HandleKeyPad(const FHitResult& HitResult, UKeyPadComponent* KeyPadComponent);

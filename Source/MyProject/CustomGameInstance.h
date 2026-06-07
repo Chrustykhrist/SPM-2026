@@ -30,11 +30,16 @@ public:
 	void SaveInventory();
 	
 	UFUNCTION()
-	void SetFlashlightColor(FLinearColor Color) { FlashlightColor = Color; }
+	void SetFlashlightColor(FLinearColor Color);
 	
 	UFUNCTION()
 	FLinearColor GetFlashlightColor() const { return FlashlightColor; }
 	
+	UFUNCTION()
+	void SetSavedFlashlightDuration(float Duration) { SavedFlashlightDuration = Duration; }
+
+	UFUNCTION()
+	float GetSavedFlashlightDuration() const { return SavedFlashlightDuration; }
 protected:
 	virtual void Init() override;
 	virtual void Shutdown() override;
@@ -48,4 +53,6 @@ private:
 	
 	UPROPERTY()
 	FLinearColor FlashlightColor = FLinearColor::White;
+	
+	float SavedFlashlightDuration = -1.0f;
 };
